@@ -8,17 +8,34 @@ var fs = require('fs');
 var path = require('path');
 
 module.exports = yeoman.generators.Base.extend({
-  constructor: function() {
-    yeoman.generators.Base.apply(this, arguments);
+  _moduleExists: function() {
+    return fs.readdirSync(this.nuxeo.remote.cachePath).indexOf(this.module) >= 0;
+  },
+  _moduleList: function() {
+    return fs.readdirSync(this.nuxeo.remote.cachePath);
+  },
+  _moduleReadDescriptor: function() {
+    var descPath = path.join(this.nuxeo.remote.cachePath, this.module, 'descriptor.js');
+    if (!fs.existsSync(descPath)) {
+      this.log("Descriptor file is missing...");
+      process.exit(2);
+    }
+
+    this.nuxeo.descriptor = require(descPath);
+    this.log(this.nuxeo.descriptor);
+  },
+  initializing: function() {
+    var done = this.async();
+    this.log('Initializing');
 
     async.waterfall([function(callback) {
       this.remote('akervern', 'nuxeo-generator-meta', 'master', function(err, remote) {
         callback(err, remote);
-      }.bind(this));
+      }.bind(this), true);
     }.bind(this), function(remote, callback) {
       this.nuxeo = {
         remote: remote
-      }
+      };
       callback();
     }.bind(this), function(callback) {
       try {
@@ -33,9 +50,9 @@ module.exports = yeoman.generators.Base.extend({
       if (!this._moduleExists()) {
         this.log('Unknown module: ' + this.module);
         this.log('Available modules:')
-        this._listModules().forEach(function(file) {
+        this._moduleList().forEach(function(file) {
           if (fs.statSync(path.join(this.nuxeo.remote.cachePath, file)).isDirectory()) {
-            this.log("\t" + file);
+            this.log("\t- " + file);
           }
         }.bind(this));
         process.exit(1);
@@ -43,24 +60,14 @@ module.exports = yeoman.generators.Base.extend({
 
       // check if module exists
       this.log('Module: ' + this.module);
-      process.exit(1);
       callback();
-    }.bind(this)]);
-  },
-  _moduleExists: function() {
-    return fs.readdirSync(this.nuxeo.remote.cachePath).indexOf(this.module) >= 0;
-  },
-  _listModules: function() {
-    return fs.readdirSync(this.nuxeo.remote.cachePath);
-  },
-  initializing: function() {
-    var done = this.async();
-    this.log('initializing called.');
-
-    setTimeout(function() {
-      this.log("asdasdasd");
+    }.bind(this), function(callback) {
+      this.log('initializing selected module.');
+      this._moduleReadDescriptor();
+      callback();
+    }.bind(this)], function() {
       done();
-    }.bind(this), 2000);
+    });
   },
   prompting: function() {
     var done = this.async();
@@ -68,9 +75,7 @@ module.exports = yeoman.generators.Base.extend({
       'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
     ));
 
-    var prompts = [];
-
-    this.prompt(prompts, function(props) {
+    this.prompt(this.nuxeo.descriptor.params, function(props) {
       this.props = props;
       // To access props later use this.props.someOption;
 
@@ -81,6 +86,11 @@ module.exports = yeoman.generators.Base.extend({
     this.log('configuring called.');
   },
   writing: function() {
+    // handling beforeTemplate
+    // handling templates
+    // handling contributions
+    // handling devDependencies
+    // handling contributions
     this.log("writing called.");
   },
   end: function() {
