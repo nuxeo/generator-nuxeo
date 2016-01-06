@@ -3,53 +3,72 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
 var mkdirp = require('mkdirp');
+var async = require('async');
+var fs = require('fs');
+var path = require('path');
 
 module.exports = yeoman.generators.Base.extend({
+  constructor: function() {
+    yeoman.generators.Base.apply(this, arguments);
+
+    async.waterfall([function(callback) {
+      this.remote('akervern', 'nuxeo-generator-meta', 'master', function(err, remote) {
+        callback(err, remote);
+      }.bind(this));
+    }.bind(this), function(remote, callback) {
+      this.nuxeo = {
+        remote: remote
+      }
+      callback();
+    }.bind(this), function(callback) {
+      try {
+        this.argument('module', {
+          type: String,
+          required: true
+        });
+      } catch (ex) {
+        this.log("No module defined; use: 'default'.")
+        this.module = 'default'
+      }
+      if (!this._moduleExists()) {
+        this.log('Unknown module: ' + this.module);
+        this.log('Available modules:')
+        this._listModules().forEach(function(file) {
+          if (fs.statSync(path.join(this.nuxeo.remote.cachePath, file)).isDirectory()) {
+            this.log("\t" + file);
+          }
+        }.bind(this));
+        process.exit(1);
+      }
+
+      // check if module exists
+      this.log('Module: ' + this.module);
+      process.exit(1);
+      callback();
+    }.bind(this)]);
+  },
+  _moduleExists: function() {
+    return fs.readdirSync(this.nuxeo.remote.cachePath).indexOf(this.module) >= 0;
+  },
+  _listModules: function() {
+    return fs.readdirSync(this.nuxeo.remote.cachePath);
+  },
+  initializing: function() {
+    var done = this.async();
+    this.log('initializing called.');
+
+    setTimeout(function() {
+      this.log("asdasdasd");
+      done();
+    }.bind(this), 2000);
+  },
   prompting: function() {
     var done = this.async();
     this.log(yosay(
-      'Welcome to the ' + chalk.red('Nuxeo Bundle') + ' generator!'
+      'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
     ));
 
-    var prompts = [{
-      type: 'input',
-      name: 'name',
-      message: 'Bundle name:',
-      store: true,
-      validate: function(value) {
-        return value.length > 0;
-      }
-    }, {
-      type: 'input',
-      name: 'package',
-      message: 'Bundle package:',
-      default: 'org.nuxeo.addon',
-      store: true,
-      validate: function(value) {
-        return value.split('.').length > 0;
-      }
-    }, {
-      type: 'input',
-      name: 'version',
-      message: 'Bundle version:',
-      default: '1.0-SNAPSHOT'
-    }, {
-      type: 'input',
-      name: 'artifact',
-      message: 'Artifact id:',
-      validate: function(value) {
-        return value.length > 0;
-      }
-    }, {
-      type: 'input',
-      name: 'description',
-      message: 'Description :'
-    }, {
-      type: 'input',
-      name: 'nuxeo_version',
-      message: 'Nuxeo Version:',
-      default: '8.1-SNAPSHOT'
-    }];
+    var prompts = [];
 
     this.prompt(prompts, function(props) {
       this.props = props;
@@ -58,26 +77,13 @@ module.exports = yeoman.generators.Base.extend({
       done();
     }.bind(this));
   },
-
+  configuring: function() {
+    this.log('configuring called.');
+  },
   writing: function() {
-    this.log('   ' + chalk.green('create') + ' Maven directory layout');
-    mkdirp.sync('src/main/java/' + this.props.package.replace(/\./g, '/'));
-    mkdirp.sync('src/main/resources/META-INF');
-    mkdirp.sync('src/main/resources/OSGI-INF');
-
-    mkdirp.sync('src/test/java/' + this.props.package.replace(/\./g, '/'));
-    mkdirp.sync('src/test/resources/OSGI-INF');
-
-    this.fs.copyTpl(
-      this.templatePath('MANIFEST.MF'),
-      this.destinationPath('src/main/resources/META-INF/MANIFEST.MF'),
-      this.props
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('pom.xml'),
-      this.destinationPath('pom.xml'),
-      this.props
-    );
+    this.log("writing called.");
+  },
+  end: function() {
+    this.log("Thanks you very.");
   }
 });

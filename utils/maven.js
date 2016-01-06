@@ -5,7 +5,8 @@ var fse = require('fs-extra');
 /**
 Usage:
      var mvn = maven('pom.xml');
-     mvn.addDependency(groupId, artifactId, version, type, scope, optional)
+     mvn.addDependency(gav)
+     mvn.addDependency(groupId, artifactId, version, type, scope)
      mvn.containsDependency(groupId, artifactId)
 
      mvn.save(this.fs);
