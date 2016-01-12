@@ -13,8 +13,18 @@ npm install -g generator-nuxeo
 Then generate your new project:
 
 ```bash
-yo generator-nuxeo
+yo nuxeo
 ```
+
+## Test the generator
+
+As the generator is not yet available as a global npm module; you have to test it locally. From the root of this project, type:
+
+```bash
+npm link
+```
+
+It will install dependencies and symlink the module to your global registry. After that, you can use the generator as described below.
 
 ## Getting To Know Yeoman
 
