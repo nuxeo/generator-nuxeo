@@ -202,6 +202,26 @@ module.exports = yeoman.generators.Base.extend({
         that.fs.copyTpl(src, dest, props);
       });
 
+      _.forEach(generator['main-java'], function(source) {
+        that.log.info('Copy main java');
+        var args = [that._getBaseFolderName(generator.type), 'src/main/java'];
+        args.push(props.package.split('.'));
+        args.push(that._tplPath(source.dest, props));
+        var dest = path.join.apply(that, _.flatten(args));
+        var src = path.join(that.nuxeo.cachePath, item, 'templates', source.src);
+        that.fs.copyTpl(src, dest, props);
+      });
+
+      _.forEach(generator['test-java'], function(source) {
+        that.log.info('Copy test java');
+        var args = [that._getBaseFolderName(generator.type), 'src/test/java'];
+        args.push(props.package.split('.'));
+        args.push(that._tplPath(source.dest, props));
+        var dest = path.join.apply(that, _.flatten(args));
+        var src = path.join(that.nuxeo.cachePath, item, 'templates', source.src);
+        that.fs.copyTpl(src, dest, props);
+      });
+
       // handling dependencies
       _.forEach(generator.dependencies, function(dependency) {
         // XXX Call maven util
@@ -209,11 +229,11 @@ module.exports = yeoman.generators.Base.extend({
 
       // handling contributions
       _.forEach(generator.contributions, function(contribution) {
-
-        var filename = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
-        filename = that._tplPath(src, props);
-        var src = path.resolve(that.nuxeo.cachePath, item, 'contributions', that._tplPath(filename, props));
-        var dest = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "OSGI-INF", filename);
+        that.log.info('Copy Contributions');
+        var src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
+        src = path.resolve(that.nuxeo.cachePath, item, 'contributions', that._tplPath(src, props));
+        var dest = typeof contribution.dest === 'function' ? contribution.dest.call(that, props) : contribution.dest;
+        dest = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "OSGI-INF", that._tplPath(dest, props));
 
         that.fs.copyTpl(src, dest, props);
         // XXX Add contribution to MANIFEST FILE
