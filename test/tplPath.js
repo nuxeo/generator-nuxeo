@@ -27,6 +27,7 @@ describe('Templating', function() {
   });
 
   it('can render variable', function() {
+    assert.equal('/blabla/', tplPath('/blabla/', this.props));
     assert.equal('/mybundle/', tplPath('/{{name}}/', this.props));
   });
 

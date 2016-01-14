@@ -41,6 +41,13 @@ module.exports = yeoman.generators.Base.extend({
   _isMultiModule: function() {
     return this.config.get('multi') || false;
   },
+  _getBaseFolderName: function(type) {
+    if (this._isMultiModule() && type !== 'root') {
+      return this._getTypeFolderName(type || 'core');
+    } else {
+      return '.'
+    }
+  },
   _getTypeFolderName: function(type) {
     var dir = _.find(fs.readdirSync('.'), function(file) {
       return fs.lstatSync(file).isDirectory() && file.match('-' + type + '$');
@@ -162,11 +169,14 @@ module.exports = yeoman.generators.Base.extend({
       done();
     });
   },
+  require: function(module) {
+    return require(module);
+  },
   writing: function() {
     var that = this;
     var done = this.async();
     async.eachSeries(this.nuxeo.selectedModules, function(item, callback) {
-      that.log.info('Generating ' + chalk.red(item + ' template'));
+      that.log.info('Generating ' + chalk.red(s.capitalize(item) + ' template'));
       var generator = that.nuxeo.modules[item];
       var props = that.props[item];
       // handling before
@@ -176,26 +186,39 @@ module.exports = yeoman.generators.Base.extend({
       }
 
       // handling beforeTemplate
-      if (typeof generator.beforeTemplate == 'function') {
-        that.log.info('BeforeTemplate called on ' + item);
-        generator.beforeTemplate.call(that, props);
+      if (typeof generator.beforeGeneration == 'function') {
+        that.log.info('BeforeGeneration called on ' + item);
+        generator.beforeGeneration.call(that, props);
       }
 
       // handling templates
       _.forEach(generator.templates, function(template) {
-        var dest = typeof template.dest == 'function' ? template.dest.call(that, props) : template.dest;
-        var src = typeof template.src == 'function' ? template.src.call(that, props) : template.src;
+        var dest = typeof template.dest === 'function' ? template.dest.call(that, props) : template.dest;
+        var src = typeof template.src === 'function' ? template.src.call(that, props) : template.src;
 
-        src = path.resolve(that.nuxeo.cachePath, item, 'templates', src);
-        dest = that._tplPath(dest, props);
-        if (that._isMultiModule() && template.type !== 'root') {
-          dest = path.join(that._getTypeFolderName(template.type || 'core'), dest);
-        }
+        src = path.resolve(that.nuxeo.cachePath, item, 'templates', that._tplPath(src, props));
+        dest = path.join(that._getBaseFolderName(generator.type), that._tplPath(dest, props));
+
         that.fs.copyTpl(src, dest, props);
       });
 
       // handling dependencies
+      _.forEach(generator.dependencies, function(dependency) {
+        // XXX Call maven util
+      });
+
       // handling contributions
+      _.forEach(generator.contributions, function(contribution) {
+
+        var filename = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
+        filename = that._tplPath(src, props);
+        var src = path.resolve(that.nuxeo.cachePath, item, 'contributions', that._tplPath(filename, props));
+        var dest = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "OSGI-INF", filename);
+
+        that.fs.copyTpl(src, dest, props);
+        // XXX Add contribution to MANIFEST FILE
+      });
+
       callback();
     }, function() {
       done();
