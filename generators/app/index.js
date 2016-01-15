@@ -36,7 +36,7 @@ module.exports = yeoman.generators.Base.extend({
         this.nuxeo.modules[file] = require(descPath);
       }
     }.bind(this));
-    this.log(this.nuxeo.modules);
+    // this.log(this.nuxeo.modules);
   },
   _isMultiModule: function() {
     return this.config.get('multi') || false;
@@ -70,7 +70,6 @@ module.exports = yeoman.generators.Base.extend({
   initializing: function() {
     var done = this.async();
     var that = this;
-    this.log('Initializing');
 
     function fetchRemote(callback) {
       // Silent logs while remote fetching
@@ -134,7 +133,6 @@ module.exports = yeoman.generators.Base.extend({
         }
       });
       that.nuxeo.selectedModules = filtered;
-      that.log(filtered);
       callback();
     }
 
@@ -142,21 +140,31 @@ module.exports = yeoman.generators.Base.extend({
       done();
     });
   },
+  _showWelcome: function() {
+    this.log(yosay(
+      'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
+    ));
+    this.log.info('You\'ll be prompted to install: ' + this.nuxeo.selectedModules.join(', '));
+
+  },
   prompting: function() {
     var done = this.async();
     var that = this;
 
-    this.log(yosay(
-      'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
-    ));
+    this._showWelcome();
 
     that.props = {};
     async.eachSeries(this.nuxeo.selectedModules, function(item, callback) {
       var params = that.nuxeo.modules[item].params || [];
 
       if (params.length > 0) {
-        that.log.info(chalk.red('Parameters for generator: ' + item));
-        // display documentation
+        that.log.info(chalk.red('Generating ' + s.humanize(item)));
+        // Show asked parameters
+        var trimParams = [];
+        _.forEach(params, function(p) {
+          trimParams.push(s.humanize(s.trim(p.message, '\\s+:_-')))
+        });
+        that.log.info('\t' + chalk.blue('Parameters: ') + trimParams.join(', '));
       }
       that.prompt(params, function(props) {
         that.props[item] = props;
@@ -169,8 +177,8 @@ module.exports = yeoman.generators.Base.extend({
       done();
     });
   },
-  require: function(module) {
-    return require(module);
+  _require: function(m) {
+    return require(m);
   },
   writing: function() {
     var that = this;
@@ -179,6 +187,7 @@ module.exports = yeoman.generators.Base.extend({
       that.log.info('Generating ' + chalk.red(s.capitalize(item) + ' template'));
       var generator = that.nuxeo.modules[item];
       var props = that.props[item];
+
       // handling before
       if (typeof generator.before == 'function') {
         that.log.info('Before called on ' + item);
