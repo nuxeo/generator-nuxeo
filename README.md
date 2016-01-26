@@ -1,7 +1,36 @@
-# generator-nuxeo [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
-> test
+## Yeoman generator for Nuxeo
+
+## Introduction
+
+`generator-nuxeo` provides Nuxeo components scaffolding using [Yeoman](http://yeoman.io) (a scaffolding tool for the web). It lets you easily scaffold common Nuxeo components like empty project, Nuxeo Package, Automation Operation, ... This saves you time writting boilerplate code to focus on your code instead of the structure.
+
+## Issues
+
+The project is still at an early experimental stage, you could have some unexpected behaviors while trying to generate some code on an existing project.
+
+Also, at this stage, the generator is not yet capable to manipulate the `pom.xml` nor the `MANIFEST.MF` file properly.
+
+## Features
+
+- Each feature are version dependents
+- Empty bundle creation.
+- Empty bundle creation with Maven multi module support.
+- Automation Operation with his test.
+- Nuxeo Package creation.
+
+### Incoming Features
+
+- Empty Nuxeo component
+- Nuxeo Service boilerplate
+- Polymer based application
+- Functional Testing module
+- REST endpoint / content enricher
+- Listener / Scheduler / Worker
+- ...
 
 ## Installation
+
+**The node.js module is not yet available as a global module. You should only test it locally.**
 
 First, install [Yeoman](http://yeoman.io) and generator-nuxeo using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
@@ -10,34 +39,53 @@ npm install -g yo
 npm install -g generator-nuxeo
 ```
 
-Then generate your new project:
-
-```bash
-yo nuxeo
-```
-
 ## Test the generator
 
-As the generator is not yet available as a global npm module; you have to test it locally. From the root of this project, type:
+To test the generator directly from the sources; you need to:
 
 ```bash
+git clone https://github.com/nuxeo/generator-nuxeo
 npm link
 ```
 
-It will install dependencies and symlink the module to your global registry. After that, you can use the generator as described below.
+It will install dependencies and symlink the module to your local registry. After that, you can use the generator as described below.
 
-## Getting To Know Yeoman
+## Generators
 
-Yeoman has a heart of gold. He&#39;s a person with feelings and opinions, but he&#39;s very easy to work with. If you think he&#39;s too opinionated, he can be easily convinced. Feel free to [learn more about him](http://yeoman.io/).
+You can create several modules at once like:
 
-## License
+    yo nuxeo operation package
 
-Apache-2.0 © [Arnaud Kervern]()
+### Single module
 
+Sets up an empty Nuxeo Bundle.
 
-[npm-image]: https://badge.fury.io/js/generator-nuxeo.svg
-[npm-url]: https://npmjs.org/package/generator-nuxeo
-[travis-image]: https://travis-ci.org/nuxeo/generator-nuxeo.svg?branch=master
-[travis-url]: https://travis-ci.org/nuxeo/generator-nuxeo
-[daviddm-image]: https://david-dm.org/nuxeo/generator-nuxeo.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/nuxeo/generator-nuxeo
+    yo nuxeo
+    # or
+    yo nuxeo single-module
+
+### Multi module
+
+Sets up an empty Nuxeo Bundle using Maven multi module support.
+
+    yo nuxeo multi-module
+
+### Operation
+
+Sets up an empty Operation with his test class.
+
+    yo nuxeo operation
+
+### Nuxeo Package
+
+Create a module to handle a Nuxeo Package of your project
+
+    yo nuxeo package
+
+## Licensing
+
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+## About Nuxeo
+
+Nuxeo dramatically improves how content-based applications are built, managed and deployed, making customers more agile, innovative and successful. Nuxeo provides a next generation, enterprise ready platform for building traditional and cutting-edge content oriented applications. Combining a powerful application development environment with SaaS-based tools and a modular architecture, the Nuxeo Platform and Products provide clear business value to some of the most recognizable brands including Verizon, Electronic Arts, Netflix, Sharp, FICO, the U.S. Navy, and Boeing. Nuxeo is headquartered in New York and Paris. More information is available at [www.nuxeo.com](http://www.nuxeo.com).
