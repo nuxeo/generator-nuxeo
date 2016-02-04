@@ -20,7 +20,10 @@ function maven(content) {
       encoding: 'UTF-8'
     })
   }
-  var $ = cheerio.load(content);
+  var $ = cheerio.load(content, {
+    xmlMode: true,
+    lowerCaseTags: false
+  });
 
   return {
     convertToXml: function(dep) {
@@ -65,7 +68,7 @@ function maven(content) {
     },
     containsDependency: function(groupId, artifactId) {
       // XXX: Do not only test artifact id :)
-      return $('dependencies artifactid').filter(function(i, elt) {
+      return $('dependencies artifactId').filter(function(i, elt) {
         return $(elt).text() === artifactId;
       }).length > 0;
     },
@@ -74,8 +77,8 @@ function maven(content) {
       $('dependencies dependency').each(function(i, elt) {
         var el = $(elt);
         dependencies.push({
-          artifactId: el.first('artifactid').text(),
-          groupId: el.first('groupid').text()
+          artifactId: el.first('artifactId').text(),
+          groupId: el.first('groupId').text()
         });
       });
       return dependencies;
@@ -101,7 +104,8 @@ function maven(content) {
     },
     save: function(fs, file) {
       fs.write(file, beautify($.xml(), {
-        indent_size: 2
+        indent_size: 2,
+        preserve_newlines: 1
       }));
     }
   };

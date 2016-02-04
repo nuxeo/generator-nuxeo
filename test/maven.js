@@ -16,12 +16,20 @@ describe('Test Maven module, that can', function() {
   });
 
   it('add dependency', function() {
+    assert.equal(0, this.mvn.dependencies().length);
+    this.mvn.addDependency('org.nuxeo.addon', 'mynewadon-core');
+    assert.equal(1, this.mvn.dependencies().length);
+  });
+
+  it('write beautified file content', function() {
     this.mvn.addDependency('org.nuxeo.addon', 'mynewadon');
     this.mvn.save(this.fs, this.pomPath);
 
     var content = this.fs.read(this.pomPath);
     assert.notEqual(null, content.match('mynewadon'));
     assert.notEqual(null, content.match('<dependency>'));
+    assert.notEqual(null, content.match('<artifactId>'));
+    assert.notEqual(null, content.match('<groupId>'));
   });
 
   it('not add wrong dependency', function() {

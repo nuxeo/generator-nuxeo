@@ -57,6 +57,11 @@ module.exports = yeoman.generators.Base.extend({
       dir = path.basename(path.resolve('.')) + "-" + type;
       fs.mkdirSync(dir);
     }
+
+    // Add Maven module to parent
+    var pom = maven.open(this.fs.read('pom.xml'));
+    pom.addModule(dir);
+    pom.save(this.fs, 'pom.xml');
     return dir;
   },
   _tplPath: function(str, ctx) {
