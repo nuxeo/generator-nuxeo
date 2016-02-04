@@ -8,6 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var s = require('underscore.string');
+var maven = require('../../utils/maven.js');
 
 module.exports = yeoman.generators.Base.extend({
   _moduleExists: function(module) {
@@ -77,7 +78,7 @@ module.exports = yeoman.generators.Base.extend({
       process.stderr.write = function() {};
 
       // Fetch remote repository containing module metadata
-      that.remote('akervern', 'nuxeo-generator-meta', 'master', function(err, remote) {
+      that.remote('nuxeo', 'generator-nuxeo-meta', 'master', function(err, remote) {
         process.stderr.write = writeOld;
         callback(err, remote);
       }, true);
@@ -234,9 +235,17 @@ module.exports = yeoman.generators.Base.extend({
       });
 
       // handling dependencies
-      _.forEach(generator.dependencies, function(dependency) {
-        // XXX Call maven util
-      });
+      if (!_.isEmpty(generator.dependencies)) {
+        var pomPath = path.join(that._getBaseFolderName(generator.type), 'pom.xml');
+        var pom = maven.open(that.fs.read(pomPath));
+
+        _.forEach(generator.dependencies, function(dependency) {
+          that.log.info('Add Maven dependency');
+          pom.addDependency(dependency);
+        });
+
+        pom.save(that.fs, pomPath);
+      }
 
       // handling contributions
       _.forEach(generator.contributions, function(contribution) {

@@ -5,21 +5,22 @@ var beautify = require('js-beautify').html;
 
 /**
 Usage:
-     var mvn = maven('pom.xml');
-     mvn.addDependency(gav)
-     mvn.addDependency(groupId, artifactId, version, type, scope)
-     mvn.containsDependency(groupId, artifactId)
+     var maven = require('utils/maven.js')
+     var pom = maven.open('pom.xml');
+     pom.addDependency(gav)
+     pom.addDependency(groupId, artifactId, version, type, scope)
+     pom.containsDependency(groupId, artifactId)
 
-     mvn.save(this.fs);
+     pom.save(this.fs, filename);
 */
 
-function maven(file) {
-  if (typeof file === 'undefined') {
-    file = 'pom.xml';
+function maven(content) {
+  if (typeof content === 'undefined') {
+    content = fse.readFileSync('pom.xml', {
+      encoding: 'UTF-8'
+    })
   }
-  var $ = cheerio.load(fse.readFileSync(file, {
-    encoding: 'UTF-8'
-  }));
+  var $ = cheerio.load(content);
 
   return {
     convertToXml: function(dep) {
@@ -79,7 +80,26 @@ function maven(file) {
       });
       return dependencies;
     },
-    save: function(fs) {
+    addModule: function(module) {
+      if (!this.containsModule(module)) {
+        var $mod = $('<module>' + module + '</module>');
+        $('modules').append($mod);
+      }
+      return module;
+    },
+    containsModule: function(module) {
+      return $('modules module').filter(function(i, elt) {
+        return $(elt).text() === module;
+      }).length > 0;
+    },
+    modules: function() {
+      var modules = [];
+      $('modules module').each(function(i, elt) {
+        modules.push($(elt).text());
+      });
+      return modules;
+    },
+    save: function(fs, file) {
       fs.write(file, beautify($.xml(), {
         indent_size: 2
       }));

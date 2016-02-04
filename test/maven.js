@@ -12,12 +12,12 @@ describe('Test Maven module, that can', function() {
 
   beforeEach(function() {
     this.fs = editor.create(memFs.create());
-    this.mvn = maven.open(this.pomPath);
+    this.mvn = maven.open(this.fs.read(this.pomPath));
   });
 
   it('add dependency', function() {
     this.mvn.addDependency('org.nuxeo.addon', 'mynewadon');
-    this.mvn.save(this.fs);
+    this.mvn.save(this.fs, this.pomPath);
 
     var content = this.fs.read(this.pomPath);
     assert.notEqual(null, content.match('mynewadon'));
@@ -70,7 +70,7 @@ describe('Test Maven module, that can', function() {
     assert.equal('test', dep.classifier);
   });
 
-  it('do not add a dependency twice', function() {
+  it('not add a dependency twice', function() {
     assert.equal(0, this.mvn.dependencies().length);
     this.mvn.addDependency('org.nuxeo.addon', 'mynewadon-core');
     assert.equal(1, this.mvn.dependencies().length);
@@ -100,5 +100,15 @@ describe('Test Maven module, that can', function() {
     xml = this.mvn.convertToXml(dep);
     assert.equal(1, xml.find('artifactId').length);
     assert.equal(0, xml.find('version').length);
+  });
+
+  it('add child module', function() {
+    assert.equal(0, this.mvn.modules().length)
+    this.mvn.addModule('my-module-core');
+    assert.equal(1, this.mvn.modules().length)
+    this.mvn.addModule('my-module-core');
+    assert.equal(1, this.mvn.modules().length)
+    this.mvn.addModule('my-module-web');
+    assert.equal(2, this.mvn.modules().length)
   });
 });

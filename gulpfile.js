@@ -1,6 +1,8 @@
 'use strict';
 var path = require('path');
 var gulp = require('gulp');
+var watch = require('gulp-watch');
+var batch = require('gulp-batch');
 var eslint = require('gulp-eslint');
 var excludeGitignore = require('gulp-exclude-gitignore');
 var mocha = require('gulp-mocha');
@@ -23,11 +25,15 @@ gulp.task('nsp', function(cb) {
 });
 
 gulp.task('pre-test', function() {
-  return gulp.src('generators/**/*.js', 'utils/*.js')
+  return gulp.src(['generators/**/*.js', 'utils/*.js'])
     .pipe(istanbul({
       includeUntested: true
     }))
     .pipe(istanbul.hookRequire());
+});
+
+gulp.task('watch-test', function() {
+  return gulp.watch(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'], ['test']);
 });
 
 gulp.task('test', ['pre-test'], function(cb) {
