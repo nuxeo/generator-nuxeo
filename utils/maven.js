@@ -62,19 +62,18 @@ function maven(content) {
       if (this.containsDependency(dep.groupId, dep.artifactId)) {
         return dep;
       }
-
-      $('dependencies').append(this.convertToXml(dep));
+      this._dependenciesNode().append(this.convertToXml(dep));
       return dep;
     },
     containsDependency: function(groupId, artifactId) {
       // XXX: Do not only test artifact id :)
-      return $('dependencies artifactId').filter(function(i, elt) {
+      return this._dependenciesNode().find('artifactId').filter(function(i, elt) {
         return $(elt).text() === artifactId;
       }).length > 0;
     },
     dependencies: function() {
       var dependencies = [];
-      $('dependencies dependency').each(function(i, elt) {
+      this._dependenciesNode().find('dependency').each(function(i, elt) {
         var el = $(elt);
         dependencies.push({
           artifactId: el.first('artifactId').text(),
@@ -102,11 +101,21 @@ function maven(content) {
       });
       return modules;
     },
-    save: function(fs, file) {
-      fs.write(file, beautify($.xml(), {
+    _dependenciesNode: function() {
+      var $root = $('dependencyManagement').length > 0 ? $('dependencyManagement') : $('project');
+      if ($root.find('dependencies').length === 0) {
+        $root.append($('<dependencies />'));
+      }
+      return $root.find('dependencies');
+    },
+    _xml: function() {
+      return beautify($.xml(), {
         indent_size: 2,
         preserve_newlines: 1
-      }));
+      });
+    },
+    save: function(fs, file) {
+      fs.write(file, this._xml());
     }
   };
 }
