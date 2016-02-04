@@ -14,7 +14,7 @@ Also, at this stage, the generator is not yet capable to manipulate the `pom.xml
 
 - Each feature are version dependents
 - Empty bundle creation.
-- Empty bundle creation with Maven multi module support.
+- Empty bundle creation with Maven multi module support
 - Automation Operation with his test.
 - Nuxeo Package creation.
 

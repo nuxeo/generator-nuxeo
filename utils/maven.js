@@ -1,6 +1,7 @@
 'use strict';
 var cheerio = require('cheerio');
 var fse = require('fs-extra');
+var beautify = require('js-beautify').html;
 
 /**
 Usage:
@@ -21,20 +22,45 @@ function maven(file) {
   }));
 
   return {
-    // XXX: Slice arguments instead of fixed list, to allowing passing a simple GAV
-    addDependency: function(groupId, artifactId, version) {
-      if (this.containsDependency(groupId, artifactId)) {
+    convertToXml: function(dep) {
+      var $dep = $('<dependency />');
+      $dep.append('<groupId>' + dep.groupId + '</groupId>');
+      $dep.append('<artifactId>' + dep.artifactId + '</artifactId');
+      if (dep.version) {
+        $dep.append('<version>' + dep.version + '</version>');
+      }
+      if (dep.extension) {
+        $dep.append('<type>' + dep.extension + '</type>');
+      }
+      if (dep.classifier) {
+        $dep.append('<scope>' + dep.classifier + '</scope>');
+      }
+      return $dep;
+    },
+    addDependency: function() {
+      var args = Array.prototype.slice.call(arguments, 0);
+      if (args.length === 1) {
+        args = args[0].split(':');
+      }
+      if (args.length < 2) {
         return;
       }
 
-      var dep = $('<dependency />');
-      dep.append('<groupId>' + groupId + '</groupId>');
-      dep.append('<artifactId>' + artifactId + '</artifactId');
-      if (typeof version !== 'undefined') {
-        dep.append('<version>' + version + '</version>');
+      var dep = {
+        groupId: args[0],
+        artifactId: args[1],
+        version: args[2],
+        extension: args[3],
+        classifier: args[4]
+      };
+
+      // Format: <groupId>:<artifactId>[:<version>[:<extension>[:<classifier>]]]
+      if (this.containsDependency(dep.groupId, dep.artifactId)) {
+        return dep;
       }
 
-      $('dependencies').append(dep);
+      $('dependencies').append(this.convertToXml(dep));
+      return dep;
     },
     containsDependency: function(groupId, artifactId) {
       // XXX: Do not only test artifact id :)
@@ -54,7 +80,9 @@ function maven(file) {
       return dependencies;
     },
     save: function(fs) {
-      fs.write(file, $.html());
+      fs.write(file, beautify($.xml(), {
+        indent_size: 2
+      }));
     }
   };
 }

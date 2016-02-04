@@ -213,6 +213,7 @@ module.exports = yeoman.generators.Base.extend({
 
       _.forEach(generator['main-java'], function(source) {
         that.log.info('Copy main java');
+        // XXX To be refactored
         var args = [that._getBaseFolderName(generator.type), 'src/main/java'];
         args.push(props.package.split('.'));
         args.push(that._tplPath(source.dest, props));
@@ -223,6 +224,7 @@ module.exports = yeoman.generators.Base.extend({
 
       _.forEach(generator['test-java'], function(source) {
         that.log.info('Copy test java');
+        // XXX To be refactored
         var args = [that._getBaseFolderName(generator.type), 'src/test/java'];
         args.push(props.package.split('.'));
         args.push(that._tplPath(source.dest, props));
