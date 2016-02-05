@@ -9,6 +9,7 @@ var path = require('path');
 var _ = require('lodash');
 var s = require('underscore.string');
 var maven = require('../../utils/maven.js');
+var manifestmf = require('../../utils/manifestmf.js');
 
 module.exports = yeoman.generators.Base.extend({
   _moduleExists: function(module) {
@@ -261,7 +262,13 @@ module.exports = yeoman.generators.Base.extend({
         dest = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "OSGI-INF", that._tplPath(dest, props));
 
         that.fs.copyTpl(src, dest, props);
-        // XXX Add contribution to MANIFEST FILE
+
+        // Add contribution to the Manifest file
+        var manifestPath = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "META-INF", 'MANIFEST.MF');
+        var contribPath = path.join("OSGI-INF", that._tplPath(dest, props));
+        var mf = manifestmf.open(manifestPath, that.fs);
+        mf.addContribution(contribPath);
+        mf.save();
       });
 
       callback();
