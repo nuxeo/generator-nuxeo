@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 1
+Bundle-Name: Nuxeo Sample Generator
+Bundle-SymbolicName: org.nuxeo.ecm.code.generator;singleton:=true
+Bundle-Vendor: Nuxeo
+Bundle-Version: 1.0.0
