@@ -84,6 +84,10 @@ function maven(content) {
     },
     addModule: function(module) {
       if (!this.containsModule(module)) {
+        if ($('modules').length === 0) {
+          $('project').append($('<modules />'));
+        }
+
         var $mod = $('<module>' + module + '</module>');
         $('modules').append($mod);
       }
@@ -102,7 +106,12 @@ function maven(content) {
       return modules;
     },
     _dependenciesNode: function() {
-      var $root = $('dependencyManagement').length > 0 ? $('dependencyManagement') : $('project');
+      var isBom = $('dependencyManagement').length > 0 || $('type').text() === 'pom';
+      if (isBom && $('dependencyManagement').length === 0) {
+        $('project').append($('<dependencyManagement />'));
+      }
+
+      var $root = isBom ? $('dependencyManagement') : $('project');
       if ($root.find('dependencies').length === 0) {
         $root.append($('<dependencies />'));
       }

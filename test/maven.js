@@ -6,15 +6,18 @@ var memFs = require('mem-fs');
 var editor = require('mem-fs-editor');
 
 describe('Maven module can', function() {
+  function openPomFile(fs, filename) {
+    var pomPath = path.join(__dirname, 'templates', filename);
+    return maven.open(fs.read(pomPath));
+  }
+
   before(function() {
     this.pomPath = path.join(__dirname, 'templates', 'pom.xml');
-    this.bomPath = path.join(__dirname, 'templates', 'bom.xml');
   });
 
   beforeEach(function() {
     this.fs = editor.create(memFs.create());
     this.pom = maven.open(this.fs.read(this.pomPath));
-    this.bom = maven.open(this.fs.read(this.bomPath));
   });
 
   it('add dependency', function() {
@@ -123,8 +126,38 @@ describe('Maven module can', function() {
   });
 
   it('add dependency to the dependencyManagement', function() {
-    assert.equal(0, this.bom.dependencies().length);
-    this.bom.addDependency('org.nuxeo.addon:mynewadon-jar:1.0');
-    assert.equal(1, this.bom.dependencies().length);
+    var bom = openPomFile(this.fs, 'bom.xml')
+    assert.equal(0, bom.dependencies().length);
+    bom.addDependency('org.nuxeo.addon:mynewadon-jar:1.0');
+    assert.equal(1, bom.dependencies().length);
+
+    assert.ok(bom._xml().match('<dependencyManagement>'));
   });
+
+  it('handle pom without expected nodes', function() {
+    var pom = openPomFile(this.fs, 'pom-without-deps.xml');
+
+    // Ensure there is any nodes
+    assert.ok(!pom._xml().match('<dependencies'));
+    assert.ok(!pom._xml().match('<dependencyManagement'));
+
+    // Add dependency
+    assert.equal(0, pom.dependencies().length);
+    pom.addDependency('org.nuxeo.addon:mynewadon-jar:1.0');
+    assert.equal(1, pom.dependencies().length);
+
+    // Ensure dependency has not been added to the deps management
+    assert.ok(pom._xml().match('<dependencies'));
+    assert.ok(!pom._xml().match('<dependencyManagement'));
+
+    // add Modules the same way
+    assert.ok(!pom._xml().match('<modules'));
+
+    assert.equal(0, pom.modules().length);
+    pom.addModule('my-ultra-module');
+    assert.equal(1, pom.modules().length);
+
+    assert.ok(pom._xml().match('<modules'));
+  });
+
 });
