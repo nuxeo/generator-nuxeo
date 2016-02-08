@@ -76,7 +76,7 @@ module.exports = yeoman.generators.Base.extend({
   },
   constructor: function() {
     yeoman.generators.Base.apply(this, arguments);
-    
+
     this.option('nuxeo', {
       type: String,
       alias: 'n',
@@ -203,6 +203,9 @@ module.exports = yeoman.generators.Base.extend({
       that.log.info('Generating ' + chalk.red(s.capitalize(item) + ' template'));
       var generator = that.nuxeo.modules[item];
       var props = that.props[item];
+
+      // XXX Remove it, add _.s to the props for allowing using the same str format function
+      props.s = s;
 
       // handling before
       if (typeof generator.before == 'function') {
