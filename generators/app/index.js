@@ -74,6 +74,15 @@ module.exports = yeoman.generators.Base.extend({
       }
     })(ctx);
   },
+  constructor: function() {
+    yeoman.generators.Base.apply(this, arguments);
+    
+    this.option('nuxeo', {
+      type: String,
+      alias: 'n',
+      defaults: 'master'
+    });
+  },
   initializing: function() {
     var done = this.async();
     var that = this;
@@ -84,7 +93,7 @@ module.exports = yeoman.generators.Base.extend({
       process.stderr.write = function() {};
 
       // Fetch remote repository containing module metadata
-      that.remote('nuxeo', 'generator-nuxeo-meta', 'master', function(err, remote) {
+      that.remote('nuxeo', 'generator-nuxeo-meta', that.options.nuxeo, function(err, remote) {
         process.stderr.write = writeOld;
         callback(err, remote);
       }, true);
@@ -258,16 +267,16 @@ module.exports = yeoman.generators.Base.extend({
         that.log.info('Copy Contributions');
         var src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
         src = path.resolve(that.nuxeo.cachePath, item, 'contributions', that._tplPath(src, props));
-        var dest = typeof contribution.dest === 'function' ? contribution.dest.call(that, props) : contribution.dest;
-        dest = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "OSGI-INF", that._tplPath(dest, props));
+        var contribName = typeof contribution.dest === 'function' ? contribution.dest.call(that, props) : contribution.dest;
+        var dest = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "OSGI-INF", that._tplPath(contribName, props));
 
         that.fs.copyTpl(src, dest, props);
 
         // Add contribution to the Manifest file
         var manifestPath = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "META-INF", 'MANIFEST.MF');
-        var contribPath = path.join("OSGI-INF", that._tplPath(dest, props));
+        var contribPath = path.join("OSGI-INF", that._tplPath(contribName, props));
         var mf = manifestmf.open(manifestPath, that.fs);
-        mf.addContribution(contribPath);
+        mf.addComponent(contribPath);
         mf.save();
       });
 
