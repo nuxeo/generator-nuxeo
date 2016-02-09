@@ -21,74 +21,10 @@ module.exports = nuxeo.extend({
   },
   initializing: function() {
     var done = this.async();
-    var that = this;
+    var init = this._init;
 
-    function fetchRemote(callback) {
-      // Silent logs while remote fetching
-      var writeOld = process.stderr.write;
-      process.stderr.write = function() {};
-
-      // Fetch remote repository containing module metadata
-      that.remote('nuxeo', 'generator-nuxeo-meta', that.options.nuxeo, function(err, remote) {
-        process.stderr.write = writeOld;
-        callback(err, remote);
-      }, true);
-    }
-
-    function readDescriptor(remote, callback) {
-      // Require modules
-      that._moduleReadDescriptor(remote);
-      callback();
-    }
-
-    function resolveModule(callback) {
-      var args = [];
-      that.args.forEach(function(arg) {
-        if (!that._moduleExists(arg)) {
-          that.log('Unknown module: ' + arg);
-          that.log('Available modules:');
-          that._moduleList().forEach(function(module) {
-            that.log('\t- ' + module);
-          });
-          process.exit(1);
-        }
-
-        args.push(arg);
-      });
-
-      var modules = _.uniq(_.union(args, that._moduleResolveParent(args)));
-      modules = _.sortBy(modules, function(m) {
-        return that.nuxeo.modules[m].order || 0;
-      });
-      callback(null, modules);
-    }
-
-    function filterModules(modules, callback) {
-      var filtered = [];
-      var skip = false;
-      _.forEachRight(modules, function(module) {
-        if (skip) {
-          return;
-        }
-
-        var skipFunc = that.nuxeo.modules[module].skip;
-        if (typeof skipFunc === 'function' && skipFunc.apply(that)) {
-          skip = true;
-        } else {
-          var ensureFunc = that.nuxeo.modules[module].ensure;
-          if (typeof ensureFunc === 'function' && !ensureFunc.apply(that)) {
-            that.log('Unable to install modules due to: ' + module);
-            process.exit(1);
-          }
-
-          filtered.splice(0, 0, module);
-        }
-      });
-      that.nuxeo.selectedModules = filtered;
-      callback();
-    }
-
-    async.waterfall([fetchRemote, readDescriptor, resolveModule, filterModules], function() {
+    var seq = async.seq(init.fetchRemote, init.readDescriptor, init.resolveModule, init.filterModules).bind(this);
+    seq(function() {
       done();
     });
   },

@@ -80,5 +80,69 @@ module.exports = yeoman.generators.Base.extend({
   },
   _require: function(m) {
     return require(m);
+  },
+  _init: {
+    fetchRemote: function(callback) {
+      // Silent logs while remote fetching
+      var writeOld = process.stderr.write;
+      process.stderr.write = function() {};
+
+      // Fetch remote repository containing module metadata
+      this.remote('nuxeo', 'generator-nuxeo-meta', this.options.nuxeo, function(err, remote) {
+        process.stderr.write = writeOld;
+        callback(err, remote);
+      }, true);
+    },
+    readDescriptor: function(remote, callback) {
+      // Require modules
+      this._moduleReadDescriptor(remote);
+      callback();
+    },
+    resolveModule: function(callback) {
+      var args = [];
+      var that = this;
+      that.args.forEach(function(arg) {
+        if (!that._moduleExists(arg)) {
+          that.log('Unknown module: ' + arg);
+          that.log('Available modules:');
+          that._moduleList().forEach(function(module) {
+            that.log('\t- ' + module);
+          });
+          process.exit(1);
+        }
+
+        args.push(arg);
+      });
+
+      var modules = _.uniq(_.union(args, that._moduleResolveParent(args)));
+      modules = _.sortBy(modules, function(m) {
+        return that.nuxeo.modules[m].order || 0;
+      });
+      callback(null, modules);
+    },
+    filterModules: function(modules, callback) {
+      var filtered = [];
+      var skip = false;
+      _.forEachRight(modules, function(module) {
+        if (skip) {
+          return;
+        }
+
+        var skipFunc = this.nuxeo.modules[module].skip;
+        if (typeof skipFunc === 'function' && skipFunc.apply(this)) {
+          skip = true;
+        } else {
+          var ensureFunc = this.nuxeo.modules[module].ensure;
+          if (typeof ensureFunc === 'function' && !ensureFunc.apply(this)) {
+            this.log('Unable to install modules due to: ' + module);
+            process.exit(1);
+          }
+
+          filtered.splice(0, 0, module);
+        }
+      }.bind(this));
+      this.nuxeo.selectedModules = filtered;
+      callback();
+    }
   }
 });
