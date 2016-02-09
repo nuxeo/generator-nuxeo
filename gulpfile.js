@@ -33,8 +33,10 @@ gulp.task('pre-test', function() {
 });
 
 gulp.task('watch-test', function() {
-  return gulp.watch(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'], ['test']);
-});
+  watch(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'], batch(function(events, done) {
+    gulp.start('test', done);
+  }));
+})
 
 gulp.task('test', ['pre-test'], function(cb) {
   var mochaErr;

@@ -15,6 +15,18 @@ module.exports = yeoman.generators.Base.extend({
   _moduleList: function() {
     return _.keys(this.nuxeo.modules);
   },
+  _moduleFindParents: function(args) {
+    var res = [];
+    _.each(args, function(arg) {
+      res.push(this._moduleResolveParent(arg));
+    }.bind(this));
+
+    var modules = _.uniq(_.flatten(_.union(args, res)));
+    modules = _.sortBy(modules, function(m) {
+      return this.nuxeo.modules[m].order || 0;
+    }.bind(this));
+    return modules;
+  },
   _moduleResolveParent: function(module, depends) {
     var ret = depends || [];
     var d = this.nuxeo.modules[module] && this.nuxeo.modules[module].depends || 'default';
@@ -101,7 +113,7 @@ module.exports = yeoman.generators.Base.extend({
     resolveModule: function(callback) {
       var args = [];
       var that = this;
-      that.args.forEach(function(arg) {
+      this.args.forEach(function(arg) {
         if (!that._moduleExists(arg)) {
           that.log('Unknown module: ' + arg);
           that.log('Available modules:');
@@ -114,11 +126,7 @@ module.exports = yeoman.generators.Base.extend({
         args.push(arg);
       });
 
-      var modules = _.uniq(_.union(args, that._moduleResolveParent(args)));
-      modules = _.sortBy(modules, function(m) {
-        return that.nuxeo.modules[m].order || 0;
-      });
-      callback(null, modules);
+      callback(null, this._moduleFindParents(args));
     },
     filterModules: function(modules, callback) {
       var filtered = [];
