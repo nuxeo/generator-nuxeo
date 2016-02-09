@@ -1,10 +1,8 @@
 'use strict';
 var path = require('path');
 var assert = require('yeoman-assert');
-var maven = require('../utils/maven.js');
 var memFs = require('mem-fs');
 var editor = require('mem-fs-editor');
-var _ = require('lodash');
 var manifest = require('../utils/manifestmf.js');
 
 describe('MANIFEST.MF parser can', function() {

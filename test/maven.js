@@ -116,17 +116,17 @@ describe('Maven module can', function() {
   });
 
   it('add child module', function() {
-    assert.equal(0, this.pom.modules().length)
+    assert.equal(0, this.pom.modules().length);
     this.pom.addModule('my-module-core');
-    assert.equal(1, this.pom.modules().length)
+    assert.equal(1, this.pom.modules().length);
     this.pom.addModule('my-module-core');
-    assert.equal(1, this.pom.modules().length)
+    assert.equal(1, this.pom.modules().length);
     this.pom.addModule('my-module-web');
-    assert.equal(2, this.pom.modules().length)
+    assert.equal(2, this.pom.modules().length);
   });
 
   it('add dependency to the dependencyManagement', function() {
-    var bom = openPomFile(this.fs, 'bom.xml')
+    var bom = openPomFile(this.fs, 'bom.xml');
     assert.equal(0, bom.dependencies().length);
     bom.addDependency('org.nuxeo.addon:mynewadon-jar:1.0');
     assert.equal(1, bom.dependencies().length);

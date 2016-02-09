@@ -1,79 +1,15 @@
 'use strict';
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
-var yosay = require('yosay');
-var mkdirp = require('mkdirp');
 var async = require('async');
-var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var s = require('underscore.string');
 var maven = require('../../utils/maven.js');
 var manifestmf = require('../../utils/manifestmf.js');
+var nuxeo = require('./nuxeo-base.js');
 
-module.exports = yeoman.generators.Base.extend({
-  _moduleExists: function(module) {
-    return typeof this.nuxeo.modules[module] !== 'undefined';
-  },
-  _moduleList: function() {
-    return _.keys(this.nuxeo.modules);
-  },
-  _moduleResolveParent: function(module, depends) {
-    var ret = depends || [];
-    var d = (this.nuxeo.modules[module] && this.nuxeo.modules[module].depends) || 'default';
-    ret.push(d);
-    if (d === 'single-module') {
-      return ret;
-    }
-    return this._moduleResolveParent(d, ret);
-  },
-  _moduleReadDescriptor: function(remote) {
-    this.nuxeo = {
-      modules: {},
-      cachePath: remote.cachePath
-    };
-    fs.readdirSync(remote.cachePath).forEach(function(file) {
-      var descPath = path.join(remote.cachePath, file, 'descriptor.js');
-      if (fs.existsSync(descPath)) {
-        this.nuxeo.modules[file] = require(descPath);
-      }
-    }.bind(this));
-    // this.log(this.nuxeo.modules);
-  },
-  _isMultiModule: function() {
-    return this.config.get('multi') || false;
-  },
-  _getBaseFolderName: function(type) {
-    if (this._isMultiModule() && type !== 'root') {
-      return this._getTypeFolderName(type || 'core');
-    } else {
-      return '.'
-    }
-  },
-  _getTypeFolderName: function(type) {
-    var dir = _.find(fs.readdirSync('.'), function(file) {
-      return fs.lstatSync(file).isDirectory() && file.match('-' + type + '$');
-    });
-    if (!dir) {
-      dir = path.basename(path.resolve('.')) + "-" + type;
-      fs.mkdirSync(dir);
-    }
-
-    // Add Maven module to parent
-    var pom = maven.open(this.fs.read('pom.xml'));
-    pom.addModule(dir);
-    pom.save(this.fs, 'pom.xml');
-    return dir;
-  },
-  _tplPath: function(str, ctx) {
-    var regex = /{{([\s\S]+?)}}/g;
-    return _.template(str, {
-      interpolate: regex,
-      imports: {
-        s: s
-      }
-    })(ctx);
-  },
+module.exports = nuxeo.extend({
   constructor: function() {
     yeoman.generators.Base.apply(this, arguments);
 
@@ -110,9 +46,9 @@ module.exports = yeoman.generators.Base.extend({
       that.args.forEach(function(arg) {
         if (!that._moduleExists(arg)) {
           that.log('Unknown module: ' + arg);
-          that.log('Available modules:')
+          that.log('Available modules:');
           that._moduleList().forEach(function(module) {
-            that.log("\t- " + module);
+            that.log('\t- ' + module);
           });
           process.exit(1);
         }
@@ -156,13 +92,6 @@ module.exports = yeoman.generators.Base.extend({
       done();
     });
   },
-  _showWelcome: function() {
-    this.log(yosay(
-      'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
-    ));
-    this.log.info('You\'ll be prompted to install: ' + this.nuxeo.selectedModules.join(', '));
-
-  },
   prompting: function() {
     var done = this.async();
     var that = this;
@@ -178,7 +107,7 @@ module.exports = yeoman.generators.Base.extend({
         // Show asked parameters
         var trimParams = [];
         _.forEach(params, function(p) {
-          trimParams.push(s.humanize(s.trim(p.message, '\\s+:_-')))
+          trimParams.push(s.humanize(s.trim(p.message, '\\s+:_-')));
         });
         that.log.info('\t' + chalk.blue('Parameters: ') + trimParams.join(', '));
       }
@@ -193,9 +122,6 @@ module.exports = yeoman.generators.Base.extend({
       done();
     });
   },
-  _require: function(m) {
-    return require(m);
-  },
   writing: function() {
     var that = this;
     var done = this.async();
@@ -208,13 +134,13 @@ module.exports = yeoman.generators.Base.extend({
       props.s = s;
 
       // handling before
-      if (typeof generator.before == 'function') {
+      if (typeof generator.before === 'function') {
         that.log.info('Before called on ' + item);
         generator.before.call(that, props);
       }
 
       // handling beforeTemplate
-      if (typeof generator.beforeGeneration == 'function') {
+      if (typeof generator.beforeGeneration === 'function') {
         that.log.info('BeforeGeneration called on ' + item);
         generator.beforeGeneration.call(that, props);
       }
@@ -271,13 +197,13 @@ module.exports = yeoman.generators.Base.extend({
         var src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
         src = path.resolve(that.nuxeo.cachePath, item, 'contributions', that._tplPath(src, props));
         var contribName = typeof contribution.dest === 'function' ? contribution.dest.call(that, props) : contribution.dest;
-        var dest = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "OSGI-INF", that._tplPath(contribName, props));
+        var dest = path.join(that._getBaseFolderName(generator.type), 'src', 'main', 'resources', 'OSGI-INF', that._tplPath(contribName, props));
 
         that.fs.copyTpl(src, dest, props);
 
         // Add contribution to the Manifest file
-        var manifestPath = path.join(that._getBaseFolderName(generator.type), "src", "main", "resources", "META-INF", 'MANIFEST.MF');
-        var contribPath = path.join("OSGI-INF", that._tplPath(contribName, props));
+        var manifestPath = path.join(that._getBaseFolderName(generator.type), 'src', 'main', 'resources', 'META-INF', 'MANIFEST.MF');
+        var contribPath = path.join('OSGI-INF', that._tplPath(contribName, props));
         var mf = manifestmf.open(manifestPath, that.fs);
         mf.addComponent(contribPath);
         mf.save();
@@ -289,6 +215,6 @@ module.exports = yeoman.generators.Base.extend({
     });
   },
   end: function() {
-    this.log("Thanks you very.");
+    this.log('Thanks you very.');
   }
 });

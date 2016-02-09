@@ -1,9 +1,5 @@
 'use strict';
-var path = require('path');
 var assert = require('yeoman-assert');
-var maven = require('../utils/maven.js');
-var memFs = require('mem-fs');
-var editor = require('mem-fs-editor');
 var _ = require('lodash');
 var s = require('underscore.string');
 
@@ -38,6 +34,6 @@ describe('Templating', function() {
 
   it('can render Java file path', function() {
     assert.equal('src/test/java/org/nuxeo/addon/something/TestMybundle.java',
-      tplPath("src/test/java/{{s.replaceAll(package, '\\\\.', '/')}}/Test{{s.capitalize(name)}}.java", this.props));
-  })
+      tplPath('src/test/java/{{s.replaceAll(package, \'\\\\.\', \'/\')}}/Test{{s.capitalize(name)}}.java', this.props));
+  });
 });
