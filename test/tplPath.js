@@ -1,18 +1,6 @@
 'use strict';
 var assert = require('yeoman-assert');
-var _ = require('lodash');
-var s = require('underscore.string');
-
-// XXX Use the real generator method
-function tplPath(str, ctx) {
-  var regex = /{{([\s\S]+?)}}/g;
-  return _.template(str, {
-    interpolate: regex,
-    imports: {
-      s: s
-    }
-  })(ctx);
-}
+var tplPath = require('../generators/app/nuxeo-base.js').prototype._tplPath;
 
 describe('Templating', function() {
   before(function() {
@@ -35,5 +23,9 @@ describe('Templating', function() {
   it('can render Java file path', function() {
     assert.equal('src/test/java/org/nuxeo/addon/something/TestMybundle.java',
       tplPath('src/test/java/{{s.replaceAll(package, \'\\\\.\', \'/\')}}/Test{{s.capitalize(name)}}.java', this.props));
+  });
+
+  it('can unpackagize string', function() {
+    assert.equal('org/nuxeo/something', tplPath('{{s.unpackagize(\'org.nuxeo.something\')}}'));
   });
 });

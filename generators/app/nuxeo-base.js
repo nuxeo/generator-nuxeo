@@ -5,7 +5,7 @@ var yosay = require('yosay');
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
-var s = require('underscore.string');
+var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
 
 module.exports = yeoman.generators.Base.extend({
