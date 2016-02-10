@@ -55,7 +55,7 @@ function manifest(filep, fsp) {
     save: function() {
       fs.write(file, this._content());
     }
-  }
+  };
 }
 
 module.exports = {

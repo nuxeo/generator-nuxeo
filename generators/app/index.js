@@ -66,20 +66,19 @@ module.exports = nuxeo.extend({
       var generator = that.nuxeo.modules[item];
       var props = that.props[item];
 
-      // XXX Remove it, add _.s to the props for allowing using the same str format function
+      // XXX Should be handled differently
+      // Add _.s to the props for allowing using the same str format function
       props.s = s;
 
-      // handling before
-      if (typeof generator.before === 'function') {
-        that.log.info('Before called on ' + item);
-        generator.before.call(that, props);
-      }
-
-      // handling beforeTemplate
-      if (typeof generator.beforeGeneration === 'function') {
-        that.log.info('BeforeGeneration called on ' + item);
-        generator.beforeGeneration.call(that, props);
-      }
+      // handling configuration
+      _.forEach(generator.config, function(value, key) {
+        if (typeof value === 'function') {
+          value = value.call(that);
+        } else if (typeof value === 'string' && value.match(/^{{.+}}$/)) {
+          value = that._tplPath(value, props);
+        }
+        that.config[key] = value;
+      });
 
       // handling templates
       _.forEach(generator.templates, function(template) {

@@ -18,7 +18,7 @@ function maven(content) {
   if (typeof content === 'undefined') {
     content = fse.readFileSync('pom.xml', {
       encoding: 'UTF-8'
-    })
+    });
   }
   var $ = cheerio.load(content, {
     xmlMode: true,

@@ -36,7 +36,7 @@ gulp.task('watch-test', function() {
   watch(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'], batch(function(events, done) {
     gulp.start('test', done);
   }));
-})
+});
 
 gulp.task('test', ['pre-test'], function(cb) {
   var mochaErr;
