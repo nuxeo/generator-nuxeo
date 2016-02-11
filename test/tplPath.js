@@ -4,6 +4,7 @@ var recursiveSync = require('../utils/recursive-readdirSync.js');
 var path = require('path');
 var tplPath = require('../generators/app/nuxeo-base.js').prototype._tplPath;
 var s = require('../utils/nuxeo.string.js');
+var _ = require('lodash');
 
 describe('Templating', function() {
   before(function() {
@@ -39,7 +40,15 @@ describe('Templating', function() {
     };
 
     var files = recursiveSync(path.join(__dirname, './paths'), ['.DS_Store']);
-    var dest = tplPath(files[0], ctx);
-    assert.ok(s.endsWith(dest, 'src/org/nuxeo/dummy/test/test-my-name.txt'));
+
+    _.forEach(files, function(file) {
+      var dest = tplPath(file, ctx);
+      var filename = path.basename(dest);
+
+      if (!s.startsWith(filename, '.')) {
+        assert.ok(s.endsWith(dest, 'src/org/nuxeo/dummy/test/test-my-name.txt'));
+      }
+    });
+
   });
 });

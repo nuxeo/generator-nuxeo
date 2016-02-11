@@ -4,10 +4,13 @@ var chalk = require('chalk');
 var async = require('async');
 var path = require('path');
 var _ = require('lodash');
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+
+var nuxeo = require('./nuxeo-base.js');
 var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
 var manifestmf = require('../../utils/manifestmf.js');
-var nuxeo = require('./nuxeo-base.js');
 
 module.exports = nuxeo.extend({
   constructor: function() {
@@ -33,7 +36,6 @@ module.exports = nuxeo.extend({
     var that = this;
 
     this._showWelcome();
-
     that.props = {};
     async.eachSeries(this.nuxeo.selectedModules, function(item, callback) {
       var params = that.nuxeo.modules[item].params || [];
@@ -43,7 +45,7 @@ module.exports = nuxeo.extend({
         // Show asked parameters
         var trimParams = [];
         _.forEach(params, function(p) {
-          trimParams.push(s.humanize(s.trim(p.message, '\\s+:_-')));
+          trimParams.push(s.humanize(s.trim(p.message.replace(/\(.+\)/, ''), '\\s+:_-')));
         });
         that.log.info('\t' + chalk.blue('Parameters: ') + trimParams.join(', '));
       }
@@ -81,15 +83,19 @@ module.exports = nuxeo.extend({
       });
 
       // handling templates
-      _.forEach(generator.templates, function(template) {
-        var dest = typeof template.dest === 'function' ? template.dest.call(that, props) : template.dest;
-        var src = typeof template.src === 'function' ? template.src.call(that, props) : template.src;
+      var tmplPath = path.resolve(that.nuxeo.cachePath, item, 'templates');
+      var destPath = that._getBaseFolderName(generator.type);
+      if (fs.existsSync(tmplPath)) {
+        _.forEach(that._recursivePath(tmplPath, props), function(template) {
+          var dest = that._tplPath(template, props).replace(tmplPath, destPath);
 
-        src = path.resolve(that.nuxeo.cachePath, item, 'templates', that._tplPath(src, props));
-        dest = path.join(that._getBaseFolderName(generator.type), that._tplPath(dest, props));
-
-        that.fs.copyTpl(src, dest, props);
-      });
+          if (s.startsWith(path.basename(dest), '.')) {
+            mkdirp(path.dirname(dest));
+          } else {
+            that.fs.copyTpl(tmplPath, dest, props);
+          }
+        });
+      }
 
       _.forEach(generator['main-java'], function(source) {
         that.log.info('Copy main java');

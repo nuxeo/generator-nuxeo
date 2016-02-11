@@ -17,7 +17,7 @@ module.exports = yeoman.generators.Base.extend({
     return _.keys(this.nuxeo.modules);
   },
   _moduleFindParents: function(args) {
-    var res = [];
+    var res = _.isEmpty(args) ? ['single-module'] : args;
     _.each(args, function(arg) {
       res.push(this._moduleResolveParent(arg));
     }.bind(this));
@@ -84,12 +84,8 @@ module.exports = yeoman.generators.Base.extend({
       }
     })(ctx);
   },
-  _recursivePath: function(basePath, props) {
-    var files = [];
-    _.forEach(recursiveSync(basePath, ['.DS_Store']), function(file) {
-      files.push(this._tplPath(file, props));
-    }.bind(this));
-    return files;
+  _recursivePath: function(basePath) {
+    return recursiveSync(basePath, ['.DS_Store']);
   },
   _showWelcome: function() {
     this.log(yosay(
@@ -133,7 +129,6 @@ module.exports = yeoman.generators.Base.extend({
 
         args.push(arg);
       });
-
       callback(null, this._moduleFindParents(args));
     },
     filterModules: function(modules, callback) {
