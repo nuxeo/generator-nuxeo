@@ -1,6 +1,9 @@
 'use strict';
 var assert = require('yeoman-assert');
+var recursiveSync = require('../utils/recursive-readdirSync.js');
+var path = require('path');
 var tplPath = require('../generators/app/nuxeo-base.js').prototype._tplPath;
+var s = require('../utils/nuxeo.string.js');
 
 describe('Templating', function() {
   before(function() {
@@ -27,5 +30,16 @@ describe('Templating', function() {
 
   it('can unpackagize string', function() {
     assert.equal('org/nuxeo/something', tplPath('{{s.unpackagize(\'org.nuxeo.something\')}}'));
+  });
+
+  it('can resolve a templates path path', function() {
+    var ctx = {
+      package: 'org.nuxeo.dummy',
+      name: 'TestMyName'
+    };
+
+    var files = recursiveSync(path.join(__dirname, './paths'), ['.DS_Store']);
+    var dest = tplPath(files[0], ctx);
+    assert.ok(s.endsWith(dest, 'src/org/nuxeo/dummy/test/test-my-name.txt'));
   });
 });

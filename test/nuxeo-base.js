@@ -2,7 +2,8 @@
 var assert = require('yeoman-assert');
 var _ = require('lodash');
 var helpers = require('yeoman-generator').test;
-
+var s = require('../utils/nuxeo.string.js');
+var path = require('path');
 
 describe('nuxeo-base', function() {
   this.timeout(5000);
@@ -49,6 +50,16 @@ describe('nuxeo-base', function() {
       // Operation and Nuxeo Package
       deps = this.gene._moduleFindParents(['package', 'operation']);
       assert.deepEqual(['multi-module', 'single-module', 'default', 'package', 'operation'], deps);
+    });
+
+    it('template dynamic folder names', function() {
+      var props = {
+        package: 'org.nuxeo.dummy',
+        name: 'TestMyName'
+      };
+
+      var files = this.gene._recursivePath(path.join(__dirname, 'paths'), props);
+      assert.ok(s.endsWith(files[0], 'src/org/nuxeo/dummy/test/test-my-name.txt'));
     });
   });
 });

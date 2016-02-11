@@ -7,6 +7,7 @@ var path = require('path');
 var _ = require('lodash');
 var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
+var recursiveSync = require('../../utils/recursive-readdirSync.js');
 
 module.exports = yeoman.generators.Base.extend({
   _moduleExists: function(module) {
@@ -82,6 +83,13 @@ module.exports = yeoman.generators.Base.extend({
         s: s
       }
     })(ctx);
+  },
+  _recursivePath: function(basePath, props) {
+    var files = [];
+    _.forEach(recursiveSync(basePath, ['.DS_Store']), function(file) {
+      files.push(this._tplPath(file, props));
+    }.bind(this));
+    return files;
   },
   _showWelcome: function() {
     this.log(yosay(
