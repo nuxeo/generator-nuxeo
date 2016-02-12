@@ -11,6 +11,7 @@ var nuxeo = require('./nuxeo-base.js');
 var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
 var manifestmf = require('../../utils/manifestmf.js');
+var propHolder = require('../../utils/property-holder.js');
 
 module.exports = nuxeo.extend({
   constructor: function() {
@@ -47,7 +48,9 @@ module.exports = nuxeo.extend({
     async.eachSeries(this.nuxeo.selectedModules, function(item, callback) {
       var params = that.nuxeo.modules[item].params || [];
 
-      if (params.length > 0) {
+      if (!_.isEmpty(params)) {
+        params = propHolder.filter(params);
+
         that.log.info(chalk.red('Generating ' + s.humanize(item)));
         // Show asked parameters
         var trimParams = [];
@@ -57,9 +60,8 @@ module.exports = nuxeo.extend({
         that.log.info('\t' + chalk.blue('Parameters: ') + trimParams.join(', '));
       }
       that.prompt(params, function(props) {
-        that.props[item] = props;
-        // To access props later use this.props.someOption;
-
+        propHolder.store(params, props);
+        that.props[item] = _.assign(propHolder.stored(), props);
         callback();
       });
     }, function() {
@@ -109,7 +111,7 @@ module.exports = nuxeo.extend({
         args.push(props.package.split('.'));
         args.push(that._tplPath(source.dest, props));
         var dest = path.join.apply(that, _.flatten(args));
-        var src = path.join(that.nuxeo.cachePath, item, 'templates', source.src);
+        var src = path.join(that.nuxeo.cachePath, item, 'classes', source.src);
         that.fs.copyTpl(src, dest, props);
       });
 
@@ -120,7 +122,7 @@ module.exports = nuxeo.extend({
         args.push(props.package.split('.'));
         args.push(that._tplPath(source.dest, props));
         var dest = path.join.apply(that, _.flatten(args));
-        var src = path.join(that.nuxeo.cachePath, item, 'templates', source.src);
+        var src = path.join(that.nuxeo.cachePath, item, 'classes', source.src);
         that.fs.copyTpl(src, dest, props);
       });
 
