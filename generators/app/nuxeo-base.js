@@ -106,6 +106,10 @@ module.exports = yeoman.generators.Base.extend({
     var skipFunc = this.nuxeo.modules[module].skip;
     return typeof skipFunc === 'function' ? skipFunc.apply(this) : false;
   },
+  _parentSkipped: function(module) {
+    var parent = this.nuxeo.modules[module].depends || 'default';
+    return this._moduleSkipped(parent);
+  },
   _init: {
     fetchRemote: function(callback) {
       // Silent logs while remote fetching
@@ -158,7 +162,7 @@ module.exports = yeoman.generators.Base.extend({
           return;
         } else {
           var ensureFunc = this.nuxeo.modules[module].ensure;
-          if (typeof ensureFunc === 'function' && !ensureFunc.apply(this)) {
+          if (typeof ensureFunc === 'function' && !ensureFunc.apply(this) && this._parentSkipped(module)) {
             this.log.info('Can\'t install module ' + module + '.');
             process.exit(1);
           }
