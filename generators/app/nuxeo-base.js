@@ -87,15 +87,24 @@ module.exports = yeoman.generators.Base.extend({
   _recursivePath: function(basePath) {
     return recursiveSync(basePath, ['.DS_Store']);
   },
-  _showWelcome: function() {
+  _showHello: function() {
     this.log(yosay(
       'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
     ));
-    this.log.info('You\'ll be prompted to install: ' + this.nuxeo.selectedModules.join(', '));
-
+  },
+  _showWelcome: function() {
+    if (!_.isEmpty(this.nuxeo.selectedModules)) {
+      this.log.info('You\'ll be prompted to install: ' + chalk.blue(this.nuxeo.selectedModules.join(', ')));
+    } else {
+      this.log.info(chalk.yellow('Nothing to install.'));
+    }
   },
   _require: function(m) {
     return require(m);
+  },
+  _moduleSkipped: function(module) {
+    var skipFunc = this.nuxeo.modules[module].skip;
+    return typeof skipFunc === 'function' ? skipFunc.apply(this) : false;
   },
   _init: {
     fetchRemote: function(callback) {
@@ -108,6 +117,12 @@ module.exports = yeoman.generators.Base.extend({
         process.stderr.write = writeOld;
         callback(err, remote);
       }, true);
+    },
+    fetchLocal: function(callback) {
+      this.log.error('Using a local path: ' + this.options.localPath);
+      callback(undefined, {
+        cachePath: this.options.localPath
+      });
     },
     readDescriptor: function(remote, callback) {
       // Require modules
@@ -134,18 +149,17 @@ module.exports = yeoman.generators.Base.extend({
     filterModules: function(modules, callback) {
       var filtered = [];
       var skip = false;
-      _.forEachRight(modules, function(module) {
-        if (skip) {
-          return;
-        }
 
-        var skipFunc = this.nuxeo.modules[module].skip;
-        if (typeof skipFunc === 'function' && skipFunc.apply(this)) {
+      this.log.info('You need to install: ' + chalk.blue(modules.join(', ')));
+      _.forEachRight(modules, function(module) {
+        if (skip || this._moduleSkipped(module)) {
+          this.log.info('Installation of ' + chalk.yellow(module) + ' is skipped.');
           skip = true;
+          return;
         } else {
           var ensureFunc = this.nuxeo.modules[module].ensure;
           if (typeof ensureFunc === 'function' && !ensureFunc.apply(this)) {
-            this.log('Unable to install modules due to: ' + module);
+            this.log.info('Can\'t install module ' + module + '.');
             process.exit(1);
           }
 

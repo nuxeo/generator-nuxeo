@@ -21,12 +21,19 @@ module.exports = nuxeo.extend({
       alias: 'n',
       defaults: 'master'
     });
+    this.option('localPath', {
+      type: String,
+      alias: 'l'
+    });
   },
   initializing: function() {
     var done = this.async();
     var init = this._init;
 
-    var seq = async.seq(init.fetchRemote, init.readDescriptor, init.resolveModule, init.filterModules).bind(this);
+    this._showHello();
+
+    var fetchMethod = this.options.localPath ? init.fetchLocal : init.fetchRemote;
+    var seq = async.seq(fetchMethod, init.readDescriptor, init.resolveModule, init.filterModules).bind(this);
     seq(function() {
       done();
     });
@@ -56,7 +63,6 @@ module.exports = nuxeo.extend({
         callback();
       });
     }, function() {
-      that.log.info(chalk.red('Prompting done.'));
       done();
     });
   },
@@ -86,13 +92,12 @@ module.exports = nuxeo.extend({
       var tmplPath = path.resolve(that.nuxeo.cachePath, item, 'templates');
       var destPath = that._getBaseFolderName(generator.type);
       if (fs.existsSync(tmplPath)) {
-        _.forEach(that._recursivePath(tmplPath, props), function(template) {
+        _.forEach(that._recursivePath(tmplPath), function(template) {
           var dest = that._tplPath(template, props).replace(tmplPath, destPath);
-
           if (s.startsWith(path.basename(dest), '.')) {
             mkdirp(path.dirname(dest));
           } else {
-            that.fs.copyTpl(tmplPath, dest, props);
+            that.fs.copyTpl(template, dest, props);
           }
         });
       }
@@ -156,6 +161,6 @@ module.exports = nuxeo.extend({
     });
   },
   end: function() {
-    this.log('Thanks you very.');
+    this.log.info('Thanks you very much.');
   }
 });
