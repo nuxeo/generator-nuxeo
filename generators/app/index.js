@@ -80,6 +80,13 @@ module.exports = nuxeo.extend({
       // Add _.s to the props for allowing using the same str format function
       props.s = s;
 
+      // XXX Might be handle a different way
+      var manifestPath = path.join(that._getBaseFolderName(generator.type), 'src', 'main', 'resources', 'META-INF', 'MANIFEST.MF');
+      var mf = manifestmf.open(manifestPath, that.fs);
+      if (mf) {
+        props.symbolicName = mf.symbolicName();
+      }
+
       // handling configuration
       _.forEach(generator.config, function(value, key) {
         if (typeof value === 'function') {
@@ -141,6 +148,10 @@ module.exports = nuxeo.extend({
 
       // handling contributions
       _.forEach(generator.contributions, function(contribution) {
+        if (!mf) {
+          throw 'MANIFEST.MF file is missing.';
+        }
+
         that.log.info('Copy Contributions');
         var src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
         src = path.resolve(that.nuxeo.cachePath, item, 'contributions', that._tplPath(src, props));
@@ -150,9 +161,7 @@ module.exports = nuxeo.extend({
         that.fs.copyTpl(src, dest, props);
 
         // Add contribution to the Manifest file
-        var manifestPath = path.join(that._getBaseFolderName(generator.type), 'src', 'main', 'resources', 'META-INF', 'MANIFEST.MF');
         var contribPath = path.join('OSGI-INF', that._tplPath(contribName, props));
-        var mf = manifestmf.open(manifestPath, that.fs);
         mf.addComponent(contribPath);
         mf.save();
       });

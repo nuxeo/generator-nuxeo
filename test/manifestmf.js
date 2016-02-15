@@ -38,4 +38,8 @@ describe('MANIFEST.MF parser can', function() {
     assert.ok(this.manifest._content().match(' OSGI-INF/third.xml,\n'));
     assert.ok(this.manifest._content().match(' OSGI-INF/second.xml\n'));
   });
+
+  it('can read the symbolic name', function() {
+    assert.equal('org.nuxeo.ecm.code.generator', this.manifest.symbolicName());
+  });
 });

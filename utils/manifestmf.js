@@ -5,7 +5,12 @@ var _ = require('lodash');
 function manifest(filep, fsp) {
   var fs = fsp || fse;
   var file = filep || 'src/main/resources/META-INF/MANIFEST.MF';
-  var content = fs.read(file).split('\n');
+  var content;
+  try {
+    content = fs.read(file).split('\n');
+  } catch (e) {
+    return undefined;
+  }
 
   function insertLine(index, line) {
     content.splice(index, 0, line);
@@ -14,6 +19,17 @@ function manifest(filep, fsp) {
   return {
     _content: function() {
       return content.join('\n');
+    },
+    symbolicName: function() {
+      var index = _.findIndex(content, function(line) {
+        return line.match(/^Bundle-SymbolicName:/i);
+      });
+
+      if (index > 0) {
+        return content[index].match(/^Bundle-SymbolicName:\s*([\w\.-]+)/i)[1];
+      } else {
+        throw 'Bundle SymbolicName is missing.';
+      }
     },
     addComponent: function(componentPath) {
       var index = _.findIndex(content, function(line) {
