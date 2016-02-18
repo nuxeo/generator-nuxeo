@@ -81,22 +81,22 @@ module.exports = nuxeo.extend({
       // Add _.s to the props for allowing using the same str format function
       props.s = s;
 
+      // handling configuration
+      _.forEach(generator.config, function(value, key) {
+        if (typeof value === 'function') {
+          value = value.call(that);
+        } else if (typeof value === 'string' && value.match(/{{.+}}/)) {
+          value = that._tplPath(value, props);
+        }
+        that.config.set(key, value);
+      });
+
       // XXX Might be handle a different way
       var manifestPath = path.join(that._getBaseFolderName(generator.type), 'src', 'main', 'resources', 'META-INF', 'MANIFEST.MF');
       var mf = manifestmf.open(manifestPath, that.fs);
       if (mf) {
         props.symbolicName = mf.symbolicName();
       }
-
-      // handling configuration
-      _.forEach(generator.config, function(value, key) {
-        if (typeof value === 'function') {
-          value = value.call(that);
-        } else if (typeof value === 'string' && value.match(/^{{.+}}$/)) {
-          value = that._tplPath(value, props);
-        }
-        that.config[key] = value;
-      });
 
       // handling templates
       var tmplPath = path.resolve(that.nuxeo.cachePath, item, 'templates');
