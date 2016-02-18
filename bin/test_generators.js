@@ -11,7 +11,11 @@ var fs = require('fs');
 var log = require('yeoman-environment/lib/util/log')();
 var async = require('async');
 
-var tmp = path.join('/tmp', 'nuxeo-generator', Math.random().toString(36).substring(2));
+var tmp = path.join(path.dirname(__filename), '..', '/tmp');
+if (fs.existsSync(tmp)) {
+  console.log('Cleaning an existing folder.')
+  child_process.execSync('rm -rf ' + tmp);
+}
 mkdirp.sync(tmp);
 process.chdir(tmp);
 console.log('Working directory is: ' + tmp);
