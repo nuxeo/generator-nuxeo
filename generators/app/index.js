@@ -16,6 +16,7 @@ var propHolder = require('../../utils/property-holder.js');
 module.exports = nuxeo.extend({
   constructor: function() {
     yeoman.generators.Base.apply(this, arguments);
+    this.options.force = true;
 
     this.option('nuxeo', {
       type: String,
