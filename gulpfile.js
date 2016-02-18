@@ -38,7 +38,14 @@ gulp.task('watch-test', function() {
   }));
 });
 
-gulp.task('test', ['pre-test'], function(cb) {
+gulp.task('lint', function() {
+  return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js']).pipe(eslint())
+    .pipe(eslint.format())
+    // Brick on failure to be super strict
+    .pipe(eslint.failOnError());
+});
+
+gulp.task('test', ['lint', 'pre-test'], function(cb) {
   var mochaErr;
 
   gulp.src('test/**/*.js')

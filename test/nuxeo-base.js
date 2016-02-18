@@ -2,8 +2,6 @@
 var assert = require('yeoman-assert');
 var _ = require('lodash');
 var helpers = require('yeoman-generator').test;
-var s = require('../utils/nuxeo.string.js');
-var path = require('path');
 
 describe('nuxeo-base', function() {
   this.timeout(5000);

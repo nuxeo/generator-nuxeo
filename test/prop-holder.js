@@ -1,9 +1,6 @@
 'use strict';
 var assert = require('yeoman-assert');
 var _ = require('lodash');
-var helpers = require('yeoman-generator').test;
-var s = require('../utils/nuxeo.string.js');
-var path = require('path');
 
 describe('propery-holder', function() {
 
@@ -109,7 +106,7 @@ describe('propery-holder', function() {
       else: 'else',
       something: 'something',
       test: 'test'
-    }
+    };
     this.ph.store(this.propsTh, params);
 
     assert.equal(4, _.size(this.ph.stored()));
