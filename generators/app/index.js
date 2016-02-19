@@ -52,13 +52,13 @@ module.exports = nuxeo.extend({
       if (!_.isEmpty(params)) {
         params = propHolder.filter(params);
 
-        that.log.info(chalk.red('Generating ' + s.humanize(item)));
+        that.log.create('Generating ' + s.humanize(item));
         // Show asked parameters
         var trimParams = [];
         _.forEach(params, function(p) {
           trimParams.push(s.humanize(s.trim(p.message.replace(/\(.+\)/, ''), '\\s+:_-')));
         });
-        that.log.info('\t' + chalk.blue('Parameters: ') + trimParams.join(', '));
+        that.log.info('  ' + chalk.blue('Parameters: ') + trimParams.join(', '));
       }
       that.prompt(params, function(props) {
         propHolder.store(params, props);
@@ -73,7 +73,6 @@ module.exports = nuxeo.extend({
     var that = this;
     var done = this.async();
     async.eachSeries(this.nuxeo.selectedModules, function(item, callback) {
-      that.log.info('Generating ' + chalk.red(s.capitalize(item) + ' template'));
       var generator = that.nuxeo.modules[item];
       var props = that.props[item];
 
@@ -89,6 +88,7 @@ module.exports = nuxeo.extend({
           value = that._tplPath(value, props);
         }
         that.config.set(key, value);
+        that.log.create('Configuration: ' + key);
       });
 
       // XXX Might be handle a different way
@@ -113,7 +113,6 @@ module.exports = nuxeo.extend({
       }
 
       _.forEach(generator['main-java'], function(source) {
-        that.log.info('Copy main java');
         // XXX To be refactored
         var args = [that._getBaseFolderName(generator.type), 'src/main/java'];
         args.push(props.package.split('.'));
@@ -124,7 +123,6 @@ module.exports = nuxeo.extend({
       });
 
       _.forEach(generator['test-java'], function(source) {
-        that.log.info('Copy test java');
         // XXX To be refactored
         var args = [that._getBaseFolderName(generator.type), 'src/test/java'];
         args.push(props.package.split('.'));
@@ -140,7 +138,7 @@ module.exports = nuxeo.extend({
         var pom = maven.open(that.fs.read(pomPath));
 
         _.forEach(generator.dependencies, function(dependency) {
-          that.log.info('Add Maven dependency');
+          that.log.info('Maven dependency: ' + dependency);
           pom.addDependency(dependency);
         });
 
@@ -153,7 +151,6 @@ module.exports = nuxeo.extend({
           throw 'MANIFEST.MF file is missing.';
         }
 
-        that.log.info('Copy Contributions');
         var src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
         src = path.resolve(that.nuxeo.cachePath, item, 'contributions', that._tplPath(src, props));
         var contribName = typeof contribution.dest === 'function' ? contribution.dest.call(that, props) : contribution.dest;

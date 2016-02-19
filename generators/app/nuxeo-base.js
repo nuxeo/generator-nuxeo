@@ -94,7 +94,7 @@ module.exports = yeoman.generators.Base.extend({
   },
   _showWelcome: function() {
     if (!_.isEmpty(this.nuxeo.selectedModules)) {
-      this.log.info('You\'ll be prompted to install: ' + chalk.blue(this.nuxeo.selectedModules.join(', ')));
+      this.log.create('You\'ll be prompted for generation of: ' + chalk.blue(this.nuxeo.selectedModules.join(', ')));
     } else {
       this.log.info(chalk.yellow('Nothing to install.'));
     }
@@ -154,7 +154,7 @@ module.exports = yeoman.generators.Base.extend({
       var filtered = [];
       var skip = false;
 
-      this.log.info('You need to install: ' + chalk.blue(modules.join(', ')));
+      this.log.invoke('Requirements: ' + chalk.blue(modules.join(', ')));
       _.forEachRight(modules, function(module) {
         if (skip || this._moduleSkipped(module)) {
           this.log.info('Installation of ' + chalk.yellow(module) + ' is skipped.');
