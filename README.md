@@ -1,6 +1,10 @@
 # Yeoman generator for Nuxeo
+[![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=tools_generator-nuxeo-master)](https://qa.nuxeo.org/jenkins/job/tools_generator-nuxeo-master/)
+
 # Introduction
 `generator-nuxeo` provides Nuxeo components scaffolding using [Yeoman](http://yeoman.io) (a scaffolding tool for the web). It lets you easily scaffold common Nuxeo components like empty project, Nuxeo Package, Automation Operation, Nuxeo Service ... This saves you time writting boilerplate code to focus on your code instead of the structure.
+
+Each generation is coming with a dedicated test; for instance the Operation generator add an Operation with some basic codes showing you how to inject context objects, how to specify a parameter and a sample test class to validate his behavior.
 
 # Features
 - Each feature are version dependents
