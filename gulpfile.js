@@ -49,7 +49,7 @@ gulp.task('checkstyle', function() {
 
   return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'])
     .pipe(eslint())
-    .pipe(eslint.format('checkstyle', fs.createWriteStream(path.join(targetFolder, '/checkstyle.xml'))));
+    .pipe(eslint.format('checkstyle', fs.createWriteStream(path.join(targetFolder, '/checkstyle-result.xml'))));
 });
 
 gulp.task('lint', ['checkstyle'], function() {
