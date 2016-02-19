@@ -78,7 +78,7 @@ async.waterfall([function(callback) {
     async: true
   });
 
-  env.run('nuxeo:test listener', callback);
+  env.run('nuxeo:test --nologo=true listener', callback);
 }, function(callback) {
   // Add it a sync Listener
   adapter.responses({
@@ -89,7 +89,7 @@ async.waterfall([function(callback) {
     async: false
   });
 
-  env.run('nuxeo:test listener', callback);
+  env.run('nuxeo:test --nologo=true listener', callback);
 }, function(callback) {
   // Add it a Service
   adapter.responses({
@@ -97,5 +97,5 @@ async.waterfall([function(callback) {
     service_name: 'MyTestGeneratedService'
   });
 
-  env.run('nuxeo:test service', callback);
+  env.run('nuxeo:test --nologo=true service', callback);
 }]);

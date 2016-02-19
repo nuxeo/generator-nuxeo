@@ -27,12 +27,19 @@ module.exports = nuxeo.extend({
       type: String,
       alias: 'l'
     });
+    this.option('nologo', {
+      type: Boolean,
+      alias: 'n',
+      defaults: false
+    });
   },
   initializing: function() {
     var done = this.async();
     var init = this._init;
 
-    this._showHello();
+    if (!this.options.nologo) {
+      this._showHello();
+    }
 
     var fetchMethod = this.options.localPath ? init.fetchLocal : init.fetchRemote;
     var seq = async.seq(fetchMethod, init.readDescriptor, init.resolveModule, init.filterModules).bind(this);
