@@ -1,10 +1,12 @@
 'use strict';
 var path = require('path');
 var gulp = require('gulp');
+var fs = require('fs');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
 var eslint = require('gulp-eslint');
 var excludeGitignore = require('gulp-exclude-gitignore');
+var childProcess = require('child_process');
 var mocha = require('gulp-mocha');
 var istanbul = require('gulp-istanbul');
 var nsp = require('gulp-nsp');
@@ -33,16 +35,28 @@ gulp.task('pre-test', function() {
 });
 
 gulp.task('watch-test', function() {
-  watch(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'], batch(function(events, done) {
+  watch(['**/*.js'], batch(function(events, done) {
     gulp.start('test', done);
   }));
 });
 
-gulp.task('lint', function() {
-  return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js']).pipe(eslint())
+gulp.task('checkstyle', function() {
+  var targetFolder = 'target';
+  if (fs.existsSync(targetFolder)) {
+    childProcess.execSync('rm -rf ' + targetFolder);
+  }
+  fs.mkdirSync('target');
+
+  return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'])
+    .pipe(eslint())
+    .pipe(eslint.format('checkstyle', fs.createWriteStream(path.join(targetFolder, '/checkstyle.xml'))));
+});
+
+gulp.task('lint', ['checkstyle'], function() {
+  return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'])
+    .pipe(eslint())
     .pipe(eslint.format())
-    // Brick on failure to be super strict
-    .pipe(eslint.failOnError());
+    .pipe(eslint.failAfterError());
 });
 
 gulp.task('test', ['lint', 'pre-test'], function(cb) {
