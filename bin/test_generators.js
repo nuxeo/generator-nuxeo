@@ -98,20 +98,4 @@ async.waterfall([function(callback) {
   });
 
   env.run('nuxeo:test service', callback);
-}], function() {
-  log.error('Generation done.');
-  log.info('Spawning generated code test with Maven:');
-  var mvn = child_process.spawn('mvn', ['test']);
-
-  mvn.stdout.on('data', function(data) {
-    log(data.toString().trim());
-  });
-
-  mvn.stderr.on('data', function(data) {
-    log(data.toString().trim());
-  });
-
-  mvn.on('exit', function(code) {
-    process.exit(code);
-  });
-});
+}]);
