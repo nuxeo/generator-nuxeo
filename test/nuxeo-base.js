@@ -35,11 +35,11 @@ describe('nuxeo-base', function() {
     it('resolve module heritance', function() {
       // Single module
       var deps = this.gene._moduleFindParents(['single-module']);
-      assert.deepEqual(['single-module', 'default'], deps);
+      assert.deepEqual(['single-module'], deps);
 
       // Operation
       deps = this.gene._moduleFindParents(['operation']);
-      assert.deepEqual(['single-module', 'default', 'operation'], deps);
+      assert.deepEqual(['single-module', 'operation'], deps);
 
       // Nuxeo Package
       deps = this.gene._moduleFindParents(['package']);
@@ -47,7 +47,7 @@ describe('nuxeo-base', function() {
 
       // Operation and Nuxeo Package
       deps = this.gene._moduleFindParents(['package', 'operation']);
-      assert.deepEqual(['multi-module', 'single-module', 'default', 'package', 'operation'], deps);
+      assert.deepEqual(['multi-module', 'single-module', 'package', 'operation'], deps);
 
       deps = this.gene._moduleFindParents([]);
       assert.deepEqual(['single-module'], deps);

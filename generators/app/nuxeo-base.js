@@ -22,7 +22,10 @@ module.exports = yeoman.generators.Base.extend({
       res.push(this._moduleResolveParent(arg));
     }.bind(this));
 
-    var modules = _.uniq(_.flatten(_.union(args, res)));
+    // Filter default empty generator
+    var modules = _.reject(_.uniq(_.flatten(_.union(args, res))), function(o) {
+      return o === 'default';
+    });
     modules = _.sortBy(modules, function(m) {
       return this.nuxeo.modules[m].order || 0;
     }.bind(this));
@@ -94,7 +97,7 @@ module.exports = yeoman.generators.Base.extend({
   },
   _showWelcome: function() {
     if (!_.isEmpty(this.nuxeo.selectedModules)) {
-      this.log.create('You\'ll be prompted for generation of: ' + chalk.blue(this.nuxeo.selectedModules.join(', ')));
+      this.log.info('You\'ll be prompted for generation of: ' + chalk.blue(this.nuxeo.selectedModules.join(', ')));
     } else {
       this.log.info(chalk.yellow('Nothing to install.'));
     }

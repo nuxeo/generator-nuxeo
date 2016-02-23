@@ -59,7 +59,7 @@ module.exports = nuxeo.extend({
       if (!_.isEmpty(params)) {
         params = propHolder.filter(params);
 
-        that.log.create('Generating ' + s.humanize(item));
+        that.log.create(chalk.green('Generating ' + s.humanize(item)));
         // Show asked parameters
         var trimParams = [];
         _.forEach(params, function(p) {
@@ -86,6 +86,7 @@ module.exports = nuxeo.extend({
       // XXX Should be handled differently
       // Add _.s to the props for allowing using the same str format function
       props.s = s;
+      props.multi = that._isMultiModule();
 
       // handling configuration
       _.forEach(generator.config, function(value, key) {
