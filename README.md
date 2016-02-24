@@ -37,6 +37,7 @@ To test the generator directly from the sources; you need to:
 
 ```bash
 git clone https://github.com/nuxeo/generator-nuxeo
+cd generator-nuxeo
 npm link
 ```
 

@@ -26,6 +26,16 @@ describe('Maven module can', function() {
     assert.equal(1, this.pom.dependencies().length);
   });
 
+  it('can read name and group id', function() {
+    assert.equal('myartifact', this.pom.artifactId());
+    // Inherited groupId
+    assert.equal('org.nuxeo.sandbox', this.pom.groupId());
+
+    var bom = openPomFile(this.fs, 'bom.xml');
+    assert.equal('myartifact-parent', bom.artifactId());
+    assert.equal('org.nuxeo.sandbox', bom.groupId());
+  });
+
   it('write beautified file content', function() {
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon');
     this.pom.save(this.fs, this.pomPath);

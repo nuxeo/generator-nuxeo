@@ -106,6 +106,16 @@ function maven(content) {
       });
       return modules;
     },
+    artifactId: function() {
+      return $('project>artifactId').text().trim();
+    },
+    groupId: function() {
+      var $groupId = $('project>groupId');
+      if ($groupId.length === 0) {
+        $groupId = $('parent>groupId');
+      }
+      return $groupId.text().trim();
+    },
     _dependenciesNode: function() {
       var isBom = $('project>type').text() === 'pom';
       if (isBom && $('dependencyManagement').length === 0) {
