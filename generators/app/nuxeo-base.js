@@ -75,6 +75,9 @@ module.exports = yeoman.generators.Base.extend({
     // Add Maven module to parent
     var pom = maven.open(this.fs.read('pom.xml'));
     pom.addModule(dir);
+
+    // Add dependency management
+
     pom.save(this.fs, 'pom.xml');
     return dir;
   },

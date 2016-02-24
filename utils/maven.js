@@ -107,16 +107,16 @@ function maven(content) {
       return modules;
     },
     _dependenciesNode: function() {
-      var isBom = $('dependencyManagement').length > 0 || $('type').text() === 'pom';
+      var isBom = $('project>type').text() === 'pom';
       if (isBom && $('dependencyManagement').length === 0) {
         $('project').append($('<dependencyManagement />'));
       }
 
       var $root = isBom ? $('dependencyManagement') : $('project');
-      if ($root.find('dependencies').length === 0) {
+      if ($root.children('dependencies').length === 0) {
         $root.append($('<dependencies />'));
       }
-      return $root.find('dependencies');
+      return $root.children('dependencies');
     },
     _xml: function() {
       return beautify($.xml(), {

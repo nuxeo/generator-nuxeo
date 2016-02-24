@@ -178,6 +178,6 @@ module.exports = nuxeo.extend({
     });
   },
   end: function() {
-    this.log.info('Thanks you very much.');
+    this.log.info('Thank you very much.');
   }
 });

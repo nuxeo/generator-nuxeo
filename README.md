@@ -42,6 +42,15 @@ npm link
 
 It will install dependencies and symlink the module to your local registry. After that, you can use the generator as described below.
 
+# Bootstrap an Empty Nuxeo Project
+To create a empty Nuxeo Project, ensure you are in an empty folder, and execute the following lines:
+
+```
+$ mkdir my-project
+$ cd my-project
+$ yo nuxeo
+```
+
 # Generators
 You can create several modules at once like:
 
@@ -71,11 +80,21 @@ yo nuxeo multi-module
 ```
 
 ## Operation
-Sets up an empty Operation with his test class.
+Adds an empty Operation with his test class.
 
 ```
 yo nuxeo operation
 ```
+
+## Listener
+Adds a listener with his test class, the events will be asked during the generation process. You can create each listener types: pre-commit, post-commit or asynchronous.
+
+```
+yo nuxeo service
+```
+
+## Nuxeo Service
+Adds a
 
 ## Nuxeo Package
 Create a module to handle a Nuxeo Package of your project
