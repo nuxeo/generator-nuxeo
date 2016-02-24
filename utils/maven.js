@@ -117,7 +117,7 @@ function maven(content) {
       return $groupId.text().trim();
     },
     _dependenciesNode: function() {
-      var isBom = $('project>type').text() === 'pom';
+      var isBom = $('packaging').text() === 'pom';
       if (isBom && $('dependencyManagement').length === 0) {
         $('project').append($('<dependencyManagement />'));
       }

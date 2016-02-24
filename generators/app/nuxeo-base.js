@@ -76,10 +76,28 @@ module.exports = yeoman.generators.Base.extend({
     var pom = maven.open(this.fs.read('pom.xml'));
     pom.addModule(dir);
 
-    // Add dependency management
+    // Add new module to dependency management
+    // Following the template rules in case of a multi-module
+    var p = this.currentProps;
+    if (p.parent_package) {
+      pom.addDependency(p.parent_package + ':' + p.artifact + ':' + p.parent_version);
+    }
 
     pom.save(this.fs, 'pom.xml');
     return dir;
+  },
+  _addModulesDependencies: function(pomParent) {
+    var that = this;
+    var dirs = _.filter(fs.readdirSync('.'), function(file) {
+      return fs.lstatSync(file).isDirectory() && file.match(/-\w+$/) && !file.match('-' + that.currentGenerator.type + '$');
+    });
+    _.forEach(dirs, function(dir) {
+      var pomPath = path.join(dir, 'pom.xml');
+      if (that.fs.exists(pomPath)) {
+        var pom = maven.open(that.fs.read(pomPath));
+        pomParent.addDependency(pom.groupId() + ':' + pom.artifactId());
+      }
+    });
   },
   _tplPath: function(str, ctx) {
     var regex = /{{([\s\S]+?)}}/g;

@@ -80,8 +80,8 @@ module.exports = nuxeo.extend({
     var that = this;
     var done = this.async();
     async.eachSeries(this.nuxeo.selectedModules, function(item, callback) {
-      var generator = that.nuxeo.modules[item];
-      var props = that.props[item];
+      var generator = that.currentGenerator = that.nuxeo.modules[item];
+      var props = that.currentProps = that.props[item];
 
       // XXX Should be handled differently
       // Add _.s to the props for allowing using the same str format function
@@ -145,10 +145,14 @@ module.exports = nuxeo.extend({
         var pomPath = path.join(that._getBaseFolderName(generator.type), 'pom.xml');
         var pom = maven.open(that.fs.read(pomPath));
 
-        _.forEach(generator.dependencies, function(dependency) {
-          that.log.info('Maven dependency: ' + dependency);
-          pom.addDependency(dependency);
-        });
+        if (generator.dependencies === 'inherited') {
+          that._addModulesDependencies(pom);
+        } else {
+          _.forEach(generator.dependencies, function(dependency) {
+            that.log.info('Maven dependency: ' + dependency);
+            pom.addDependency(dependency);
+          });
+        }
 
         pom.save(that.fs, pomPath);
       }

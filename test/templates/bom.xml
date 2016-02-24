@@ -7,6 +7,6 @@
   <version>1.0-SNAPSHOT</version>
   <name>dummy</name>
   <description>Dummy pom.xml</description>
-  <type>pom</type>
+  <packaging>pom</packaging>
 
 </project>

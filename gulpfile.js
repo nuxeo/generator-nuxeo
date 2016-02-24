@@ -35,7 +35,7 @@ gulp.task('pre-test', function() {
 });
 
 gulp.task('watch-test', function() {
-  watch(['**/*.js'], batch(function(events, done) {
+  watch(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'], batch(function(events, done) {
     gulp.start('test', done);
   }));
 });
