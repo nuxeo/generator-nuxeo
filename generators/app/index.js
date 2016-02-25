@@ -15,8 +15,9 @@ var propHolder = require('../../utils/property-holder.js');
 
 module.exports = nuxeo.extend({
   constructor: function() {
+    // Do not ask user when modifying twice a file
+    arguments[1].force = true;
     yeoman.generators.Base.apply(this, arguments);
-    this.options.force = true;
 
     this.option('nuxeo', {
       type: String,
