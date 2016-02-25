@@ -17,7 +17,7 @@ module.exports = yeoman.generators.Base.extend({
     return _.keys(this.nuxeo.modules);
   },
   _moduleFindParents: function(args) {
-    var res = _.isEmpty(args) ? ['single-module'] : args;
+    var res = _.isEmpty(args) ? ['multi-module'] : args;
     _.each(args, function(arg) {
       res.push(this._moduleResolveParent(arg));
     }.bind(this));

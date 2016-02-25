@@ -44,7 +44,7 @@ npm link
 It will install dependencies and symlink the module to your local registry. After that, you can use the generator as described below.
 
 # Bootstrap an Empty Nuxeo Project
-To create a empty Nuxeo Project, ensure you are in an empty folder, and execute the following lines:
+To create a empty Nuxeo Project (based on a Maven multi-module project), **ensure you are in an empty folder**, and execute the following lines:
 
 ```
 $ mkdir my-project
