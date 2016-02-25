@@ -50,7 +50,7 @@ describe('nuxeo-base', function() {
       assert.deepEqual(['multi-module', 'single-module', 'package', 'operation'], deps);
 
       deps = this.gene._moduleFindParents([]);
-      assert.deepEqual(['multi-module'], deps);
+      assert.deepEqual(['single-module'], deps);
     });
   });
 });

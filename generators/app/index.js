@@ -107,7 +107,7 @@ module.exports = nuxeo.extend({
       }
 
       // handling templates
-      var tmplPath = path.resolve(that.nuxeo.cachePath, item, 'templates');
+      var tmplPath = path.resolve(that.nuxeo.cachePath, 'generators', item, 'templates');
       var destPath = that._getBaseFolderName(generator.type);
       if (fs.existsSync(tmplPath)) {
         _.forEach(that._recursivePath(tmplPath), function(template) {
@@ -126,7 +126,7 @@ module.exports = nuxeo.extend({
         args.push(props.package.split('.'));
         args.push(that._tplPath(source.dest, props));
         var dest = path.join.apply(that, _.flatten(args));
-        var src = path.join(that.nuxeo.cachePath, item, 'classes', source.src);
+        var src = path.join(that.nuxeo.cachePath, 'generators', item, 'classes', source.src);
         that.fs.copyTpl(src, dest, props);
       });
 
@@ -136,7 +136,7 @@ module.exports = nuxeo.extend({
         args.push(props.package.split('.'));
         args.push(that._tplPath(source.dest, props));
         var dest = path.join.apply(that, _.flatten(args));
-        var src = path.join(that.nuxeo.cachePath, item, 'classes', source.src);
+        var src = path.join(that.nuxeo.cachePath, 'generators', item, 'classes', source.src);
         that.fs.copyTpl(src, dest, props);
       });
 
@@ -164,7 +164,7 @@ module.exports = nuxeo.extend({
         }
 
         var src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
-        src = path.resolve(that.nuxeo.cachePath, item, 'contributions', that._tplPath(src, props));
+        src = path.resolve(that.nuxeo.cachePath, 'generators', item, 'contributions', that._tplPath(src, props));
         var contribName = typeof contribution.dest === 'function' ? contribution.dest.call(that, props) : contribution.dest;
         var dest = path.join(that._getBaseFolderName(generator.type), 'src', 'main', 'resources', 'OSGI-INF', that._tplPath(contribName, props));
 
