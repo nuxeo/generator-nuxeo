@@ -17,11 +17,13 @@ module.exports = yeoman.generators.Base.extend({
     return _.keys(this.nuxeo.modules);
   },
   _moduleFindParents: function(args) {
-    var res = _.isEmpty(args) ? ['single-module'] : args;
+    var res = [];
+    if (_.isEmpty(args)) {
+      args = ['multi-module'];
+    }
     _.each(args, function(arg) {
       res.push(this._moduleResolveParent(arg));
     }.bind(this));
-
     // Filter default empty generator
     var modules = _.reject(_.uniq(_.flatten(_.union(args, res))), function(o) {
       return o === 'default';

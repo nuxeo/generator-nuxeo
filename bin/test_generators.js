@@ -13,12 +13,12 @@ var async = require('async');
 
 var tmp = path.join(path.dirname(__filename), '..', '/tmp');
 if (fs.existsSync(tmp)) {
-  console.log('Cleaning an existing folder.')
+  log.info('Cleaning an existing folder.');
   child_process.execSync('rm -rf ' + tmp);
 }
 mkdirp.sync(tmp);
 process.chdir(tmp);
-console.log('Working directory is: ' + tmp);
+log.info('Working directory is: ' + tmp);
 
 /**ADAPTER*/
 var Adapter = function() {};
