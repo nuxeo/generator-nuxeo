@@ -16,6 +16,7 @@
     "yeoman-generator"
   ],
   "dependencies": {
+    "ansi-256-colors": "^1.1.0",
     "async": "^1.5.2",
     "chalk": "^1.0.0",
     "cheerio": "^0.19.0",

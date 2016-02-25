@@ -8,6 +8,7 @@ var _ = require('lodash');
 var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
 var recursiveSync = require('../../utils/recursive-readdirSync.js');
+var nuxeowelcome = require('../../utils/welcome.js');
 
 module.exports = yeoman.generators.Base.extend({
   _moduleExists: function(module) {
@@ -115,9 +116,10 @@ module.exports = yeoman.generators.Base.extend({
     return recursiveSync(basePath, ['.DS_Store']);
   },
   _showHello: function() {
-    this.log(yosay(
-      'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
-    ));
+    this.log(nuxeowelcome);
+    // this.log(yosay(
+    //   'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
+    // ));
   },
   _showWelcome: function() {
     if (!_.isEmpty(this.nuxeo.selectedModules)) {
