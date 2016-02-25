@@ -27,6 +27,8 @@ Each generation is coming with a dedicated test; for instance the Operation gene
 
 First, install [Yeoman](http://yeoman.io) and generator-nuxeo using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
+**Ensure `npm --version` is at least 2.12.0**
+
 ```bash
 npm install -g yo
 npm install -g generator-nuxeo
