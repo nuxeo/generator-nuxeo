@@ -45,8 +45,9 @@ module.exports = yeoman.generators.Base.extend({
       modules: {},
       cachePath: remote.cachePath
     };
-    fs.readdirSync(remote.cachePath).forEach(function(file) {
-      var descPath = path.join(remote.cachePath, file, 'descriptor.js');
+    var generatorsPath = path.join(remote.cachePath, 'generators');
+    fs.readdirSync(generatorsPath).forEach(function(file) {
+      var descPath = path.join(generatorsPath, file, 'descriptor.js');
       if (fs.existsSync(descPath)) {
         this.nuxeo.modules[file] = require(descPath);
       }
