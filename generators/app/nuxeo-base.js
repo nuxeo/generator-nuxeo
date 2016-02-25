@@ -77,16 +77,18 @@ module.exports = yeoman.generators.Base.extend({
 
     // Add Maven module to parent
     var pom = maven.open(this.fs.read('pom.xml'));
-    pom.addModule(dir);
+    if (!pom.containsModule(dir)) {
+      // If not module, assuming we are handling a template that contains
+      // parent_package and parent_version properties.
+      pom.addModule(dir);
 
-    // Add new module to dependency management
-    // Following the template rules in case of a multi-module
-    var p = this.currentProps;
-    if (p.parent_package) {
+      // Add new module to dependency management
+      // Following the template rules in case of a multi-module
+      var p = this.currentProps;
       pom.addDependency(p.parent_package + ':' + p.artifact + ':' + p.parent_version);
+      pom.save(this.fs, 'pom.xml');
     }
 
-    pom.save(this.fs, 'pom.xml');
     return dir;
   },
   _addModulesDependencies: function(pomParent) {
