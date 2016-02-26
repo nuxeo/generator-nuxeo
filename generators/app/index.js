@@ -12,6 +12,7 @@ var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
 var manifestmf = require('../../utils/manifestmf.js');
 var propHolder = require('../../utils/property-holder.js');
+var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
 module.exports = nuxeo.extend({
   constructor: function() {
@@ -22,7 +23,7 @@ module.exports = nuxeo.extend({
     this.option('nuxeo', {
       type: String,
       alias: 'n',
-      defaults: 'stable'
+      defaults: pkg.nuxeo.branch
     });
     this.option('localPath', {
       type: String,
