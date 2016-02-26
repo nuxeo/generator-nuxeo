@@ -7,7 +7,7 @@
 Each generation is coming with a dedicated test; for instance the Operation generator adds an Operation with some basic codes showing you how to inject context objects, how to specify a parameter and a sample test class to validate its behavior.
 
 # Features
-- Each feature is version dependent
+- Each feature is Nuxeo Platform version dependent
 - Empty bundle creation
 - Empty bundle creation with Maven multi module support
 - Automation Operation
@@ -22,12 +22,18 @@ Each generation is coming with a dedicated test; for instance the Operation gene
 - Scheduler / Worker
 - ...
 
+# Supported Nuxeo Platform Versions
+- Nuxeo Platform 7.10 and newer
+- If you are using Nuxeo Platform 5.8 or 6.0, code templates are available in [Nuxeo IDE](https://doc.nuxeo.com/x/ZYKE) using the [Nuxeo wizard](https://doc.nuxeo.com/x/uoSN). 
+
 # Installation
 **generator-nuxeo is not yet available as a global NPM module. You can install it directly from the Github repository.**
 
+We assume you have pre-installed [node.js](https://nodejs.org/), minimum required version is 0.12.10.
+
 **Ensure `npm --version` is at least 2.12.0**
 
-First, install [Yeoman](http://yeoman.io) and generator-nuxeo using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, install [Yeoman](http://yeoman.io) and generator-nuxeo using [npm](https://www.npmjs.com/).
 
 ```bash
 npm install -g yo
