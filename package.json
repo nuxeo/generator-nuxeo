@@ -29,10 +29,10 @@
     "promise": "^7.1.1",
     "underscore.string": "^3.2.2",
     "yeoman-generator": "^0.21.1",
-    "yosay": "^1.0.2"
+    "yosay": "^1.0.2",
+    "fs-extra": "^0.26.2"
   },
   "devDependencies": {
-    "fs-extra": "^0.26.2",
     "gulp": "^3.6.0",
     "gulp-batch": "^1.0.5",
     "gulp-eslint": "^1.0.0",
