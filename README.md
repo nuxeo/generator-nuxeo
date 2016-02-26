@@ -2,15 +2,15 @@
 [![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=tools_generator-nuxeo-master)](https://qa.nuxeo.org/jenkins/job/tools_generator-nuxeo-master/)
 
 # Introduction
-`generator-nuxeo` provides Nuxeo components scaffolding using [Yeoman](http://yeoman.io) (a scaffolding tool for the web). It lets you easily scaffold common Nuxeo components like empty project, Nuxeo Package, Automation Operation, Nuxeo Service ... This saves you time writting boilerplate code to focus on your code instead of the structure.
+`generator-nuxeo` provides Nuxeo components scaffolding using [Yeoman](http://yeoman.io) (a scaffolding tool for the web). It lets you easily scaffold common Nuxeo components like empty projects, Nuxeo Packages, Automation Operations, Nuxeo Services... This saves you time writing boilerplate code to focus on your code instead of the structure.
 
-Each generation is coming with a dedicated test; for instance the Operation generator add an Operation with some basic codes showing you how to inject context objects, how to specify a parameter and a sample test class to validate his behavior.
+Each generation is coming with a dedicated test; for instance the Operation generator adds an Operation with some basic codes showing you how to inject context objects, how to specify a parameter and a sample test class to validate its behavior.
 
 # Features
-- Each feature are version dependents
+- Each feature is version dependent
 - Empty bundle creation
 - Empty bundle creation with Maven multi module support
-- Automation Operation with his test
+- Automation Operation
 - Nuxeo Package (Marketplace)
 - Nuxeo Service
 - Nuxeo Event Listener
@@ -61,7 +61,7 @@ $ yo nuxeo
 You can create several modules at once like:
 
 ```bash
-yo nuxeo operation package ...
+yo nuxeo operation package
 ```
 
 ## Command Parameters
@@ -87,6 +87,9 @@ yo nuxeo multi-module
 - Project group id: Groups id.
 - Project version: Project version (default: `1.0-SNAPSHOT`)
 
+### Important Notes
+Using a Maven multi module architecture is the recommended way to bootstrap a new project: it allows to generate a Nuxeo Package afterwards to easily deploy your code on a Nuxeo Platform instance. On the other hand, when a project has been generated using a single module architecture, the Nuxeo Package needs to be created manually.
+
 ## Single module
 Sets up an empty Nuxeo Bundle.
 
@@ -103,8 +106,11 @@ yo nuxeo single-module
 - Project group id: Groups id.
 - Project version: Project version (default: `1.0-SNAPSHOT`)
 
+### Important Notes
+This option should not be called directly to bootstrap a new project; use the multi-module option instead so that you can generate a Nuxeo Package later on.
+
 ## Operation
-Adds an empty Nuxeo Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ).
+Adds an empty Nuxeo Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ) along with a corresponding unit test.
 
 ```bash
 yo nuxeo operation
@@ -116,7 +122,7 @@ yo nuxeo operation
 - Operation label: Label used when you expose your Operation inside Studio.
 
 ## Listener
-Adds a [listener](https://doc.nuxeo.com/x/C4AO) with his test class, the events will be asked during the generation process. You can create each listener types: pre-commit, post-commit or asynchronous.
+Adds a [listener](https://doc.nuxeo.com/x/C4AO) with its test class, the events will be asked during the generation process. Both existing and custom events can be declared. You can create any listener type: pre-commit, post-commit, synchronous and asynchronous.
 
 ```bash
 yo nuxeo listener
@@ -125,13 +131,13 @@ yo nuxeo listener
 ### Parameters:
 - Listener class name: Class name.
 - Listener package: Class package.
-- Trigger on events: List of some common events to bind your listener.
-- Custom Events: _In case you select 'custom events'_ in the previous list; coma separate list of other events.
-- Asynchronous Listener: if you need to run after the transaction has committed, in a new transaction and a separate thread, this is useful for any long-running operations whose result doesn't have to be seen immediately in the user interface.
+- Trigger on events: List of some common events to bind to your listener.
+- Custom Events: _In case you select 'custom events'_ in the previous list; comma separate list of other events.
+- Asynchronous Listener: if you need to run after the transaction has committed, in a new transaction and a separate thread. This is useful for any long-running operations whose result doesn't have to be seen immediately in the user interface.
 - Post-commit Listener: if you need to run after the transaction has committed, in a new transaction but in the same thread, this is useful for logging.
 
 ## Nuxeo Service
-Adds a [Nuxeo component](https://doc.nuxeo.com/x/DIAO) exposed as a Nuxeo service
+Adds a [Nuxeo component](https://doc.nuxeo.com/x/DIAO) exposed as a Nuxeo service.
 
 ```bash
 yo nuxeo service
@@ -142,7 +148,7 @@ yo nuxeo service
 - Service package: Interface / Class package.
 
 ## Nuxeo Package
-Create a Maven module to handle a [Nuxeo Package](https://doc.nuxeo.com/x/CwIz) generation of your project.
+Creates a Maven module to handle a [Nuxeo Package](https://doc.nuxeo.com/x/CwIz) generation of your project. **Can only be called in a Maven multi-module architecture**, hence make sure to bootstrap your project using ```yo nuxeo``` or ```yo nuxeo multi-module```. If you used ```yo nuxeo single-module``` to bootstrap your project, you won't be able to call that option afterwards.
 
 ```bash
 yo nuxeo package
