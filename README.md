@@ -51,7 +51,7 @@ It will install dependencies and symlink the module to your local registry. Afte
 # Bootstrap an Empty Nuxeo Project
 To create a empty Nuxeo Project (based on a Maven multi-module project), **ensure you are in an empty folder**, and execute the following lines:
 
-```
+```bash
 $ mkdir my-project
 $ cd my-project
 $ yo nuxeo
@@ -60,8 +60,8 @@ $ yo nuxeo
 # Generators
 You can create several modules at once like:
 
-```
-yo nuxeo operation package
+```bash
+yo nuxeo operation package ...
 ```
 
 ## Command Parameters
@@ -69,45 +69,92 @@ yo nuxeo operation package
 - `--localPath='/my/own/path'`: Path to your local clone of `https://github.com/nuxeo/generator-nuxeo-meta`
 - `--nologo='true'`: Disable big welcome message
 
-## Single module
-Sets up an empty Nuxeo Bundle.
-
-```
-yo nuxeo
-# or
-yo nuxeo single-module
-```
-
 ## Multi module
 Sets up an empty Nuxeo Bundle using Maven multi module support.
 
-```
+```bash
+yo nuxeo
+or
 yo nuxeo multi-module
 ```
 
-## Operation
-Adds an empty Operation with his test class.
+### Parameters:
+- Parent Artifact id: It must have inherit from a Nuxeo artifact to ensure dependency management is fine. (default: `nuxeo-distribution`)
+- Parent Group id: Parent group Id name (default: `org.nuxeo.ecm.distribution`)
+- Parent Version: Parent version (default: `8.2-SNAPSHOT`) (`7.10` Latest LTS, `8.1` latest FT)
+- Nuxeo Version: _Asked only if no parent specified_, Nuxeo dependency management is imported. (default: `8.2-SNAPSHOT`) (`7.10` Latest LTS, `8.1` latest FT)
+- Project Artifact id: Artifact id, a good practice is to suffix it with `-parent`; as it will be only a `pom` artifact.
+- Project group id: Groups id.
+- Project version: Project version (default: `1.0-SNAPSHOT`)
 
+## Single module
+Sets up an empty Nuxeo Bundle.
+
+```bash
+yo nuxeo single-module
 ```
+
+### Parameters:
+- Parent Artifact id: It must have inherit from a Nuxeo artifact to ensure dependency management is fine. (default: `nuxeo-addons-parent`)
+- Parent Group id: Parent group Id name (default: `org.nuxeo`)
+- Parent Version: Parent version (default: `8.2-SNAPSHOT`) (`7.10` Latest LTS, `8.1` latest FT)
+- Nuxeo Version: _Asked only if no parent specified_, Nuxeo dependency management is imported. (default: `8.2-SNAPSHOT`) (`7.10` Latest LTS, `8.1` latest FT)
+- Project Artifact id: Artifact id.
+- Project group id: Groups id.
+- Project version: Project version (default: `1.0-SNAPSHOT`)
+
+## Operation
+Adds an empty Nuxeo Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ).
+
+```bash
 yo nuxeo operation
 ```
 
-## Listener
-Adds a listener with his test class, the events will be asked during the generation process. You can create each listener types: pre-commit, post-commit or asynchronous.
+### Parameters:
+- Operation class name: Class name.
+- Operation package: Class package.
+- Operation label: Label used when you expose your Operation inside Studio.
 
+## Listener
+Adds a [listener](https://doc.nuxeo.com/x/C4AO) with his test class, the events will be asked during the generation process. You can create each listener types: pre-commit, post-commit or asynchronous.
+
+```bash
+yo nuxeo listener
 ```
+
+### Parameters:
+- Listener class name: Class name.
+- Listener package: Class package.
+- Trigger on events: List of some common events to bind your listener.
+- Custom Events: _In case you select 'custom events'_ in the previous list; coma separate list of other events.
+- Asynchronous Listener: if you need to run after the transaction has committed, in a new transaction and a separate thread, this is useful for any long-running operations whose result doesn't have to be seen immediately in the user interface.
+- Post-commit Listener: if you need to run after the transaction has committed, in a new transaction but in the same thread, this is useful for logging.
+
+## Nuxeo Service
+Adds a [Nuxeo component](https://doc.nuxeo.com/x/DIAO) exposed as a Nuxeo service
+
+```bash
 yo nuxeo service
 ```
 
-## Nuxeo Service
-Adds a
+### Parameters:
+- Service interface name: Interface name, a default implemention is created using the common pattern `InterfaceClassImpl`.
+- Service package: Interface / Class package.
 
 ## Nuxeo Package
-Create a module to handle a Nuxeo Package of your project
+Create a Maven module to handle a [Nuxeo Package](https://doc.nuxeo.com/x/CwIz) generation of your project.
 
-```
+```bash
 yo nuxeo package
 ```
+
+### Parameters:
+- Parent Artifact id:
+- Parent Group id:
+- Parent version:
+- Package Artifact id:
+- Package name:
+- Company name:
 
 # Licensing
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
