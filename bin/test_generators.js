@@ -10,7 +10,9 @@ var child_process = require('child_process');
 var fs = require('fs');
 var log = require('yeoman-environment/lib/util/log')();
 var async = require('async');
+var branch = process.argv.length > 2 ? process.argv[2] : 'master';
 
+// Prepare a ./tmp folder to generate everything
 var tmp = path.join(path.dirname(__filename), '..', '/tmp');
 if (fs.existsSync(tmp)) {
   log.info('Cleaning an existing folder.');
@@ -19,8 +21,9 @@ if (fs.existsSync(tmp)) {
 mkdirp.sync(tmp);
 process.chdir(tmp);
 log.info('Working directory is: ' + tmp);
+log.info('Using branch: ' + branch);
 
-/**ADAPTER*/
+/** ADAPTER */
 var Adapter = function() {};
 Adapter.prototype.prompt = function(questions, callback) {
   // Handling diff prompt
@@ -69,7 +72,7 @@ async.waterfall([function(callback) {
     operation_label: 'My Generated Operation'
   });
 
-  env.run('nuxeo:test multi-module', callback);
+  env.run(`nuxeo:test --nuxeo=${branch} multi-module`, callback);
 }, function(callback) {
   // Bootstrap the project and a first Operation
   adapter.responses({
@@ -83,7 +86,7 @@ async.waterfall([function(callback) {
     operation_label: 'My Test Operation'
   });
 
-  env.run('nuxeo:test --nologo=true operation', callback);
+  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true operation`, callback);
 }, function(callback) {
   // Add it an aync Listener
   adapter.responses({
@@ -94,7 +97,7 @@ async.waterfall([function(callback) {
     async: true
   });
 
-  env.run('nuxeo:test --nologo=true listener', callback);
+  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true listener`, callback);
 }, function(callback) {
   // Add it a sync Listener
   adapter.responses({
@@ -105,7 +108,7 @@ async.waterfall([function(callback) {
     async: false
   });
 
-  env.run('nuxeo:test --nologo=true listener', callback);
+  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true listener`, callback);
 }, function(callback) {
   // Add it a Service
   adapter.responses({
@@ -113,7 +116,7 @@ async.waterfall([function(callback) {
     service_name: 'MyTestGeneratedService'
   });
 
-  env.run('nuxeo:test --nologo=true service', callback);
+  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true service`, callback);
 }, function(callback) {
   // Add it a Package
   adapter.responses({
@@ -125,5 +128,5 @@ async.waterfall([function(callback) {
     company: 'Nuxeo'
   });
 
-  env.run('nuxeo:test --nologo=true package', callback);
+  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true package`, callback);
 }]);

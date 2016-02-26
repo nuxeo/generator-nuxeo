@@ -22,7 +22,7 @@ module.exports = nuxeo.extend({
     this.option('nuxeo', {
       type: String,
       alias: 'n',
-      defaults: 'master'
+      defaults: 'stable'
     });
     this.option('localPath', {
       type: String,
