@@ -1,4 +1,4 @@
-# Yeoman generator for Nuxeo
+# Yeoman Generator for Nuxeo Platform
 [![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=tools_generator-nuxeo-master)](https://qa.nuxeo.org/jenkins/job/tools_generator-nuxeo-master/)
 
 # Introduction
