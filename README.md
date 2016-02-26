@@ -23,19 +23,22 @@ Each generation is coming with a dedicated test; for instance the Operation gene
 - ...
 
 # Installation
-**The node.js module is not yet available as a global module. You should only test it locally.**
-
-First, install [Yeoman](http://yeoman.io) and generator-nuxeo using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+**generator-nuxeo is not yet available as a global NPM module. You can install it directly from the Github repository.**
 
 **Ensure `npm --version` is at least 2.12.0**
 
+First, install [Yeoman](http://yeoman.io) and generator-nuxeo using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+
 ```bash
 npm install -g yo
+# Install it from the repository
+npm install -g nuxeo/generator-nuxeo
+# (not yet available) Install it from the NPM registry
 npm install -g generator-nuxeo
 ```
 
 # Test the generator
-To test the generator directly from the sources; you need to:
+To test the generator; you should clone the repository and link it to your local NPM registry:
 
 ```bash
 git clone https://github.com/nuxeo/generator-nuxeo

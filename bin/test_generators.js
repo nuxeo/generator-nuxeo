@@ -54,7 +54,7 @@ var env = yo.createEnv(undefined, undefined, adapter);
 
 env.register(require.resolve(path.join(__dirname, '../generators/app/index.js')), 'nuxeo:test');
 async.waterfall([function(callback) {
-  // Bootstrap the project and a first Operation
+  // Bootstrap the parent and the core module
   adapter.responses({
     super_artifact: 'nuxeo-distribution',
     super_package: 'org.nuxeo.ecm.distribution',
@@ -115,7 +115,7 @@ async.waterfall([function(callback) {
 
   env.run('nuxeo:test --nologo=true service', callback);
 }, function(callback) {
-  // Add it a Service
+  // Add it a Package
   adapter.responses({
     parent_artifact: 'my-test-parent',
     parent_package: 'org.nuxeo.generator.sample',
