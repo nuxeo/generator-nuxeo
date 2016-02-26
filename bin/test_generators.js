@@ -56,18 +56,34 @@ env.register(require.resolve(path.join(__dirname, '../generators/app/index.js'))
 async.waterfall([function(callback) {
   // Bootstrap the project and a first Operation
   adapter.responses({
-    parent_artifact: 'nuxeo-addons-parent',
-    parent_package: 'org.nuxeo',
-    parent_version: '8.2-SNAPSHOT',
-    artifact: 'my-test-artifact',
+    super_artifact: 'nuxeo-distribution',
+    super_package: 'org.nuxeo.ecm.distribution',
+    super_version: '8.1',
+    parent_artifact: 'my-test-parent',
+    parent_package: 'org.nuxeo.generator.sample',
+    parent_version: '1.0-SNAPSHOT',
+    artifact: 'my-test-core',
     package: 'org.nuxeo.generator.sample',
     version: '1.0-SNAPSHOT',
-    name: 'My Test Artifact',
     operation_name: 'GeneratedOperation',
     operation_label: 'My Generated Operation'
   });
 
-  env.run('nuxeo:test operation', callback);
+  env.run('nuxeo:test multi-module', callback);
+}, function(callback) {
+  // Bootstrap the project and a first Operation
+  adapter.responses({
+    parent_artifact: 'my-test-parent',
+    parent_package: 'org.nuxeo.generator.sample',
+    parent_version: '1.0-SNAPSHOT',
+    artifact: 'my-test-artifact',
+    package: 'org.nuxeo.generator.sample',
+    version: '1.0-SNAPSHOT',
+    operation_name: 'MyOperation',
+    operation_label: 'My Test Operation'
+  });
+
+  env.run('nuxeo:test --nologo=true operation', callback);
 }, function(callback) {
   // Add it an aync Listener
   adapter.responses({
@@ -98,4 +114,16 @@ async.waterfall([function(callback) {
   });
 
   env.run('nuxeo:test --nologo=true service', callback);
+}, function(callback) {
+  // Add it a Service
+  adapter.responses({
+    parent_artifact: 'my-test-parent',
+    parent_package: 'org.nuxeo.generator.sample',
+    parent_version: '1.0-SNAPSHOT',
+    artifact: 'my-test-package',
+    name: 'My test package',
+    company: 'Nuxeo'
+  });
+
+  env.run('nuxeo:test --nologo=true package', callback);
 }]);
