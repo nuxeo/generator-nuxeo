@@ -4,12 +4,11 @@
   "nuxeo": {
     "branch": "stable"
   },
-  "description": "test",
+  "description": "Nuxeo Generator based on Yeoman",
   "homepage": "https://www.nuxeo.com",
   "author": {
     "name": "Arnaud Kervern",
-    "email": "akervern@nuxeo.com",
-    "url": ""
+    "email": "akervern@nuxeo.com"
   },
   "files": [
     "generators",
@@ -17,7 +16,8 @@
   ],
   "main": "generators/index.js",
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "nuxeo"
   ],
   "dependencies": {
     "ansi-256-colors": "^1.1.0",

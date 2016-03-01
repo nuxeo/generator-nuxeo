@@ -15,24 +15,32 @@ var propHolder = require('../../utils/property-holder.js');
 var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
 module.exports = nuxeo.extend({
+  _getGlobalStorage: function() {
+    // Override Yeoman global storage; use only the local one
+    return this._getStorage();
+  },
   constructor: function() {
     // Do not ask user when modifying twice a file
     arguments[1].force = true;
     yeoman.generators.Base.apply(this, arguments);
 
-    this.option('nuxeo', {
+    this.options.namespace = 'nuxeo [<generator>..]';
+    this.option('meta', {
       type: String,
-      alias: 'n',
-      defaults: pkg.nuxeo.branch
+      alias: 'm',
+      defaults: pkg.nuxeo.branch,
+      desc: 'Branch of `nuxeo/generator-nuxeo-meta`'
     });
     this.option('localPath', {
       type: String,
-      alias: 'l'
+      alias: 'l',
+      desc: 'Path to a local clone of `nuxeo/generator-nuxeo-meta`'
     });
     this.option('nologo', {
       type: Boolean,
       alias: 'n',
-      defaults: false
+      defaults: false,
+      desc: 'Disable welcome logo'
     });
   },
   initializing: function() {
@@ -61,11 +69,16 @@ module.exports = nuxeo.extend({
       if (!_.isEmpty(params)) {
         params = propHolder.filter(params);
 
-        that.log.create(chalk.green('Generating ' + s.humanize(item)));
+        that.log('\n');
+        var txt = chalk.green('Generating ' + s.humanize(item));
+        if (typeof that.nuxeo.modules[item].description === 'string') {
+          txt += ' (' + that.nuxeo.modules[item].description + ')';
+        }
+        that.log.create(txt);
         // Show asked parameters
         var trimParams = [];
         _.forEach(params, function(p) {
-          trimParams.push(s.humanize(s.trim(p.message.replace(/\(.+\)/, ''), '\\s+:_-')));
+          trimParams.push(s.humanize(s.trim(p.message.replace(/\(.+\)/, ''), '?\\s+:_-')));
         });
         that.log.info('  ' + chalk.blue('Parameters: ') + trimParams.join(', '));
       }
@@ -184,6 +197,6 @@ module.exports = nuxeo.extend({
     });
   },
   end: function() {
-    this.log.info('Thank you very much.');
+    this.log.info('You start editing code or you can continue with calling another generator (yo nuxeo <generator..>)');
   }
 });

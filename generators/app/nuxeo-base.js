@@ -147,7 +147,7 @@ module.exports = yeoman.generators.Base.extend({
       process.stderr.write = function() {};
 
       // Fetch remote repository containing module metadata
-      this.remote('nuxeo', 'generator-nuxeo-meta', this.options.nuxeo, function(err, remote) {
+      this.remote('nuxeo', 'generator-nuxeo-meta', this.options.meta, function(err, remote) {
         process.stderr.write = writeOld;
         callback(err, remote);
       }, true);

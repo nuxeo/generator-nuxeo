@@ -72,7 +72,7 @@ async.waterfall([function(callback) {
     operation_label: 'My Generated Operation'
   });
 
-  env.run(`nuxeo:test --nuxeo=${branch} multi-module`, callback);
+  env.run(`nuxeo:test --meta=${branch} multi-module`, callback);
 }, function(callback) {
   // Bootstrap the project and a first Operation
   adapter.responses({
@@ -86,7 +86,7 @@ async.waterfall([function(callback) {
     operation_label: 'My Test Operation'
   });
 
-  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true operation`, callback);
+  env.run(`nuxeo:test --meta=${branch} --nologo=true operation`, callback);
 }, function(callback) {
   // Add it an aync Listener
   adapter.responses({
@@ -97,7 +97,7 @@ async.waterfall([function(callback) {
     async: true
   });
 
-  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true listener`, callback);
+  env.run(`nuxeo:test --meta=${branch} --nologo=true listener`, callback);
 }, function(callback) {
   // Add it a sync Listener
   adapter.responses({
@@ -108,7 +108,7 @@ async.waterfall([function(callback) {
     async: false
   });
 
-  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true listener`, callback);
+  env.run(`nuxeo:test --meta=${branch} --nologo=true listener`, callback);
 }, function(callback) {
   // Add it a Service
   adapter.responses({
@@ -116,7 +116,7 @@ async.waterfall([function(callback) {
     service_name: 'MyTestGeneratedService'
   });
 
-  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true service`, callback);
+  env.run(`nuxeo:test --meta=${branch} --nologo=true service`, callback);
 }, function(callback) {
   // Add it a Package
   adapter.responses({
@@ -128,5 +128,5 @@ async.waterfall([function(callback) {
     company: 'Nuxeo'
   });
 
-  env.run(`nuxeo:test --nuxeo=${branch} --nologo=true package`, callback);
+  env.run(`nuxeo:test --meta=${branch} --nologo=true package`, callback);
 }]);
