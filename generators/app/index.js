@@ -1,5 +1,6 @@
 'use strict';
 var yeoman = require('yeoman-generator');
+var promptSuggestion = require('yeoman-generator/lib/util/prompt-suggestion');
 var chalk = require('chalk');
 var async = require('async');
 var path = require('path');
@@ -18,6 +19,32 @@ module.exports = nuxeo.extend({
   _getGlobalStorage: function() {
     // Override Yeoman global storage; use only the local one
     return this._getStorage();
+  },
+  prompt: function(questions, callback) {
+    // Do not consider computed default as not stored ones.
+    var computedDefaultIndices = [];
+    _.each(questions, function(question, index) {
+      if (_.isFunction(question.default)) {
+        computedDefaultIndices.push(index);
+      }
+    });
+    questions = promptSuggestion.prefillQuestions(this._globalConfig, questions);
+
+    this.env.adapter.prompt(questions, function(answers) {
+      if (!this.options['skip-cache']) {
+        // Reset computed default value to ensure the user input is stored
+        _.each(computedDefaultIndices, function(index) {
+          questions[index].default = undefined;
+        });
+        promptSuggestion.storeAnswers(this._globalConfig, questions, answers);
+      }
+
+      if (_.isFunction(callback)) {
+        callback(answers);
+      }
+    }.bind(this));
+
+    return this;
   },
   constructor: function() {
     // Do not ask user when modifying twice a file
@@ -197,6 +224,6 @@ module.exports = nuxeo.extend({
     });
   },
   end: function() {
-    this.log.info('You start editing code or you can continue with calling another generator (yo nuxeo <generator..>)');
+    this.log.info('You can start editing code or you can continue with calling another generator (yo nuxeo <generator>..)');
   }
 });
