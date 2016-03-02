@@ -7,7 +7,6 @@ var path = require('path');
 var _ = require('lodash');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
-
 var nuxeo = require('./nuxeo-base.js');
 var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
@@ -21,6 +20,10 @@ module.exports = nuxeo.extend({
     return this._getStorage();
   },
   prompt: function(questions, callback) {
+    if (!questions) {
+      return this;
+    }
+
     // Do not consider computed default as not stored ones.
     var computedDefaultIndices = [];
     _.each(questions, function(question, index) {
