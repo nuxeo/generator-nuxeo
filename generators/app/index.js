@@ -20,7 +20,7 @@ module.exports = nuxeo.extend({
     return this._getStorage();
   },
   prompt: function(questions, callback) {
-    if (!questions) {
+    if (!questions || !_.isArray(questions)) {
       return this;
     }
 
