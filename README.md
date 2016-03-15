@@ -1,13 +1,13 @@
-# Yeoman Generator for Nuxeo Platform
 [![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=tools_generator-nuxeo-master)](https://qa.nuxeo.org/jenkins/job/tools_generator-nuxeo-master/)
 
-# Introduction
+# About
+**Yeoman Generator for Nuxeo Platform**
+
 `generator-nuxeo` provides Nuxeo components scaffolding using [Yeoman](http://yeoman.io) (a scaffolding tool for the web). It lets you easily scaffold common Nuxeo components like empty projects, Nuxeo Packages, Automation Operations, Nuxeo Services... This saves you time writing boilerplate code to focus on your code instead of the structure.
 
 Each generation is coming with a dedicated test; for instance the Operation generator adds an Operation with some basic codes showing you how to inject context objects, how to specify a parameter and a sample test class to validate its behavior.
 
-# Features
-- Each feature is Nuxeo Platform version dependent
+## Features
 - Empty bundle creation
 - Empty bundle creation with Maven multi module support
 - Automation Operation
@@ -22,14 +22,14 @@ Each generation is coming with a dedicated test; for instance the Operation gene
 - Scheduler / Worker
 - ...
 
-# Supported Nuxeo Platform Versions
+## Supported Nuxeo Platform Versions
 - Nuxeo Platform 7.10 and newer
-- If you are using Nuxeo Platform 5.8 or 6.0, code templates are available in [Nuxeo IDE](https://doc.nuxeo.com/x/ZYKE) using the [Nuxeo wizard](https://doc.nuxeo.com/x/uoSN). 
+- If you are using Nuxeo Platform 5.8 or 6.0, code templates are available in [Nuxeo IDE](https://doc.nuxeo.com/x/ZYKE) using the [Nuxeo wizard](https://doc.nuxeo.com/x/uoSN).
 
 # Installation
-**generator-nuxeo is not yet available as a global NPM module. You can install it directly from the Github repository.**
+**generator-nuxeo is not yet available as a global NPM module. It will be installed from the Github repository.**
 
-We assume you have pre-installed [node.js](https://nodejs.org/), minimum required version is 0.12.10.
+We assume you have pre-installed [node.js](https://nodejs.org/), tested on 0.12.10, stable (5.6.0 at the time of this writing).
 
 **Ensure `npm --version` is at least 2.12.0**
 
@@ -37,61 +37,57 @@ First, install [Yeoman](http://yeoman.io) and generator-nuxeo using [npm](https:
 
 ```bash
 npm install -g yo
-# Install it from the repository
+# Install it from the github repository with the master branch
 npm install -g nuxeo/generator-nuxeo
-# (not yet available) Install it from the NPM registry
-npm install -g generator-nuxeo
 ```
 
-# Test the generator
-To test the generator; you should clone the repository and link it to your local NPM registry:
+# Quickstart
+## Bootstrap an Empty Nuxeo Project
+To create an empty Nuxeo Project (based on a Maven multi-module project), **ensure you are in an empty folder**, and execute the following lines:
 
 ```bash
-git clone https://github.com/nuxeo/generator-nuxeo
-cd generator-nuxeo
-npm link
+mkdir my-project
+cd my-project
+yo nuxeo
 ```
 
-It will install dependencies and symlink the module to your local registry. After that, you can use the generator as described below.
+Default values are fine for a quick start.
 
-# Bootstrap an Empty Nuxeo Project
-To create a empty Nuxeo Project (based on a Maven multi-module project), **ensure you are in an empty folder**, and execute the following lines:
-
-```bash
-$ mkdir my-project
-$ cd my-project
-$ yo nuxeo
-```
-
-# Generators
+# Usage
 You can create several modules at once like:
 
 ```bash
-yo nuxeo operation package
+yo nuxeo [options] [<generator>..]
 ```
 
-## Command Parameters
-- `--nuxeo='master'`: Specify which branch you want; in case some scaffolding changed
-- `--localPath='/my/own/path'`: Path to your local clone of `https://github.com/nuxeo/generator-nuxeo-meta`
-- `--nologo='true'`: Disable big welcome message
+## Options
+
+```
+-h,   --help          # Print the generator's options and usage
+      --skip-cache    # Do not remember prompt answers                         Default: false
+      --skip-install  # Do not automatically install dependencies              Default: false
+-n,   --meta          # Branch of `nuxeo/generator-nuxeo-meta`                 Default: stable
+-l,   --localPath     # Path to a local clone of `nuxeo/generator-nuxeo-meta`
+-n,   --nologo        # Disable welcome logo                                   Default: false
+```
+
+# Available Generators
+The main Generator can call small generators defined in [https://github.com/nuxeo/generator-nuxeo-meta/](https://github.com/nuxeo/generator-nuxeo-meta/).
 
 ## Multi module
 Sets up an empty Nuxeo Bundle using Maven multi module support.
 
 ```bash
 yo nuxeo
-or
+# or
 yo nuxeo multi-module
 ```
 
+`multi-module` is the default generator when not specified.
+
 ### Parameters:
-- Parent Artifact id: It must have inherit from a Nuxeo artifact to ensure dependency management is fine. (default: `nuxeo-distribution`)
-- Parent Group id: Parent group Id name (default: `org.nuxeo.ecm.distribution`)
-- Parent Version: Parent version (default: `8.2-SNAPSHOT`) (`7.10` Latest LTS, `8.1` latest FT)
-- Nuxeo Version: _Asked only if no parent specified_, Nuxeo dependency management is imported. (default: `8.2-SNAPSHOT`) (`7.10` Latest LTS, `8.1` latest FT)
-- Project Artifact id: Artifact id, a good practice is to suffix it with `-parent`; as it will be only a `pom` artifact.
-- Project group id: Groups id.
-- Project version: Project version (default: `1.0-SNAPSHOT`)
+- **Use a parent artifact**: Parent artifact makes your project inherit dependencies, properties, ... from another project. We recommend you to keep the default value and use `org.nuxeo.ecm.distribution:nuxeo-distribution`.
+- **Nuxeo Version**: _Asked only if no parent specified_, it specify which Nuxeo version of the dependency management will be imported.
 
 ### Important Notes
 Using a Maven multi module architecture is the recommended way to bootstrap a new project: it allows to generate a Nuxeo Package afterwards to easily deploy your code on a Nuxeo Platform instance. On the other hand, when a project has been generated using a single module architecture, the Nuxeo Package needs to be created manually.
@@ -104,13 +100,8 @@ yo nuxeo single-module
 ```
 
 ### Parameters:
-- Parent Artifact id: It must have inherit from a Nuxeo artifact to ensure dependency management is fine. (default: `nuxeo-addons-parent`)
-- Parent Group id: Parent group Id name (default: `org.nuxeo`)
-- Parent Version: Parent version (default: `8.2-SNAPSHOT`) (`7.10` Latest LTS, `8.1` latest FT)
-- Nuxeo Version: _Asked only if no parent specified_, Nuxeo dependency management is imported. (default: `8.2-SNAPSHOT`) (`7.10` Latest LTS, `8.1` latest FT)
-- Project Artifact id: Artifact id.
-- Project group id: Groups id.
-- Project version: Project version (default: `1.0-SNAPSHOT`)
+- **Parent Group / Artifact**: Like in `multi-module`, having a parent artifact make project inheritance. If you are in a `multi-module`, you must set your parent module. If not, you can use `org.nuxeo.ecm.distribution:nuxeo-distribution` or `org.nuxeo:nuxeo-addons-parent`
+- **Nuxeo Version**: _Asked only if needed_, it specify which Nuxeo version of the dependency management will be imported.
 
 ### Important Notes
 This option should not be called directly to bootstrap a new project; use the multi-module option instead so that you can generate a Nuxeo Package later on.
@@ -122,11 +113,6 @@ Adds an empty Nuxeo Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ) along
 yo nuxeo operation
 ```
 
-### Parameters:
-- Operation class name: Class name.
-- Operation package: Class package.
-- Operation label: Label used when you expose your Operation inside Studio.
-
 ## Listener
 Adds a [listener](https://doc.nuxeo.com/x/C4AO) with its test class, the events will be asked during the generation process. Both existing and custom events can be declared. You can create any listener type: pre-commit, post-commit, synchronous and asynchronous.
 
@@ -135,12 +121,10 @@ yo nuxeo listener
 ```
 
 ### Parameters:
-- Listener class name: Class name.
-- Listener package: Class package.
-- Trigger on events: List of some common events to bind to your listener.
-- Custom Events: _In case you select 'custom events'_ in the previous list; comma separate list of other events.
-- Asynchronous Listener: if you need to run after the transaction has committed, in a new transaction and a separate thread. This is useful for any long-running operations whose result doesn't have to be seen immediately in the user interface.
-- Post-commit Listener: if you need to run after the transaction has committed, in a new transaction but in the same thread, this is useful for logging.
+- **Trigger on events**: List of some common events to bind to your listener.
+- **Custom Events**: _In case you select 'custom events'_ in the previous list; comma separate list of other events.
+- **Asynchronous Listener**: if you need to run after the transaction has committed, in a new transaction and a separate thread. This is useful for any long-running operations whose result doesn't have to be seen immediately in the user interface.
+- **Post-commit Listener**: if you need to run after the transaction has committed, in a new transaction but in the same thread, this is useful for logging.
 
 ## Nuxeo Service
 Adds a [Nuxeo component](https://doc.nuxeo.com/x/DIAO) exposed as a Nuxeo service.
@@ -149,24 +133,23 @@ Adds a [Nuxeo component](https://doc.nuxeo.com/x/DIAO) exposed as a Nuxeo servic
 yo nuxeo service
 ```
 
-### Parameters:
-- Service interface name: Interface name, a default implemention is created using the common pattern `InterfaceClassImpl`.
-- Service package: Interface / Class package.
-
 ## Nuxeo Package
-Creates a Maven module to handle a [Nuxeo Package](https://doc.nuxeo.com/x/CwIz) generation of your project. **Can only be called in a Maven multi-module architecture**, hence make sure to bootstrap your project using ```yo nuxeo``` or ```yo nuxeo multi-module```. If you used ```yo nuxeo single-module``` to bootstrap your project, you won't be able to call that option afterwards.
+Creates a Maven module to handle a [Nuxeo Package](https://doc.nuxeo.com/x/CwIz) generation of your project. **Can only be called in a Maven multi-module architecture**, hence make sure to bootstrap your project using `yo nuxeo` or `yo nuxeo multi-module`. If you used `yo nuxeo single-module` to bootstrap your project, you won't be able to call that option afterwards.
 
 ```bash
 yo nuxeo package
 ```
 
-### Parameters:
-- Parent Artifact id:
-- Parent Group id:
-- Parent version:
-- Package Artifact id:
-- Package name:
-- Company name:
+# Test locally the generator
+To test the generator; you should clone the repository and link it to your local NPM registry:
+
+```bash
+git clone https://github.com/nuxeo/generator-nuxeo
+cd generator-nuxeo
+npm link
+```
+
+It will install dependencies and symlink the module to your local registry. After that, you can use the generator as described below.
 
 # Licensing
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
