@@ -3,9 +3,11 @@
 # About
 **Yeoman Generator for Nuxeo Platform**
 
-`generator-nuxeo` provides Nuxeo components scaffolding using [Yeoman](http://yeoman.io) (a scaffolding tool for the web). It lets you easily scaffold common Nuxeo components like empty projects, Nuxeo Packages, Automation Operations, Nuxeo Services... This saves you time writing boilerplate code to focus on your code instead of the structure.
+The `generator-nuxeo` provides Nuxeo components scaffolding. It lets you easily scaffold common Nuxeo components like empty projects, Nuxeo Packages, Automation Operations, Nuxeo Services... This saves you time writing boilerplate code to focus on your code instead of the structure.
 
-Each generation is coming with a dedicated test; for instance the Operation generator adds an Operation with some basic codes showing you how to inject context objects, how to specify a parameter and a sample test class to validate its behavior.
+The generated components all come with unit tested sample code; for instance the Operation generator adds an Operation with some sample code that highlights how to inject context objects, how to specify a parameter and how to unit test that operation.
+
+That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web).
 
 ## Features
 - Empty bundle creation
@@ -29,21 +31,22 @@ Each generation is coming with a dedicated test; for instance the Operation gene
 # Installation
 **generator-nuxeo is not yet available as a global NPM module. It will be installed from the Github repository.**
 
-We assume you have pre-installed [node.js](https://nodejs.org/), tested on 0.12.10, stable (5.6.0 at the time of this writing).
+## Requirements
 
-**Ensure `npm --version` is at least 2.12.0**
+- [node.js](https://nodejs.org/) 0.12.10 or newer. The "stable" version is recommended (5.7.0 at the time of this writing).
+- [npm](https://www.npmjs.com/) 2.12.0 or newer.
 
-First, install [Yeoman](http://yeoman.io) and generator-nuxeo using [npm](https://www.npmjs.com/).
+## Install
+
+First, install [Yeoman](http://yeoman.io) and [generator-nuxeo](https://github.com/nuxeo/generator-nuxeo/tree/master):
 
 ```bash
-npm install -g yo
-# Install it from the github repository with the master branch
-npm install -g nuxeo/generator-nuxeo
+npm install -g yo nuxeo/generator-nuxeo
 ```
 
 # Quickstart
 ## Bootstrap an Empty Nuxeo Project
-To create an empty Nuxeo Project (based on a Maven multi-module project), **ensure you are in an empty folder**, and execute the following lines:
+To create an empty Nuxeo Project (based on a Maven multi-module project), execute the following lines:
 
 ```bash
 mkdir my-project
@@ -51,7 +54,7 @@ cd my-project
 yo nuxeo
 ```
 
-Default values are fine for a quick start.
+Default values are fine for a quick start. You will have to specify at least your project group ID (for instance `my.company`.)
 
 # Usage
 You can create several modules at once like:
@@ -75,18 +78,16 @@ yo nuxeo [options] [<generator>..]
 The main Generator can call small generators defined in [https://github.com/nuxeo/generator-nuxeo-meta/](https://github.com/nuxeo/generator-nuxeo-meta/).
 
 ## Multi module
-Sets up an empty Nuxeo Bundle using Maven multi module support.
+Set up an empty Nuxeo Bundle using Maven multi module support.
 
 ```bash
-yo nuxeo
-# or
 yo nuxeo multi-module
 ```
 
-`multi-module` is the default generator when not specified.
+`multi-module` is the default generator when none is given as a parameter to `yo nuxeo`
 
 ### Parameters:
-- **Use a parent artifact**: Parent artifact makes your project inherit dependencies, properties, ... from another project. We recommend you to keep the default value and use `org.nuxeo.ecm.distribution:nuxeo-distribution`.
+- **Use a parent artifact**: Parent artifact makes your project inherit dependencies, properties and other fields from another project. We recommend to keep the default value and use `org.nuxeo.ecm.distribution:nuxeo-distribution`.
 - **Nuxeo Version**: _Asked only if no parent specified_, it specify which Nuxeo version of the dependency management will be imported.
 
 ### Important Notes
