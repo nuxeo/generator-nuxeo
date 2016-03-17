@@ -22,6 +22,7 @@ gulp.task('static', function() {
 
 gulp.task('nsp', function(cb) {
   nsp({
+    shrinkwrap: __dirname + '/npm-shrinkwrap.json',
     package: path.resolve('package.json')
   }, cb);
 });
@@ -76,5 +77,5 @@ gulp.task('test', ['lint', 'pre-test'], function(cb) {
     });
 });
 
-gulp.task('prepublish', ['nsp']);
+gulp.task('prepublish', ['test', 'nsp']);
 gulp.task('default', ['static', 'test']);
