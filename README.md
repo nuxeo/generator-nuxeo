@@ -29,7 +29,6 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 - If you are using Nuxeo Platform 5.8 or 6.0, code templates are available in [Nuxeo IDE](https://doc.nuxeo.com/x/ZYKE) using the [Nuxeo wizard](https://doc.nuxeo.com/x/uoSN).
 
 # Installation
-**generator-nuxeo is not yet available as a global NPM module. It will be installed from the Github repository.**
 
 ## Requirements
 
@@ -41,6 +40,9 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 First, install [Yeoman](http://yeoman.io) and [generator-nuxeo](https://github.com/nuxeo/generator-nuxeo/tree/master):
 
 ```bash
+# Global NPM registry install
+npm install -g yo generator-nuxeo
+# Install from master
 npm install -g yo nuxeo/generator-nuxeo
 ```
 
