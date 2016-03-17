@@ -1,4 +1,8 @@
 [![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=tools_generator-nuxeo-master)](https://qa.nuxeo.org/jenkins/job/tools_generator-nuxeo-master/)
+[![npm version](https://img.shields.io/npm/v/generator-nuxeo.svg?style=flat-square)](https://www.npmjs.com/package/generator-nuxeo)
+[![npm downloads](https://img.shields.io/npm/dm/generator-nuxeo.svg?style=flat-square)](https://www.npmjs.com/package/generator-nuxeo)
+[![Dependency Status](https://img.shields.io/david/nuxeo/generator-nuxeo.svg?style=flat-square)](https://david-dm.org/nuxeo/generator-nuxeo) [![devDependency Status](https://img.shields.io/david/dev/nuxeo/generator-nuxeo.svg?style=flat-square)](https://david-dm.org/nuxeo/generator-nuxeo#info=devDependencies)
+
 
 # About
 **Yeoman Generator for Nuxeo Platform**
