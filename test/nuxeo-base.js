@@ -1,7 +1,7 @@
 'use strict';
 var assert = require('yeoman-assert');
 var _ = require('lodash');
-var helpers = require('yeoman-generator').test;
+var helpers = require('yeoman-test');
 
 describe('nuxeo-base', function() {
   this.timeout(5000);

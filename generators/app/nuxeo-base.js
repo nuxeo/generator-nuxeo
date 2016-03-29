@@ -9,7 +9,7 @@ var maven = require('../../utils/maven.js');
 var recursiveSync = require('../../utils/recursive-readdirSync.js');
 var nuxeowelcome = require('../../utils/welcome.js');
 
-module.exports = yeoman.generators.Base.extend({
+module.exports = yeoman.Base.extend({
   _moduleExists: function(module) {
     return typeof this.nuxeo.modules[module] !== 'undefined';
   },

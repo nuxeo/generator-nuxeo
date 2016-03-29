@@ -1,6 +1,6 @@
 'use strict';
 var path = require('path');
-var helpers = require('yeoman-generator').test;
+var helpers = require('yeoman-test');
 
 describe('generator-nuxeo', function() {
   before(function(done) {
