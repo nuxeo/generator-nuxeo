@@ -78,6 +78,7 @@ yo nuxeo [options] [<generator>..]
 -n,   --meta          # Branch of `nuxeo/generator-nuxeo-meta`                 Default: stable
 -l,   --localPath     # Path to a local clone of `nuxeo/generator-nuxeo-meta`
 -n,   --nologo        # Disable welcome logo                                   Default: false
+-t,   --type          # Set module target's type                               Default: core
 ```
 
 # Available Generators
