@@ -61,7 +61,7 @@ module.exports = yeoman.Base.extend({
   },
   _getBaseFolderName: function(type) {
     if (this._isMultiModule() && type !== 'root') {
-      return this._getTypeFolderName(type || 'core');
+      return this._getTypeFolderName(type || this.options.type);
     } else {
       return '.';
     }
@@ -77,7 +77,7 @@ module.exports = yeoman.Base.extend({
 
     // Add Maven module to parent
     var pom = maven.open(this.fs.read('pom.xml'));
-    if (!pom.containsModule(dir)) {
+    if (!pom.containsModule(dir) && this.currentProps) {
       // If not module, assuming we are handling a template that contains
       // parent_package and parent_version properties.
       pom.addModule(dir);

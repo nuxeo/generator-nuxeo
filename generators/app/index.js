@@ -32,7 +32,6 @@ module.exports = nuxeo.extend({
       }
     });
     questions = promptSuggestion.prefillQuestions(this._globalConfig, questions);
-
     this.env.adapter.prompt(questions, function(answers) {
       if (!this.options['skip-cache']) {
         // Reset computed default value to ensure the user input is stored
@@ -72,6 +71,12 @@ module.exports = nuxeo.extend({
       defaults: false,
       desc: 'Disable welcome logo'
     });
+    this.option('type', {
+      type: String,
+      alias: 't',
+      defaults: 'core',
+      desc: 'Set module target\'s type'
+    });
   },
   initializing: function() {
     var done = this.async();
@@ -80,6 +85,9 @@ module.exports = nuxeo.extend({
     if (!this.options.nologo) {
       this._showHello();
     }
+
+    // Expose options in the global scope for accessing them in generator's decriptors.
+    global._options = this.options;
 
     var fetchMethod = this.options.localPath ? init.fetchLocal : init.fetchRemote;
     var seq = async.seq(fetchMethod, init.readDescriptor, init.resolveModule, init.filterModules).bind(this);
