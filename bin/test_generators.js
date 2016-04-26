@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 
+const NUXEO_VERSION = '8.2'
+
 /*eslint camelcase:0*/
 'use strict';
+
+var branch = process.argv.length > 3 ? process.argv[3] : 'master';
+var version = process.argv.length > 2 ? process.argv[2] : NUXEO_VERSION;
+if (version == 'latest') {
+  version = NUXEO_VERSION;
+}
 
 var yo = require('yeoman-environment');
 var path = require('path');
@@ -10,7 +18,6 @@ var child_process = require('child_process');
 var fs = require('fs');
 var log = require('yeoman-environment/lib/util/log')();
 var async = require('async');
-var branch = process.argv.length > 2 ? process.argv[2] : 'master';
 
 // Prepare a ./tmp folder to generate everything
 var tmp = path.join(path.dirname(__filename), '..', '/tmp');
@@ -22,6 +29,7 @@ mkdirp.sync(tmp);
 process.chdir(tmp);
 log.info('Working directory is: ' + tmp);
 log.info('Using branch: ' + branch);
+log.info('Nuxeo version: ' + version);
 
 /** ADAPTER */
 var Adapter = function() {};
@@ -61,7 +69,7 @@ async.waterfall([function(callback) {
   adapter.responses({
     super_artifact: 'nuxeo-distribution',
     super_package: 'org.nuxeo.ecm.distribution',
-    super_version: '8.1',
+    super_version: version,
     parent_artifact: 'my-test-parent',
     parent_package: 'org.nuxeo.generator.sample',
     parent_version: '1.0-SNAPSHOT',
@@ -101,14 +109,16 @@ async.waterfall([function(callback) {
 }, function(callback) {
   // Add it a sync Listener
   adapter.responses({
+    artifact: 'my-test-listener-artifact',
     package: 'org.nuxeo.generator.sample',
+    version: '1.0-SNAPSHOT',
     listener_name: 'MySyncListener',
     events: ['documentCreated', 'aboutToCreate', 'documentRemoved'],
     custom_events: ['myEvent', 'fakeEvent'],
     async: false
   });
 
-  env.run(`nuxeo:test --meta=${branch} --nologo=true listener`, callback);
+  env.run(`nuxeo:test --type=listener --meta=${branch} --nologo=true listener`, callback);
 }, function(callback) {
   // Add it a Service
   adapter.responses({
@@ -117,6 +127,17 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true service`, callback);
+}, function(callback) {
+  // Add it a Service in a new artifact
+  adapter.responses({
+    artifact: 'my-test-web-artifact',
+    package: 'org.nuxeo.generator.sample',
+    version: '1.0-SNAPSHOT',
+    package: 'org.nuxeo.generator.sample',
+    service_name: 'MyTestGeneratedService'
+  });
+
+  env.run(`nuxeo:test --type=service --meta=${branch} --nologo=true service`, callback);
 }, function(callback) {
   // Add it a Package
   adapter.responses({
