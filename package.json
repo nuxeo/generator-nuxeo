@@ -24,6 +24,9 @@
     "async": "^1.5.2",
     "chalk": "^1.0.0",
     "cheerio": "^0.19.0",
+    "fs-extra": "^0.28.0",
+    "gulp-eslint": "^2.0.0",
+    "gulp-istanbul": "^0.10.4",
     "js-beautify": "^1.6.2",
     "lodash": "^4.0.0",
     "minimatch": "^3.0.0",
@@ -32,20 +35,19 @@
     "promise": "^7.1.1",
     "underscore.string": "^3.2.2",
     "yeoman-generator": "^0.22.5",
-    "yosay": "^1.0.2",
-    "fs-extra": "^0.26.2"
+    "yosay": "^1.0.2"
   },
   "devDependencies": {
-    "gulp": "^3.6.0",
+    "gulp": "^3.9.1",
     "gulp-batch": "^1.0.5",
-    "gulp-eslint": "^1.0.0",
+    "gulp-eslint": "^2.0.0",
     "gulp-exclude-gitignore": "^1.0.0",
-    "gulp-istanbul": "^0.9.0",
-    "gulp-mocha": "^2.0.0",
-    "gulp-nsp": "^2.1.0",
+    "gulp-istanbul": "^0.10.4",
+    "gulp-mocha": "^2.2.0",
+    "gulp-nsp": "^2.4.0",
     "gulp-plumber": "^1.0.0",
     "gulp-watch": "^4.3.5",
-    "yeoman-assert": "^2.0.0"
+    "yeoman-assert": "^2.2.1"
   },
   "repository": "nuxeo/generator-nuxeo",
   "scripts": {
