@@ -2,11 +2,11 @@
 var path = require('path');
 var gulp = require('gulp');
 var fs = require('fs');
+var rimraf = require('rimraf');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
 var eslint = require('gulp-eslint');
 var excludeGitignore = require('gulp-exclude-gitignore');
-var childProcess = require('child_process');
 var mocha = require('gulp-mocha');
 var istanbul = require('gulp-istanbul');
 var nsp = require('gulp-nsp');
@@ -44,7 +44,7 @@ gulp.task('watch-test', function() {
 gulp.task('checkstyle', function() {
   var targetFolder = 'target';
   if (fs.existsSync(targetFolder)) {
-    childProcess.execSync('rm -rf ' + targetFolder);
+    rimraf.sync(targetFolder);
   }
   fs.mkdirSync('target');
 
