@@ -30,10 +30,11 @@ describe('Templating', function() {
   });
 
   it('can unpackagize string', function() {
-    assert.equal('org/nuxeo/something', tplPath('{{s.unpackagize(\'org.nuxeo.something\')}}'));
+    assert.equal(path.join('org', 'nuxeo', 'something'), tplPath('{{s.unpackagize(\'org.nuxeo.something\')}}'));
   });
 
   it('can resolve a templates path path', function() {
+    const expect = path.join('src', 'org', 'nuxeo', 'dummy', 'test', 'test-my-name.txt');
     var ctx = {
       package: 'org.nuxeo.dummy',
       name: 'TestMyName'
@@ -43,10 +44,11 @@ describe('Templating', function() {
 
     _.forEach(files, function(file) {
       var dest = tplPath(file, ctx);
-      var filename = path.basename(dest);
 
+      var filename = path.basename(dest);
       if (!s.startsWith(filename, '.')) {
-        assert.ok(s.endsWith(dest, 'src/org/nuxeo/dummy/test/test-my-name.txt'));
+
+        assert.ok(s.endsWith(dest, expect));
       }
     });
 
