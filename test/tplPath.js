@@ -34,7 +34,7 @@ describe('Templating', function() {
   });
 
   it('can resolve a templates path path', function() {
-    const expect = path.join('src', 'org', 'nuxeo', 'dummy', 'test', 'test-my-name.txt');
+    var expect = path.join('src', 'org', 'nuxeo', 'dummy', 'test', 'test-my-name.txt');
     var ctx = {
       package: 'org.nuxeo.dummy',
       name: 'TestMyName'
