@@ -2,7 +2,7 @@
   "name": "generator-nuxeo",
   "version": "1.1.2",
   "nuxeo": {
-    "branch": "stable"
+    "branch": "1.1.0"
   },
   "description": "Nuxeo Generator based on Yeoman",
   "homepage": "https://www.nuxeo.com",
