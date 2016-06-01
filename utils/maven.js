@@ -2,6 +2,7 @@
 'use strict';
 var cheerio = require('cheerio');
 var fse = require('fs-extra');
+var _ = require('lodash');
 var beautify = require('js-beautify').html;
 
 /**
@@ -10,7 +11,7 @@ Usage:
      var pom = maven.open('pom.xml');
      pom.addDependency(gav)
      pom.addDependency(groupId, artifactId, version, type, scope)
-     pom.containsDependency(groupId, artifactId)
+     pom.containsDependency(dependency)
 
      pom.save(this.fs, filename);
 */
@@ -42,6 +43,18 @@ function maven(content) {
       }
       return $dep;
     },
+
+    convertToObject: function(elt) {
+      var n = $(elt);
+      return {
+        groupId: n.find('groupId').text() || undefined,
+        artifactId: n.find('artifactId').text() || undefined,
+        version: n.find('version').text() || undefined,
+        extension: n.find('type').text() || undefined,
+        classifier: n.find('scope').text() || undefined
+      };
+    },
+
     addDependency: function() {
       var args = Array.prototype.slice.call(arguments, 0);
       if (args.length === 1) {
@@ -60,18 +73,25 @@ function maven(content) {
       };
 
       // Format: <groupId>:<artifactId>[:<version>[:<extension>[:<classifier>]]]
-      if (this.containsDependency(dep.groupId, dep.artifactId)) {
+      if (this.containsDependency(dep)) {
         return dep;
       }
       this._dependenciesNode().append(this.convertToXml(dep));
       return dep;
     },
-    containsDependency: function(groupId, artifactId) {
-      // XXX: Do not only test artifact id :)
+
+    containsDependency: function(dep) {
+      // XXX Should handle the case of adding a "compile" dependency after a "test" dependency.
+      // Test dependency should be removed to be cleaner.
+      var that = this;
       return this._dependenciesNode().find('artifactId').filter(function(i, elt) {
-        return $(elt).text() === artifactId;
+        return $(elt).text() === dep.artifactId;
+      }).parent().filter(function(i, elt) {
+        var o = that.convertToObject(elt);
+        return _.isEqual(o, dep);
       }).length > 0;
     },
+
     dependencies: function() {
       var dependencies = [];
       this._dependenciesNode().find('dependency').each(function(i, elt) {
@@ -83,6 +103,7 @@ function maven(content) {
       });
       return dependencies;
     },
+
     addModule: function(module) {
       if (!this.containsModule(module)) {
         if ($('modules').length === 0) {
@@ -94,11 +115,13 @@ function maven(content) {
       }
       return module;
     },
+
     containsModule: function(module) {
       return $('modules module').filter(function(i, elt) {
         return $(elt).text() === module;
       }).length > 0;
     },
+
     modules: function() {
       var modules = [];
       $('modules module').each(function(i, elt) {
@@ -106,9 +129,11 @@ function maven(content) {
       });
       return modules;
     },
+
     artifactId: function() {
       return $('project>artifactId').text().trim();
     },
+
     groupId: function() {
       var $groupId = $('project>groupId');
       if ($groupId.length === 0) {
@@ -116,6 +141,7 @@ function maven(content) {
       }
       return $groupId.text().trim();
     },
+
     _dependenciesNode: function() {
       var isBom = $('packaging').text() === 'pom';
       if (isBom && $('dependencyManagement').length === 0) {
@@ -128,6 +154,7 @@ function maven(content) {
       }
       return $root.children('dependencies');
     },
+
     _xml: function() {
       return beautify($.xml(), {
         indent_size: 2,

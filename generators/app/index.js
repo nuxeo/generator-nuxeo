@@ -19,6 +19,7 @@ module.exports = nuxeo.extend({
     // Override Yeoman global storage; use only the local one
     return this._getStorage();
   },
+
   prompt: function(questions, callback) {
     if (!questions || !_.isArray(questions)) {
       return this;
@@ -48,6 +49,7 @@ module.exports = nuxeo.extend({
 
     return this;
   },
+
   constructor: function() {
     // Do not ask user when modifying twice a file
     arguments[1].force = true;
@@ -78,6 +80,7 @@ module.exports = nuxeo.extend({
       desc: 'Set module target\'s type'
     });
   },
+
   initializing: function() {
     var done = this.async();
     var init = this._init;
@@ -95,6 +98,7 @@ module.exports = nuxeo.extend({
       done();
     });
   },
+
   prompting: function() {
     var done = this.async();
     var that = this;
@@ -129,6 +133,7 @@ module.exports = nuxeo.extend({
       done();
     });
   },
+
   writing: function() {
     var that = this;
     var done = this.async();
@@ -234,6 +239,7 @@ module.exports = nuxeo.extend({
       done();
     });
   },
+
   end: function() {
     this.log.info('You can start editing code or you can continue with calling another generator (yo nuxeo <generator>..)');
   }

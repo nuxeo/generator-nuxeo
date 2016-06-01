@@ -13,9 +13,11 @@ module.exports = yeoman.Base.extend({
   _moduleExists: function(module) {
     return typeof this.nuxeo.modules[module] !== 'undefined';
   },
+
   _moduleList: function() {
     return _.keys(this.nuxeo.modules);
   },
+
   _moduleFindParents: function(args) {
     var res = [];
     if (_.isEmpty(args)) {
@@ -33,6 +35,7 @@ module.exports = yeoman.Base.extend({
     }.bind(this));
     return modules;
   },
+
   _moduleResolveParent: function(module, depends) {
     var ret = depends || [];
     var d = this.nuxeo.modules[module] && this.nuxeo.modules[module].depends || 'default';
@@ -42,6 +45,7 @@ module.exports = yeoman.Base.extend({
     }
     return this._moduleResolveParent(d, ret);
   },
+
   _moduleReadDescriptor: function(remote) {
     this.nuxeo = {
       modules: {},
@@ -56,9 +60,11 @@ module.exports = yeoman.Base.extend({
     }.bind(this));
     // this.log(this.nuxeo.modules);
   },
+
   _isMultiModule: function() {
     return this.config.get('multi') || false;
   },
+
   _getBaseFolderName: function(type) {
     if (this._isMultiModule() && type !== 'root') {
       return this._getTypeFolderName(type || this.options.type);
@@ -66,6 +72,7 @@ module.exports = yeoman.Base.extend({
       return '.';
     }
   },
+
   _getTypeFolderName: function(type) {
     var dir = _.find(fs.readdirSync('.'), function(file) {
       return fs.lstatSync(file).isDirectory() && file.match('-' + type + '$');
@@ -91,6 +98,7 @@ module.exports = yeoman.Base.extend({
 
     return dir;
   },
+
   _addModulesDependencies: function(pomParent) {
     var that = this;
     var dirs = _.filter(fs.readdirSync('.'), function(file) {
@@ -104,6 +112,7 @@ module.exports = yeoman.Base.extend({
       }
     });
   },
+
   _tplPath: function(str, ctx) {
     var regex = /{{([\s\S]+?)}}/g;
     return _.template(str, {
@@ -113,15 +122,15 @@ module.exports = yeoman.Base.extend({
       }
     })(ctx);
   },
+
   _recursivePath: function(basePath) {
     return recursiveSync(basePath, ['.DS_Store']);
   },
+
   _showHello: function() {
     this.log(nuxeowelcome);
-    // this.log(yosay(
-    //   'Welcome to the ' + chalk.red('Nuxeo') + ' generator!'
-    // ));
   },
+
   _showWelcome: function() {
     if (!_.isEmpty(this.nuxeo.selectedModules)) {
       this.log.info('You\'ll be prompted for generation of: ' + chalk.blue(this.nuxeo.selectedModules.join(', ')));
@@ -129,17 +138,21 @@ module.exports = yeoman.Base.extend({
       this.log.info(chalk.yellow('Nothing to install.'));
     }
   },
+
   _require: function(m) {
     return require(m);
   },
+
   _moduleSkipped: function(module) {
     var skipFunc = this.nuxeo.modules[module].skip;
     return typeof skipFunc === 'function' ? skipFunc.apply(this) : false;
   },
+
   _parentSkipped: function(module) {
     var parent = this.nuxeo.modules[module].depends || 'default';
     return this._moduleSkipped(parent);
   },
+
   _init: {
     fetchRemote: function(callback) {
       // Silent logs while remote fetching
@@ -180,6 +193,7 @@ module.exports = yeoman.Base.extend({
       });
       callback(null, this._moduleFindParents(args));
     },
+
     filterModules: function(modules, callback) {
       var filtered = [];
       var skip = false;

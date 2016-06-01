@@ -55,9 +55,13 @@ describe('Maven module can', function() {
   it('find existing dependency', function() {
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-core');
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-api');
-    assert.equal(false, this.pom.containsDependency('org.nuxeo.addon', 'mynewadon'));
-    this.pom.addDependency('org.nuxeo.addon', 'mynewadon');
-    assert.equal(true, this.pom.containsDependency('org.nuxeo.addon', 'mynewadon'));
+    var dep = {
+      artifactId: 'mynewaddon',
+      groupId: 'org.nuxeo.addon'
+    };
+    assert.equal(false, this.pom.containsDependency(dep));
+    dep = this.pom.addDependency('org.nuxeo.addon', 'mynewaddon');
+    assert.equal(true, this.pom.containsDependency(dep));
   });
 
   it('add dependency independantly of the GAV', function() {
@@ -101,6 +105,12 @@ describe('Maven module can', function() {
     assert.equal(2, this.pom.dependencies().length);
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-api');
     assert.equal(2, this.pom.dependencies().length);
+    this.pom.addDependency('org.nuxeo.addon', 'mynewadon-api', undefined, 'test-jar');
+    assert.equal(3, this.pom.dependencies().length);
+    this.pom.addDependency('org.nuxeo.addon', 'mynewadon-api', '4.5-SNAP');
+    assert.equal(4, this.pom.dependencies().length);
+    this.pom.addDependency('org.nuxeo.addon', 'mynewadon-api', '4.5-SNAP');
+    assert.equal(4, this.pom.dependencies().length);
   });
 
   it('convert dependency to XML node', function() {
