@@ -87,8 +87,23 @@ function maven(content) {
       return this._dependenciesNode().find('artifactId').filter(function(i, elt) {
         return $(elt).text() === dep.artifactId;
       }).parent().filter(function(i, elt) {
-        var o = that.convertToObject(elt);
-        return _.isEqual(o, dep);
+        // Ensure each string keyed properties are setted to something
+        var od = _.defaults(that.convertToObject(elt), {
+          groupId: '',
+          artifactId: '',
+          version: '',
+          extension: '',
+          classifier: ''
+        });
+        var dd = _.defaults(dep, {
+          groupId: '',
+          artifactId: '',
+          version: '',
+          extension: '',
+          classifier: ''
+        });
+
+        return _.isEqual(od, dd);
       }).length > 0;
     },
 

@@ -142,7 +142,6 @@ module.exports = nuxeo.extend({
       var props = that.currentProps = that.props[item];
 
       // XXX Should be handled differently
-      // Add _.s to the props for allowing using the same str format function
       props.s = s;
       props.multi = that._isMultiModule();
 
@@ -168,7 +167,7 @@ module.exports = nuxeo.extend({
       var tmplPath = path.resolve(that.nuxeo.cachePath, 'generators', item, 'templates');
       var destPath = that._getBaseFolderName(generator.type);
       if (fs.existsSync(tmplPath)) {
-        _.forEach(that._recursivePath(tmplPath), function(template) {
+        _.forEach(function(template) {
           var dest = that._tplPath(template, props).replace(tmplPath, destPath);
           if (s.startsWith(path.basename(dest), '.')) {
             mkdirp(path.dirname(dest));
@@ -178,7 +177,9 @@ module.exports = nuxeo.extend({
         });
       }
 
-      _.forEach(generator['main-java'], function(source) {
+      _(generator['main-java']).filter(function(source) {
+        return typeof source.when !== 'function' || source.when(props);
+      }).forEach(function(source) {
         // XXX To be refactored
         var args = [that._getBaseFolderName(generator.type), 'src/main/java'];
         args.push(props.package.split('.'));
@@ -188,7 +189,9 @@ module.exports = nuxeo.extend({
         that.fs.copyTpl(src, dest, props);
       });
 
-      _.forEach(generator['test-java'], function(source) {
+      _(generator['test-java']).filter(function(source) {
+        return typeof source.when !== 'function' || source.when(props);
+      }).forEach(function(source) {
         // XXX To be refactored
         var args = [that._getBaseFolderName(generator.type), 'src/test/java'];
         args.push(props.package.split('.'));
@@ -216,7 +219,7 @@ module.exports = nuxeo.extend({
       }
 
       // handling contributions
-      _.forEach(generator.contributions, function(contribution) {
+      _(generator.contributions).forEach(function(contribution) {
         if (!mf) {
           throw 'MANIFEST.MF file is missing.';
         }

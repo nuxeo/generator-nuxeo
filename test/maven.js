@@ -60,7 +60,11 @@ describe('Maven module can', function() {
       groupId: 'org.nuxeo.addon'
     };
     assert.equal(false, this.pom.containsDependency(dep));
-    dep = this.pom.addDependency('org.nuxeo.addon', 'mynewaddon');
+    this.pom.addDependency('org.nuxeo.addon', 'mynewaddon');
+    assert.equal(true, this.pom.containsDependency(dep));
+    dep.extension = 'test-jar';
+    assert.equal(false, this.pom.containsDependency(dep));
+    this.pom.addDependency('org.nuxeo.addon:mynewaddon::test-jar:');
     assert.equal(true, this.pom.containsDependency(dep));
   });
 
