@@ -141,6 +141,13 @@ Adds a [Nuxeo component](https://doc.nuxeo.com/x/DIAO) exposed as a Nuxeo servic
 yo nuxeo service
 ```
 
+## Nuxeo Content Enricher
+Creates a [Content Enricher](https://doc.nuxeo.com/x/5wUuAQ) that enriches with more information a REST response.
+
+```bash
+yo nuxeo enricher
+```
+
 ## Nuxeo Package
 Creates a Maven module to handle a [Nuxeo Package](https://doc.nuxeo.com/x/CwIz) generation of your project. **Can only be called in a Maven multi-module architecture**, hence make sure to bootstrap your project using `yo nuxeo` or `yo nuxeo multi-module`. If you used `yo nuxeo single-module` to bootstrap your project, you won't be able to call that option afterwards.
 
