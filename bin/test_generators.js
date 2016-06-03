@@ -40,7 +40,7 @@ Adapter.prototype.prompt = function(questions, callback) {
   questions.forEach(function(question) {
     if (!this._responses[question.name] && !question.default) {
       this.log.error('No response found for: ' + question.name);
-      res[question.name] = '';
+      res[question.name] = undefined;
     } else {
       res[question.name] = this._responses[question.name] || question.default;
     }
@@ -133,11 +133,28 @@ async.waterfall([function(callback) {
     artifact: 'my-test-web-artifact',
     package: 'org.nuxeo.generator.sample',
     version: '1.0-SNAPSHOT',
-    package: 'org.nuxeo.generator.sample',
     service_name: 'MyTestGeneratedService'
   });
 
   env.run(`nuxeo:test --type=service --meta=${branch} --nologo=true service`, callback);
+}, function(callback) {
+  // Add a DocumentModel enricher
+  adapter.responses({
+    package: 'org.nuxeo.generator.sample.enricher',
+    enricher_name: 'SampleDoc',
+    entity_type: 'org.nuxeo.ecm.core.api.DocumentModel'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true enricher`, callback);
+}, function(callback) {
+  // Add a NuxeoPrincipal enricher
+  adapter.responses({
+    package: 'org.nuxeo.generator.sample.enricher',
+    enricher_name: 'SamplePrincipal',
+    entity_type: 'org.nuxeo.ecm.core.api.NuxeoPrincipal'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true enricher`, callback);
 }, function(callback) {
   // Add it a Package
   adapter.responses({
