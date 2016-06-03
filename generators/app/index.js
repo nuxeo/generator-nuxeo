@@ -167,7 +167,7 @@ module.exports = nuxeo.extend({
       var tmplPath = path.resolve(that.nuxeo.cachePath, 'generators', item, 'templates');
       var destPath = that._getBaseFolderName(generator.type);
       if (fs.existsSync(tmplPath)) {
-        _.forEach(function(template) {
+        _.forEach(that._recursivePath(tmplPath), function(template) {
           var dest = that._tplPath(template, props).replace(tmplPath, destPath);
           if (s.startsWith(path.basename(dest), '.')) {
             mkdirp(path.dirname(dest));
