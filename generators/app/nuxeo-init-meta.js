@@ -1,5 +1,3 @@
-'use strict';
-
 var _ = require('lodash');
 var chalk = require('chalk');
 
@@ -16,17 +14,20 @@ module.exports = {
         callback(err, remote);
       }, true);
     },
+
     fetchLocal: function(callback) {
       this.log.error('Using a local path: ' + this.options.localPath);
       callback(undefined, {
         cachePath: this.options.localPath
       });
     },
+
     readDescriptor: function(remote, callback) {
       // Require modules
       this._moduleReadDescriptor(remote);
       callback();
     },
+
     resolveModule: function(callback) {
       var args = [];
       var that = this;
@@ -42,16 +43,42 @@ module.exports = {
 
         args.push(arg);
       });
-      callback(null, this._moduleFindParents(args));
+
+      // Default module is single-module
+      if (_.isEmpty(args)) {
+        args.push('multi-module');
+        args.push('single-module');
+      }
+
+      var types = this._modulesPerTypes(args);
+      _.keys(types).forEach((type) => {
+        types[type] = this._moduleFindParents(types[type]);
+      });
+
+      callback(null, types);
     },
 
-    filterModules: function(modules, callback) {
-      var filtered = [];
-      var skip = false;
+    filterModulesPerType: function(types, callback) {
+      var filtered = {};
+      // this.log.invoke('Requirements: ' + chalk.blue(modules.join(', ')));
+      _.keys(types).forEach((type) => {
+        let modules = types[type];
+        filtered[type] = this._init._filterModules.call(this, modules, type);
+      });
 
-      this.log.invoke('Requirements: ' + chalk.blue(modules.join(', ')));
-      _.forEachRight(modules, function(module) {
-        if (skip || this._moduleSkipped(module)) {
+
+      if (callback) {
+        callback(null, filtered);
+      } else {
+        return filtered;
+      }
+    },
+
+    _filterModules: function(modules, type) {
+      let skip = false;
+      let filtered = [];
+      _.forEachRight(modules, (module) => {
+        if (skip || this._moduleSkipped(module, type)) {
           this.log.info('Installation of ' + chalk.yellow(module) + ' is skipped.');
           skip = true;
           return;
@@ -64,8 +91,12 @@ module.exports = {
 
           filtered.splice(0, 0, module);
         }
-      }.bind(this));
-      this.nuxeo.selectedModules = filtered;
+      });
+      return filtered;
+    },
+
+    saveModules(modules, callback) {
+      this.nuxeo.selectedModules = _.omitBy(modules, _.isEmpty);
       callback();
     }
   }

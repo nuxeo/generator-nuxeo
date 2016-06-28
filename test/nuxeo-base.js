@@ -1,4 +1,3 @@
-'use strict';
 var assert = require('yeoman-assert');
 var _ = require('lodash');
 var helpers = require('yeoman-test');
@@ -6,27 +5,23 @@ var helpers = require('yeoman-test');
 describe('nuxeo-base', function() {
   this.timeout(5000);
 
-  before(function() {
+  before(function(done) {
     var deps = ['./generators/app/'];
     this.gene = helpers.createGenerator('nuxeo', deps);
+
+    this.init = this.gene._init;
+    this.init.fetchRemote.call(this.gene, function(err, remote) {
+      this.remote = remote;
+      this.init.readDescriptor.call(this.gene, this.remote, done);
+    }.bind(this));
   });
 
   describe(':init should', function() {
-    before(function(done) {
-      this.init = this.gene._init;
-      this.init.fetchRemote.call(this.gene, function(err, remote) {
-        this.remote = remote;
-        done(err);
-      }.bind(this));
-    });
-
     it('clone the repository', function() {
       assert.ok(this.remote);
     });
 
-    it('read the descriptor', function(done) {
-      assert.ok(!this.gene.nuxeo);
-      this.init.readDescriptor.call(this.gene, this.remote, done);
+    it('read the descriptor', function() {
       assert.ok(this.gene.nuxeo);
       assert.ok(_.keys(this.gene.nuxeo.modules).length > 0);
       assert.ok(this.gene.nuxeo.modules['single-module']);
@@ -51,6 +46,19 @@ describe('nuxeo-base', function() {
 
       deps = this.gene._moduleFindParents([]);
       assert.deepEqual(['multi-module', 'single-module'], deps);
+    });
+  });
+
+  describe(':helper should', function() {
+    it('can resolved type inheritance', function() {
+      var generators = ['multi-module', 'single-module', 'polymer', 'package'];
+      this.gene.nuxeo.modules.polymer = {
+        type: 'web'
+      };
+
+      assert.equal('web', this.gene._moduleFindInheritedType(generators, 'polymer'));
+      assert.equal('web', this.gene._moduleFindInheritedType(generators, 'single-module'));
+      assert.equal('marketplace', this.gene._moduleFindInheritedType(generators, 'package'));
     });
   });
 });

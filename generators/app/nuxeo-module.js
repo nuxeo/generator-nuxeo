@@ -1,5 +1,3 @@
-'use strict';
-
 var _ = require('lodash');
 var fs = require('fs');
 var maven = require('../../utils/maven.js');
@@ -16,19 +14,19 @@ module.exports = {
 
   _moduleFindParents: function(args) {
     var res = [];
-    if (_.isEmpty(args)) {
-      args = ['multi-module'];
-    }
-    _.each(args, function(arg) {
+
+    _.each(args, (arg) => {
       res.push(this._moduleResolveParent(arg));
-    }.bind(this));
-    // Filter default empty generator
-    var modules = _.reject(_.uniq(_.flatten(_.union(args, res))), function(o) {
-      return o === 'default';
     });
-    modules = _.sortBy(modules, function(m) {
+
+    // Filter default empty generator
+    var modules = _.reject(_.uniq(_.flatten(_.union(args, res))), (o) => {
+      return o === 'default' || o === 'multi-module';
+    });
+
+    modules = _.sortBy(modules, (m) => {
       return this.nuxeo.modules[m].order || 0;
-    }.bind(this));
+    });
     return modules;
   },
 
@@ -48,12 +46,12 @@ module.exports = {
       cachePath: remote.cachePath
     };
     var generatorsPath = path.join(remote.cachePath, 'generators');
-    fs.readdirSync(generatorsPath).forEach(function(file) {
+    fs.readdirSync(generatorsPath).forEach((file) => {
       var descPath = path.join(generatorsPath, file, 'descriptor.js');
       if (fs.existsSync(descPath)) {
         this.nuxeo.modules[file] = require(descPath);
       }
-    }.bind(this));
+    });
     // this.log(this.nuxeo.modules);
   },
 
@@ -75,13 +73,48 @@ module.exports = {
     });
   },
 
-  _moduleSkipped: function(module) {
+  _moduleSkipped: function(module, modules) {
     var skipFunc = this.nuxeo.modules[module].skip;
-    return typeof skipFunc === 'function' ? skipFunc.apply(this) : false;
+    return typeof skipFunc === 'function' ? skipFunc.apply(this, [modules]) : false;
   },
 
   _parentSkipped: function(module) {
     var parent = this.nuxeo.modules[module].depends || 'default';
     return this._moduleSkipped(parent);
+  },
+
+  _createMultiModuleIsNeeded: function(types) {
+    return !this._isMultiModule() && types && types.length > 0 || _.findIndex(this.args, (o) => {
+      return o === 'multi-module';
+    }) >= 0;
+  },
+
+  _moduleResolveType: function(module) {
+    return this.nuxeo.modules[module].type || this.options.type;
+  },
+
+  _modulesPerTypes: function(modules) {
+    var types = {};
+    _(modules).forEach((module) => {
+      var type = this._moduleResolveType(module);
+      // root is multi-module base, skip it.
+      if (type === 'root') {
+        return;
+      }
+
+      var array = types[type] || [];
+      array.push(module);
+      types[type] = array;
+    });
+    return types;
+  },
+
+  _moduleSortedKeys: function() {
+    return _.sortBy(_.keys(this.nuxeo.selectedModules), (key) => {
+      var modules = this.nuxeo.selectedModules[key];
+      return _(modules).map((module) => {
+        return this.nuxeo.modules[module].order || 0;
+      }).min();
+    });
   }
 };

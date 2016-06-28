@@ -1,5 +1,3 @@
-'use strict';
-
 var _ = require('lodash');
 var fs = require('fs');
 var maven = require('../../utils/maven.js');
@@ -14,14 +12,21 @@ module.exports = {
     }
   },
 
-  _getTypeFolderName: function(type) {
+  _resolveTypeFolderName: function(type, create) {
     var dir = _.find(fs.readdirSync('.'), function(file) {
       return fs.lstatSync(file).isDirectory() && file.match('-' + type + '$');
     });
     if (!dir) {
       dir = path.basename(path.resolve('.')) + '-' + type;
-      fs.mkdirSync(dir);
+      if (create) {
+        fs.mkdirSync(dir);
+      }
     }
+    return dir;
+  },
+
+  _getTypeFolderName: function(type) {
+    var dir = this._resolveTypeFolderName(type, true);
 
     // Add Maven module to parent
     var pom = maven.open(this.fs.read('pom.xml'));
