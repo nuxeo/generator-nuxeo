@@ -30,7 +30,7 @@
     "gulp-istanbul": "^0.10.4",
     "js-beautify": "^1.6.2",
     "lodash": "^4.13.0",
-    "minimatch": "^3.0.0",
+    "minimatch": "^3.0.2",
     "mkdirp": "^0.5.1",
     "path": "^0.12.7",
     "promise": "^7.1.1",
