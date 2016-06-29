@@ -1,4 +1,3 @@
-'use strict';
 var s = require('underscore.string');
 var path = require('path');
 

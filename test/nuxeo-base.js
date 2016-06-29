@@ -38,27 +38,11 @@ describe('nuxeo-base', function() {
 
       // Nuxeo Package
       deps = this.gene._moduleFindParents(['package']);
-      assert.deepEqual(['multi-module', 'single-module', 'package'], deps);
+      assert.deepEqual(['single-module', 'package'], deps);
 
       // Operation and Nuxeo Package
       deps = this.gene._moduleFindParents(['package', 'operation']);
-      assert.deepEqual(['multi-module', 'single-module', 'package', 'operation'], deps);
-
-      deps = this.gene._moduleFindParents([]);
-      assert.deepEqual(['multi-module', 'single-module'], deps);
-    });
-  });
-
-  describe(':helper should', function() {
-    it('can resolved type inheritance', function() {
-      var generators = ['multi-module', 'single-module', 'polymer', 'package'];
-      this.gene.nuxeo.modules.polymer = {
-        type: 'web'
-      };
-
-      assert.equal('web', this.gene._moduleFindInheritedType(generators, 'polymer'));
-      assert.equal('web', this.gene._moduleFindInheritedType(generators, 'single-module'));
-      assert.equal('marketplace', this.gene._moduleFindInheritedType(generators, 'package'));
+      assert.deepEqual(['single-module', 'package', 'operation'], deps);
     });
   });
 });

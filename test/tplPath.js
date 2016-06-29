@@ -1,4 +1,3 @@
-'use strict';
 var assert = require('yeoman-assert');
 var recursiveSync = require('../utils/recursive-readdirSync.js');
 var path = require('path');

@@ -1,4 +1,3 @@
-'use strict';
 var path = require('path');
 var assert = require('yeoman-assert');
 var memFs = require('mem-fs');

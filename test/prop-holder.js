@@ -1,4 +1,3 @@
-'use strict';
 var assert = require('yeoman-assert');
 var _ = require('lodash');
 

@@ -1,5 +1,4 @@
 /*eslint camelcase:0*/
-'use strict';
 var cheerio = require('cheerio');
 var fse = require('fs-extra');
 var _ = require('lodash');

@@ -1,4 +1,3 @@
-'use strict';
 var path = require('path');
 var assert = require('yeoman-assert');
 var maven = require('../utils/maven.js');

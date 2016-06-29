@@ -1,4 +1,3 @@
-'use strict';
 var colors = require('ansi-256-colors');
 var chalk = require('chalk');
 var c = colors.fg.getRgb;

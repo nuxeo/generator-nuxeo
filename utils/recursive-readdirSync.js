@@ -1,4 +1,3 @@
-'use strict';
 // Originally https://github.com/jergason/recursive-readdir
 // Using synchronous version of fs module methods.
 
