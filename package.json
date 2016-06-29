@@ -27,7 +27,7 @@
     "fs-extra": "^0.30.0",
     "generator-polymer": "^1.3.0",
     "gulp-eslint": "^2.0.0",
-    "gulp-istanbul": "^0.10.4",
+    "gulp-istanbul": "^1.0.0",
     "js-beautify": "^1.6.2",
     "lodash": "^4.13.0",
     "minimatch": "^3.0.2",
