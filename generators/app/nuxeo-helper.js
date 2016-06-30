@@ -1,3 +1,6 @@
+/*eslint strict:0*/
+'use strict';
+
 var _ = require('lodash');
 var chalk = require('chalk');
 var nuxeowelcome = require('../../utils/welcome.js');
