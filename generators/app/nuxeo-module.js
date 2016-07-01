@@ -14,6 +14,7 @@ module.exports = {
 
   _moduleFindParents: function(args) {
     var res = [];
+    var autonomous = false;
 
     _.each(args, (arg) => {
       res.push(this._moduleResolveParent(arg));
@@ -24,15 +25,29 @@ module.exports = {
       return o === 'default' || o === 'multi-module';
     });
 
+    // Check if an autonomous package is needed
+    _.each(modules, (arg) => {
+      autonomous = this.nuxeo.modules[arg].autonomous || autonomous;
+    });
+
+    // Filter single module if any module present is autonomous
+    if (autonomous) {
+      modules = _.reject(modules, (o) => {
+        return o === 'single-module';
+      });
+    }
+
     modules = _.sortBy(modules, (m) => {
       return this.nuxeo.modules[m].order || 0;
     });
+
     return modules;
   },
 
   _moduleResolveParent: function(module, depends) {
     var ret = depends || [];
     var d = this.nuxeo.modules[module] && this.nuxeo.modules[module].depends || 'default';
+
     ret.push(d);
     if (d === 'single-module') {
       return ret;
