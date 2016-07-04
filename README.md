@@ -1,4 +1,4 @@
-[![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=tools_generator-nuxeo-master)](https://qa.nuxeo.org/jenkins/job/tools_generator-nuxeo-master/)
+[![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=master/tools_generator-nuxeo-master)](https://qa.nuxeo.org/jenkins/job/master/job/tools_generator-nuxeo-master/)
 [![npm version](https://img.shields.io/npm/v/generator-nuxeo.svg?style=flat-square)](https://www.npmjs.com/package/generator-nuxeo)
 [![npm downloads](https://img.shields.io/npm/dm/generator-nuxeo.svg?style=flat-square)](https://www.npmjs.com/package/generator-nuxeo)
 [![Dependency Status](https://img.shields.io/david/nuxeo/generator-nuxeo.svg?style=flat-square)](https://david-dm.org/nuxeo/generator-nuxeo) [![devDependency Status](https://img.shields.io/david/dev/nuxeo/generator-nuxeo.svg?style=flat-square)](https://david-dm.org/nuxeo/generator-nuxeo#info=devDependencies)
@@ -134,18 +134,25 @@ yo nuxeo listener
 - **Asynchronous Listener**: if you need to run after the transaction has committed, in a new transaction and a separate thread. This is useful for any long-running operations whose result doesn't have to be seen immediately in the user interface.
 - **Post-commit Listener**: if you need to run after the transaction has committed, in a new transaction but in the same thread, this is useful for logging.
 
-## Nuxeo Service
+## Service
 Adds a [Nuxeo component](https://doc.nuxeo.com/x/DIAO) exposed as a Nuxeo service.
 
 ```bash
 yo nuxeo service
 ```
 
-## Nuxeo Content Enricher
+## Content Enricher
 Creates a [Content Enricher](https://doc.nuxeo.com/x/5wUuAQ) that enriches with more information a REST response.
 
 ```bash
 yo nuxeo enricher
+```
+
+## Document Adapter
+Creates a Document Adapter that turn `DocumentModel` object into business objects.
+
+```bash
+yo nuxeo adapter
 ```
 
 ## Nuxeo Package

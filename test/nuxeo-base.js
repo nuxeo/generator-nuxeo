@@ -38,11 +38,11 @@ describe('nuxeo-base', function() {
 
       // Nuxeo Package
       deps = this.gene._moduleFindParents(['package']);
-      assert.deepEqual(['single-module', 'package'], deps);
+      assert.deepEqual(['package'], deps);
 
       // Operation and Nuxeo Package
       deps = this.gene._moduleFindParents(['package', 'operation']);
-      assert.deepEqual(['single-module', 'package', 'operation'], deps);
+      assert.deepEqual(['package', 'operation'], deps);
     });
   });
 });
