@@ -273,7 +273,7 @@ module.exports = nuxeo.extend({
       that.fs.copyTpl(src, dest, props);
 
       // Add contribution to the Manifest file
-      var contribPath = path.join('OSGI-INF', that._tplPath(contribName, props));
+      var contribPath = 'OSGI-INF/' + that._tplPath(contribName, props);
       mf.addComponent(contribPath);
       mf.save();
     });
