@@ -107,6 +107,15 @@ async.waterfall([function(callback) {
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true listener`, callback);
 }, function(callback) {
+  // Add a Polymer app in web module
+  adapter.responses({
+    artifact: 'my-app-artifact',
+    name: 'Sample-app',
+    route: 'myApp'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true polymer`, callback);
+}, function(callback) {
   // Add it a sync Listener
   adapter.responses({
     artifact: 'my-test-listener-artifact',
@@ -127,6 +136,14 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true service`, callback);
+}, function(callback) {
+  // Add a DocumentAdapter
+  adapter.responses({
+    package: 'org.nuxeo.generator.sample',
+    doctype: 'File'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true adapter`, callback);
 }, function(callback) {
   // Add it a Service in a new artifact
   adapter.responses({
