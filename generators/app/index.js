@@ -11,6 +11,7 @@ var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
 var manifestmf = require('../../utils/manifestmf.js');
 var propHolder = require('../../utils/property-holder.js');
+var isBinaryFile = require('isbinaryfile').sync;
 var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
 module.exports = nuxeo.extend({
@@ -210,8 +211,10 @@ module.exports = nuxeo.extend({
     if (fs.existsSync(tmplPath)) {
       _.forEach(that._recursivePath(tmplPath), function(template) {
         var dest = that._tplPath(template, props).replace(tmplPath, destPath);
-        if (s.startsWith(path.basename(dest), '.')) {
+        if (s.startsWith(path.basename(dest), '.empty')) {
           mkdirp(path.dirname(dest));
+        } else if (isBinaryFile(template)) {
+          that.fs.copy(template, dest);
         } else {
           that.fs.copyTpl(template, dest, props);
         }
@@ -262,7 +265,10 @@ module.exports = nuxeo.extend({
     // handling contributions
     _(generator.contributions).forEach(function(contribution) {
       if (!mf) {
-        throw 'MANIFEST.MF file is missing.';
+        mf = manifestmf.open(manifestPath, that.fs);
+        if (!mf) {
+          throw 'MANIFEST.MF file is missing.';
+        }
       }
 
       var src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
