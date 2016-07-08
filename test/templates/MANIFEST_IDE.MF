@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 1
+Bundle-Name: Nuxeo Sample Generator
+Bundle-SymbolicName: org.nuxeo.ecm.code.generator;singleton:=true
+Bundle-Vendor: Nuxeo
+Bundle-Version: 1.0.0
+Nuxeo-Component: OSGI-INF/contract-updater-operation-contrib.xml,OSGI-
+ INF/com.bigcorp.contractmgt.contract-service.xml

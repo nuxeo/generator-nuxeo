@@ -6,7 +6,15 @@ function manifest(filep, fsp) {
   var file = filep || 'src/main/resources/META-INF/MANIFEST.MF';
   var content;
   try {
-    content = fs.read(file).split('\n');
+    content = [];
+    _(fs.read(file).split('\n')).forEach(l => {
+      if (l.match(/^\s+\w/)) {
+        // Append splitted line to the previous one
+        content[content.length - 1] = content[content.length - 1] + l.trim();
+      } else {
+        content.push(l);
+      }
+    });
   } catch (e) {
     return undefined;
   }
@@ -17,7 +25,14 @@ function manifest(filep, fsp) {
 
   return {
     _content: function() {
-      return content.join('\n');
+      var index = _.findIndex(content, function(line) {
+        return line.match(/^Nuxeo-Component:/);
+      });
+
+      var res = _.union([], content);
+      var contribs = content[index].replace(/,/g, ',\n ').split('\n');
+      Array.prototype.splice.apply(res, _.union([index, 1], contribs));
+      return res.join('\n');
     },
     symbolicName: function() {
       var index = _.findIndex(content, function(line) {
@@ -42,30 +57,23 @@ function manifest(filep, fsp) {
         return;
       }
 
-      var suffix = ',';
-      if (!content[index].match(/,$/)) {
-        // add the comma and append the line
-        content[index] = content[index] + ',';
-        suffix = '';
-      }
-      insertLine(index + 1, ' ' + componentPath + suffix);
+      content[index] = content[index] + ',' + componentPath;
     },
     components: function() {
-      var res = [];
       var index = _.findIndex(content, function(line) {
         return line.match(/^Nuxeo-Component:/);
       });
       if (index < 0) {
-        return res;
+        return [];
       }
 
-      res.push(content[index].match(/^Nuxeo-Component:\s*([\w\.\-/]+),?/)[1]);
+      var comps = content[index].match(/^Nuxeo-Component:\s*([\w\.\-/,]+)/)[1];
       while (content[index + 1].match('^ ')) {
         index += 1;
-        res.push(content[index].match(/^\s+([\w\.\-/]+),?/)[1]);
+        comps += content[index].match(/^\s+([\w\.\-/,]+)/)[1];
       }
 
-      return res;
+      return comps.split(',');
     },
     save: function() {
       fs.write(file, this._content());
