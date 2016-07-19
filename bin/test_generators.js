@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const NUXEO_VERSION = '8.2'
+const NUXEO_VERSION = '8.3'
 
 /*eslint camelcase:0*/
 'use strict';
