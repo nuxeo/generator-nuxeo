@@ -73,6 +73,7 @@ async.waterfall([function(callback) {
     parent_artifact: 'my-test-parent',
     parent_package: 'org.nuxeo.generator.sample',
     parent_version: '1.0-SNAPSHOT',
+    nuxeo_version: version,
     artifact: 'my-test-core',
     package: 'org.nuxeo.generator.sample',
     version: '1.0-SNAPSHOT',
