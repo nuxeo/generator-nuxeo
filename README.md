@@ -16,13 +16,15 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 ## Features
 - Empty bundle creation
 - Empty bundle creation with Maven multi module support
-- Automation Operation
 - Nuxeo Package (Marketplace)
+- Polymer Based Application
+- Automation Operation
+- Content-Enricher
+- Document Adapter
 - Nuxeo Service
 - Nuxeo Event Listener
 
 ## Incoming Features
-- Polymer based application
 - Functional Testing module
 - REST endpoint / content enricher
 - Scheduler / Worker
@@ -153,6 +155,17 @@ Creates a Document Adapter that turn `DocumentModel` object into business object
 
 ```bash
 yo nuxeo adapter
+```
+
+## Polymer Application
+Creates a [Polymer Starter Kit](https://github.com/PolymerElements/polymer-starter-kit) application bundled as a Nuxeo Bundle.
+
+```bash
+yo nuxeo polymer
+cd *-web && npm install && bower install
+
+# To run the application in dev mode; with file hot reload:
+cd *-web && gulp serve
 ```
 
 ## Nuxeo Package
