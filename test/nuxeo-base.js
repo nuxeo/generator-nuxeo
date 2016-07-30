@@ -44,5 +44,16 @@ describe('nuxeo-base', function() {
       deps = this.gene._moduleFindParents(['package', 'operation']);
       assert.deepEqual(['package', 'operation'], deps);
     });
+
+    it('detect if multi module is needed or not', function() {
+      assert.ok(!this.gene._createMultiModuleIsNeeded(['core']));
+      assert.ok(this.gene._createMultiModuleIsNeeded(['core', 'web']));
+
+      this.gene.args = ['single-module', 'polymer'];
+      assert.ok(this.gene._createMultiModuleIsNeeded(['core', 'web']));
+
+      this.gene.args = ['single-module', 'multi-module'];
+      assert.ok(this.gene._createMultiModuleIsNeeded(['core']));
+    });
   });
 });
