@@ -9,8 +9,8 @@ describe('nuxeo-base', function() {
     var deps = ['./generators/app/'];
     this.gene = helpers.createGenerator('nuxeo', deps);
 
-    this.init = this.gene._init;
-    this.init.fetchRemote.call(this.gene, function(err, remote) {
+    this.init = this.gene._init();
+    this.init.fetch.call(this.gene, function(err, remote) {
       this.remote = remote;
       this.init.readDescriptor.call(this.gene, this.remote, done);
     }.bind(this));
