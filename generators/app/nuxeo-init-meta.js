@@ -105,6 +105,8 @@ module.exports = {
         callback(null, types);
       },
 
+      _filterModules: filterModules,
+
       filterModulesPerType: function(types, callback) {
         var filtered = {};
         // this.log.invoke('Requirements: ' + chalk.blue(modules.join(', ')));

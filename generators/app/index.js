@@ -109,7 +109,7 @@ module.exports = nuxeo.extend({
       // Disable log for this.
       var t = this.log.info;
       this.log.info = () => {};
-      var module = this._init._filterModules.call(this, ['multi-module']);
+      var module = this._init()._filterModules.call(this, ['multi-module']);
       this.log.info = t;
 
       if (!_.isEmpty(module)) {
