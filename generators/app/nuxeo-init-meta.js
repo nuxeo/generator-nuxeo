@@ -3,17 +3,34 @@
 
 var _ = require('lodash');
 var chalk = require('chalk');
+var isDirectory = require('is-directory').sync;
 
 function fetchRemote(callback) {
   // Silent logs while remote fetching
   var writeOld = process.stderr.write;
-  process.stderr.write = function() {};
 
-  // Fetch remote repository containing module metadata
-  this.remote('nuxeo', 'generator-nuxeo-meta', this.options.meta, function(err, remote) {
-    process.stderr.write = writeOld;
-    callback(err, remote);
-  }, true);
+  // Ensure connection is up and cat reach github
+  // In that case; update the metamodel from the repository
+  // Otherwise try to find the latest fetch
+  require('dns').resolve('www.github.com', (errco) => {
+    if (errco) {
+      this.log.info('Unable to fetch metamodel remotely... Trying locally.');
+      let remote = this.config.get('lastRemote');
+      if (!(remote && isDirectory(remote.cachePath))) {
+        this.log.error('You must initialize metamodel online once.');
+        process.exit(1);
+      }
+
+      callback(undefined, remote);
+    } else {
+      process.stderr.write = function() {};
+      // Fetch remote repository containing module metadata
+      this.remote('nuxeo', 'generator-nuxeo-meta', this.options.meta, (err, remote) => {
+        process.stderr.write = writeOld;
+        callback(err, remote);
+      }, true);
+    }
+  });
 }
 
 function fetchLocal(callback) {
@@ -51,6 +68,8 @@ module.exports = {
       fetch: opts.localPath ? fetchLocal : fetchRemote,
 
       readDescriptor: function(remote, callback) {
+        this.config.set('lastRemote', remote);
+
         // Require modules
         this._moduleReadDescriptor(remote);
         callback();
