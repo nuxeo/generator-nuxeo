@@ -46,8 +46,14 @@ describe('nuxeo-base', function() {
     });
 
     it('detect if multi module is needed or not', function() {
-      assert.ok(!this.gene._createMultiModuleIsNeeded(['core']));
+      this.gene.args = [];
+      assert.ok(this.gene._createMultiModuleIsNeeded([]));
+      assert.ok(this.gene._createMultiModuleIsNeeded(['core']));
       assert.ok(this.gene._createMultiModuleIsNeeded(['core', 'web']));
+
+      this.gene.args = ['operation'];
+      assert.ok(!this.gene._createMultiModuleIsNeeded([]));
+      assert.ok(!this.gene._createMultiModuleIsNeeded(['core']));
 
       this.gene.args = ['single-module', 'polymer'];
       assert.ok(this.gene._createMultiModuleIsNeeded(['core', 'web']));

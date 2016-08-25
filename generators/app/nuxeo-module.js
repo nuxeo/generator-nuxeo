@@ -101,7 +101,7 @@ module.exports = {
   _createMultiModuleIsNeeded: function(types) {
     return !this._isMultiModule() && types && types.length > 1 || _.findIndex(this.args, (o) => {
       return o === 'multi-module';
-    }) >= 0;
+    }) >= 0 || this.args.length === 0;
   },
 
   _moduleResolveType: function(module) {
