@@ -5,7 +5,9 @@ var _ = require('lodash');
 var chalk = require('chalk');
 var nuxeowelcome = require('../../utils/welcome.js');
 var recursiveSync = require('../../utils/recursive-readdirSync.js');
+var fs = require('fs');
 var s = require('../../utils/nuxeo.string.js');
+var maven = require('../../utils/maven.js');
 
 module.exports = {
   _tplPath: function(str, ctx) {
@@ -24,6 +26,11 @@ module.exports = {
 
   _showHello: function() {
     this.log(nuxeowelcome);
+  },
+
+  _isUnknownBom: function(filename) {
+    filename = filename || './pom.xml';
+    return fs.existsSync(filename) ? maven.open(this.fs.read(filename)).isBom() : false;
   },
 
   _showWelcome: function() {

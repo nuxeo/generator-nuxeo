@@ -71,7 +71,7 @@ module.exports = {
   },
 
   _isMultiModule: function() {
-    return this.config.get('multi') || false;
+    return this.config.get('multi') || this._isUnknownBom() || false;
   },
 
   _addModulesDependencies: function(pomParent) {

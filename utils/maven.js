@@ -130,6 +130,10 @@ function maven(content) {
       return module;
     },
 
+    isBom: function() {
+      return $('packaging').text() === 'pom';
+    },
+
     containsModule: function(module) {
       return $('modules module').filter(function(i, elt) {
         return $(elt).text() === module;
@@ -157,7 +161,7 @@ function maven(content) {
     },
 
     _dependenciesNode: function() {
-      var isBom = $('packaging').text() === 'pom';
+      var isBom = this.isBom();
       if (isBom && $('dependencyManagement').length === 0) {
         $('project').append($('<dependencyManagement />'));
       }
