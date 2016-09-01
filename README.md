@@ -38,8 +38,8 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 
 ## Requirements
 
-- [node.js](https://nodejs.org/) 0.12.10 or newer. The "stable" version is recommended (5.7.0 at the time of this writing).
-- [npm](https://www.npmjs.com/) 2.12.0 or newer.
+- [node.js](https://nodejs.org/) v6.0.0 or newer.
+- [npm](https://www.npmjs.com/) v3.0.0 or newer.
 
 ## Install
 

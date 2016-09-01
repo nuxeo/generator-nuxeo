@@ -4,6 +4,7 @@
 var _ = require('lodash');
 var chalk = require('chalk');
 var isDirectory = require('is-directory').sync;
+var clone = require('yeoman-remote');
 
 function fetchRemote(callback) {
   // Silent logs while remote fetching
@@ -25,7 +26,7 @@ function fetchRemote(callback) {
     } else {
       process.stderr.write = function() {};
       // Fetch remote repository containing module metadata
-      this.remote('nuxeo', 'generator-nuxeo-meta', this.options.meta, (err, remote) => {
+      clone('nuxeo', 'generator-nuxeo-meta', this.options.meta, (err, remote) => {
         process.stderr.write = writeOld;
         callback(err, remote);
       }, true);
