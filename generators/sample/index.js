@@ -1,3 +1,5 @@
+'use strict';
+
 var async = require('async');
 var yeoman = require('yeoman-generator');
 var fs = require('fs');
@@ -62,8 +64,11 @@ var App = {
       message: 'Which sample do you want?',
       choices: this.nuxeo.samples,
       filter: function(value) {
-        var [user, repo] = value.split(/\//);
-        return {user, repo};
+        var repo = value.split(/\//);
+        return {
+          user: repo[0],
+          repo: repo[1]
+        };
       }
     }]).then((answers) => {
       repository = answers.repository;
@@ -77,7 +82,9 @@ var App = {
         }.bind(this)
       }]);
     }).then((answers) => {
-      this.answers = _.extend(answers, {repository});
+      this.answers = _.extend(answers, {
+        repository
+      });
     });
   },
 

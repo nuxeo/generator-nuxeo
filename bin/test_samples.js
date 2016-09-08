@@ -28,7 +28,6 @@ helpers.run(path.join(__dirname, '../generators/sample'))
   .toPromise()
   .then((dir) => {
     assert.file(path.join(dir, 'nuxeo-sample-project-master', 'pom.xml'));
-    assert.file(path.join(dir, 'nuxeo-sample-project-maewester', 'pom.xmlsew'));
   }).catch((err) => {
     console.log(err);
     process.exit(1);
