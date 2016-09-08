@@ -91,7 +91,7 @@ module.exports = nuxeo.extend({
 
     // Expose options in the global scope for accessing them in generator's decriptors.
     global._options = this.options;
-    var seq = async.seq(init.fetch, init.readDescriptor, init.resolveModule, init.filterModulesPerType, init.saveModules).bind(this);
+    var seq = async.seq(init.fetch, init.saveRemote, init.readDescriptor, init.resolveModule, init.filterModulesPerType, init.saveModules).bind(this);
     seq(function() {
       done();
     });

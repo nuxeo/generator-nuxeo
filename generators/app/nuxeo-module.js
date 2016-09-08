@@ -56,11 +56,7 @@ module.exports = {
   },
 
   _moduleReadDescriptor: function(remote) {
-    this.nuxeo = {
-      modules: {},
-      cachePath: remote
-    };
-    var generatorsPath = path.join(remote, 'generators');
+    var generatorsPath = path.join(remote.cachePath, 'generators');
     fs.readdirSync(generatorsPath).forEach((file) => {
       var descPath = path.join(generatorsPath, file, 'descriptor.js');
       if (fs.existsSync(descPath)) {

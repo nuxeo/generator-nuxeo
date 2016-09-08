@@ -3,8 +3,9 @@
 
 var _ = require('lodash');
 var chalk = require('chalk');
-var isDirectory = require('is-directory').sync;
 var clone = require('yeoman-remote');
+var isDirectory = require('is-directory').sync;
+var path = require('path');
 
 function fetchRemote(callback) {
   // Silent logs while remote fetching
@@ -17,7 +18,7 @@ function fetchRemote(callback) {
     if (errco) {
       this.log.info('Unable to fetch metamodel remotely... Trying locally.');
       let remote = this.config.get('lastRemote');
-      if (!(remote && isDirectory(remote.cachePath))) {
+      if (!(remote && isDirectory(remote))) {
         this.log.error('You must initialize metamodel online once.');
         process.exit(1);
       }
@@ -68,15 +69,28 @@ module.exports = {
     return {
       fetch: opts.localPath ? fetchLocal : fetchRemote,
 
-      readDescriptor: function(remote, callback) {
+      saveRemote: function(remote, callback) {
+        this.nuxeo = {
+          modules: {},
+          samples: {},
+          cachePath: remote
+        };
         this.config.set('lastRemote', remote);
+        callback(undefined, this.nuxeo);
+      },
 
-        // Require modules
+      readDescriptor: function(remote, callback) {
+        // XXX Should be removed from init object
         this._moduleReadDescriptor(remote);
         callback();
       },
 
+      readSamples: function(remote, callback) {
+        callback(undefined, require(path.join(remote.cachePath, 'samples', 'samples.js')));
+      },
+
       resolveModule: function(callback) {
+        // XXX Should be removed from init object
         var args = [];
         var that = this;
         this.args.forEach(function(arg) {
@@ -109,6 +123,7 @@ module.exports = {
       _filterModules: filterModules,
 
       filterModulesPerType: function(types, callback) {
+        // XXX Should be removed from init object
         var filtered = {};
         // this.log.invoke('Requirements: ' + chalk.blue(modules.join(', ')));
         _.keys(types).forEach((type) => {
@@ -126,6 +141,11 @@ module.exports = {
 
       saveModules(modules, callback) {
         this.nuxeo.selectedModules = _.omitBy(modules, _.isEmpty);
+        callback();
+      },
+
+      saveSamples(samples, callback) {
+        this.nuxeo.samples = samples;
         callback();
       }
     };
