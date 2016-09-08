@@ -2,6 +2,8 @@ var async = require('async');
 var yeoman = require('yeoman-generator');
 var fs = require('fs');
 var _ = require('lodash');
+var path = require('path');
+var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
 var App = {
   constructor: function() {
@@ -17,6 +19,12 @@ var App = {
       alias: 'n',
       defaults: false,
       desc: 'Disable welcome logo'
+    });
+    this.option('meta', {
+      type: String,
+      alias: 'm',
+      defaults: pkg.nuxeo.branch,
+      desc: 'Branch of `nuxeo/generator-nuxeo-meta`'
     });
   },
 

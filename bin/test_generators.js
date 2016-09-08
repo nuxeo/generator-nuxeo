@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const NUXEO_VERSION = '8.3'
 
 /*eslint camelcase:0*/
@@ -64,6 +63,7 @@ var adapter = new Adapter();
 var env = yo.createEnv(undefined, undefined, adapter);
 
 env.register(require.resolve(path.join(__dirname, '../generators/app/index.js')), 'nuxeo:test');
+
 async.waterfall([function(callback) {
   // Bootstrap the parent and the core module
   adapter.responses({
