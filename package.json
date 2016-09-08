@@ -53,6 +53,7 @@
     "gulp-watch": "^4.3.5",
     "rimraf": "^2.5.2",
     "yeoman-assert": "^2.2.1",
+    "yeoman-environment": "^1.6.3",
     "yeoman-test": "^1.5.0"
   },
   "repository": "nuxeo/generator-nuxeo",
