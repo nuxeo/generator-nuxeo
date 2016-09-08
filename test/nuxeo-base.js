@@ -12,7 +12,10 @@ describe('nuxeo-base', function() {
     this.init = this.gene._init();
     this.init.fetch.call(this.gene, function(err, remote) {
       this.remote = remote;
-      this.init.readDescriptor.call(this.gene, this.remote, done);
+      this.gene.nuxeo = {
+        cachePath: this.remote
+      };
+      this.init.readDescriptor.call(this.gene, this.gene.nuxeo, done);
     }.bind(this));
   });
 
