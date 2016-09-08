@@ -64,6 +64,13 @@ yo nuxeo
 
 Default values are fine for a quick start. You will have to specify at least your project group ID (for instance `my.company`.)
 
+## Discover Sample projects
+Using the generator let you discover some ready to use Nuxeo Code Sample:
+
+```bash
+yo nuxeo:sample
+```
+
 # Usage
 You can create several modules at once like:
 
