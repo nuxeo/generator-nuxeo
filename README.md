@@ -14,20 +14,23 @@ The generated components all come with unit tested sample code; for instance the
 That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web).
 
 ## Features
-- Empty bundle creation
-- Empty bundle creation with Maven multi module support
-- Nuxeo Package (Marketplace)
-- Polymer Based Application
-- Automation Operation
-- Content-Enricher
-- Document Adapter
-- Nuxeo Service
-- Nuxeo Event Listener
+- Discover some sample Nuxeo Projects.
+- Bootstrap an empty Nuxeo Project with multi modules support.
+- Bootstrap a single empty Nuxeo Project.
+- Add a Nuxeo Package module to distribute your Project ([Marketplace](https://connect.nuxeo.com/nuxeo/site/marketplace))
+- Add a ready-to-use empty [Polymer](https://www.polymer-project.org) Application.
+- Create your own business rules or logic as an [Automation Operation](https://doc.nuxeo.com/x/Go0ZAQ).
+- Enrich REST API responses using a [content-enricher](https://doc.nuxeo.com/x/5wUuAQ).
+- Manipulate Business Object using a Document Adapter
+- Declare your new [Nuxeo Service](https://doc.nuxeo.com/x/DIAO)
+- Plug your logic to the event bus using an [Event Listener](https://doc.nuxeo.com/x/C4AO)
 
 ## Incoming Features
 - Functional Testing module
-- REST endpoint / content enricher
+- Angular2 Empty Application
+- REST endpoint
 - Scheduler / Worker
+- Blob Provider
 - ...
 
 ## Supported Nuxeo Platform Versions
@@ -48,13 +51,25 @@ First, install [Yeoman](http://yeoman.io) and [generator-nuxeo](https://github.c
 ```bash
 # Global NPM registry install
 npm install -g yo generator-nuxeo
+```
+
+OR
+
+```bash
 # Install from master
 npm install -g yo nuxeo/generator-nuxeo
 ```
 
 # Quickstart
-## Bootstrap an Empty Nuxeo Project
-To create an empty Nuxeo Project (based on a Maven multi-module project), execute the following lines:
+## Discover Sample projects
+Using the generator let you have access to some ready to use Nuxeo Code Sample:
+
+```bash
+yo nuxeo:sample
+```
+
+## Bootstrap an Empty Nuxeo Project with Multi Modules Support
+To bootstrap an empty Nuxeo Project (based on a Maven multi-module project), execute the following lines:
 
 ```bash
 mkdir my-project
@@ -62,17 +77,10 @@ cd my-project
 yo nuxeo
 ```
 
-Default values are fine for a quick start. You will have to specify at least your project group ID (for instance `my.company`.)
-
-## Discover Sample projects
-Using the generator let you discover some ready to use Nuxeo Code Sample:
-
-```bash
-yo nuxeo:sample
-```
+Default values are fine for a quick start. You will have to specify at least your project group ID (for instance `org.company`.)
 
 # Usage
-You can create several modules at once like:
+You can generate several features at once like:
 
 ```bash
 yo nuxeo [options] [<generator>..]
@@ -91,9 +99,20 @@ yo nuxeo [options] [<generator>..]
 ```
 
 # Available Generators
-The main Generator can call small generators defined in [https://github.com/nuxeo/generator-nuxeo-meta/](https://github.com/nuxeo/generator-nuxeo-meta/).
+The main Generator can render templates defined in [https://github.com/nuxeo/generator-nuxeo-meta/](https://github.com/nuxeo/generator-nuxeo-meta/).
 
-## Multi module
+> Terminology
+>  - _ADD_: Add a dedicated module to your project. For instance, in a `myapp` project, a Polymer Application will add a `myapp-web` submodule.
+>  - _CREATE_: Create the files needed for the feature, without specifying a `--type` option, the generation will occurs in the `myapp-core` submodule.
+
+## Discover Sample Projects
+To select a sample project that lets you know how a feature is built.
+
+```bash
+yo nuxeo:sample
+```
+
+## Bootstrap an Empty Nuxeo Project with Multi Modules
 Set up an empty Nuxeo Bundle using Maven multi module support.
 
 ```bash
@@ -109,8 +128,8 @@ yo nuxeo multi-module
 ### Important Notes
 Using a Maven multi module architecture is the recommended way to bootstrap a new project: it allows to generate a Nuxeo Package afterwards to easily deploy your code on a Nuxeo Platform instance. On the other hand, when a project has been generated using a single module architecture, the Nuxeo Package needs to be created manually.
 
-## Single module
-Sets up an empty Nuxeo Bundle.
+## Bootstrap a Single Empty Nuxeo Project
+Sets up an empty Nuxeo project.
 
 ```bash
 yo nuxeo single-module
@@ -123,14 +142,14 @@ yo nuxeo single-module
 ### Important Notes
 This option should not be called directly to bootstrap a new project; use the multi-module option instead so that you can generate a Nuxeo Package later on.
 
-## Operation
-Adds an empty Nuxeo Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ) along with a corresponding unit test.
+## Create Your Own Business Rules or Logic - Automation Operation
+Adds an empty Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ) along with a corresponding unit test.
 
 ```bash
 yo nuxeo operation
 ```
 
-## Listener
+## Create an Event Bus Listener
 Adds a [listener](https://doc.nuxeo.com/x/C4AO) with its test class, the events will be asked during the generation process. Both existing and custom events can be declared. You can create any listener type: pre-commit, post-commit, synchronous and asynchronous.
 
 ```bash
@@ -143,29 +162,29 @@ yo nuxeo listener
 - **Asynchronous Listener**: if you need to run after the transaction has committed, in a new transaction and a separate thread. This is useful for any long-running operations whose result doesn't have to be seen immediately in the user interface.
 - **Post-commit Listener**: if you need to run after the transaction has committed, in a new transaction but in the same thread, this is useful for logging.
 
-## Service
+## Create a Service
 Adds a [Nuxeo component](https://doc.nuxeo.com/x/DIAO) exposed as a Nuxeo service.
 
 ```bash
 yo nuxeo service
 ```
 
-## Content Enricher
+## Create a REST API Response Enricher
 Creates a [Content Enricher](https://doc.nuxeo.com/x/5wUuAQ) that enriches with more information a REST response.
 
 ```bash
 yo nuxeo enricher
 ```
 
-## Document Adapter
+## Create a Business Object - Document Adapter
 Creates a Document Adapter that turn `DocumentModel` object into business objects.
 
 ```bash
 yo nuxeo adapter
 ```
 
-## Polymer Application
-Creates a [Polymer Starter Kit](https://github.com/PolymerElements/polymer-starter-kit) application bundled as a Nuxeo Bundle.
+## Add an Empty Polymer Application
+Creates an application based on [Polymer Starter Kit](https://github.com/PolymerElements/polymer-starter-kit) bundled as a Nuxeo Project.
 
 ```bash
 yo nuxeo polymer
@@ -175,8 +194,8 @@ cd *-web && npm install && bower install
 cd *-web && gulp serve
 ```
 
-## Nuxeo Package
-Creates a Maven module to handle a [Nuxeo Package](https://doc.nuxeo.com/x/CwIz) generation of your project. **Can only be called in a Maven multi-module architecture**, hence make sure to bootstrap your project using `yo nuxeo` or `yo nuxeo multi-module`. If you used `yo nuxeo single-module` to bootstrap your project, you won't be able to call that option afterwards.
+## Add a Nuxeo Package Module
+Creates a module to handle a [Nuxeo Package](https://doc.nuxeo.com/x/CwIz) generation of your project. **Can only be called in a Maven multi-module architecture**, hence make sure to bootstrap your project using `yo nuxeo` or `yo nuxeo multi-module`. If you used `yo nuxeo single-module` to bootstrap your project, you won't be able to call that option afterwards.
 
 ```bash
 yo nuxeo package
