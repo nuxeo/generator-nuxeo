@@ -206,7 +206,7 @@ module.exports = nuxeo.extend({
     // handling templates
     var tmplPath = path.resolve(that.nuxeo.cachePath, 'generators', item, 'templates');
     var destPath = that._getBaseFolderName(generatorType);
-    let ignorePatterns = generator['templates-ignore'] || [];
+    var ignorePatterns = generator['templates-ignore'] || [];
     if (fs.existsSync(tmplPath)) {
       _.forEach(that._recursivePath(tmplPath), function(template) {
         var dest = that._tplPath(template, props).replace(tmplPath, destPath);
