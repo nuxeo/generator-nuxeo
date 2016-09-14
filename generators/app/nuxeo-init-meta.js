@@ -37,9 +37,7 @@ function fetchRemote(callback) {
 
 function fetchLocal(callback) {
   this.log.error('Using a local path: ' + this.options.localPath);
-  callback(undefined, {
-    cachePath: this.options.localPath
-  });
+  callback(undefined, this.options.localPath);
 }
 
 function filterModules(modules, type) {

@@ -206,12 +206,13 @@ module.exports = nuxeo.extend({
     // handling templates
     var tmplPath = path.resolve(that.nuxeo.cachePath, 'generators', item, 'templates');
     var destPath = that._getBaseFolderName(generatorType);
+    let ignorePatterns = generator['templates-ignore'] || [];
     if (fs.existsSync(tmplPath)) {
       _.forEach(that._recursivePath(tmplPath), function(template) {
         var dest = that._tplPath(template, props).replace(tmplPath, destPath);
         if (s.startsWith(path.basename(dest), '.empty')) {
           mkdirp(path.dirname(dest));
-        } else if (isBinaryFile(template)) {
+        } else if (isBinaryFile(template) || _(ignorePatterns).find(r => template.match(r))) {
           that.fs.copy(template, dest);
         } else {
           that.fs.copyTpl(template, dest, props);
