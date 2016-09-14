@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-const NUXEO_VERSION = '8.3'
-
 /*eslint camelcase:0*/
-'use strict';
+
+const NUXEO_VERSION = '8.3';
 
 var branch = process.argv.length > 3 ? process.argv[3] : 'master';
 var version = process.argv.length > 2 ? process.argv[2] : NUXEO_VERSION;
-if (version == 'latest') {
+if (version === 'latest') {
   version = NUXEO_VERSION;
 }
 
@@ -111,11 +110,20 @@ async.waterfall([function(callback) {
   // Add a Polymer app in web module
   adapter.responses({
     artifact: 'my-app-artifact',
-    name: 'Sample-app',
-    route: 'myApp'
+    name: 'Sample-polymer-app',
+    route: 'myPolymerApp'
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true polymer`, callback);
+}, function(callback) {
+  // Add a Polymer app in web module
+  adapter.responses({
+    artifact: 'my-app-artifact',
+    name: 'Sample-angular-app',
+    route: 'myAngularApp'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --type=angu --nologo=true angular2`, callback);
 }, function(callback) {
   // Add it a sync Listener
   adapter.responses({
