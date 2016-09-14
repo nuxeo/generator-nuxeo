@@ -84,9 +84,6 @@ async.waterfall([function(callback) {
 }, function(callback) {
   // Bootstrap the project and a first Operation
   adapter.responses({
-    parent_artifact: 'my-test-parent',
-    parent_package: 'org.nuxeo.generator.sample',
-    parent_version: '1.0-SNAPSHOT',
     artifact: 'my-test-artifact',
     package: 'org.nuxeo.generator.sample',
     version: '1.0-SNAPSHOT',
@@ -109,7 +106,7 @@ async.waterfall([function(callback) {
 }, function(callback) {
   // Add a Polymer app in web module
   adapter.responses({
-    artifact: 'my-app-artifact',
+    artifact: 'my-polymer-app-artifact',
     name: 'Sample-polymer-app',
     route: 'myPolymerApp'
   });
@@ -118,7 +115,7 @@ async.waterfall([function(callback) {
 }, function(callback) {
   // Add a Polymer app in web module
   adapter.responses({
-    artifact: 'my-app-artifact',
+    artifact: 'my-angular-app-artifact',
     name: 'Sample-angular-app',
     route: 'myAngularApp'
   });
@@ -129,7 +126,6 @@ async.waterfall([function(callback) {
   adapter.responses({
     artifact: 'my-test-listener-artifact',
     package: 'org.nuxeo.generator.sample',
-    version: '1.0-SNAPSHOT',
     listener_name: 'MySyncListener',
     events: ['documentCreated', 'aboutToCreate', 'documentRemoved'],
     custom_events: ['myEvent', 'fakeEvent'],
@@ -158,7 +154,6 @@ async.waterfall([function(callback) {
   adapter.responses({
     artifact: 'my-test-web-artifact',
     package: 'org.nuxeo.generator.sample',
-    version: '1.0-SNAPSHOT',
     service_name: 'MyTestGeneratedService'
   });
 
@@ -184,9 +179,6 @@ async.waterfall([function(callback) {
 }, function(callback) {
   // Add it a Package
   adapter.responses({
-    parent_artifact: 'my-test-parent',
-    parent_package: 'org.nuxeo.generator.sample',
-    parent_version: '1.0-SNAPSHOT',
     artifact: 'my-test-package',
     name: 'My test package',
     company: 'Nuxeo'
