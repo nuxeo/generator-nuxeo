@@ -3,6 +3,7 @@ var promptSuggestion = require('yeoman-generator/lib/util/prompt-suggestion');
 var chalk = require('chalk');
 var async = require('async');
 var path = require('path');
+var dargs = require('dargs');
 var _ = require('lodash');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
@@ -78,6 +79,12 @@ module.exports = nuxeo.extend({
       alias: 't',
       defaults: 'core',
       desc: 'Set module target\'s type'
+    });
+    this.option('skipInstall', {
+      type: Boolean,
+      alias: 's',
+      defaults: false,
+      desc: 'Skip external commands installation'
     });
   },
 
@@ -290,5 +297,41 @@ module.exports = nuxeo.extend({
 
   end: function() {
     this.log.info('You can start editing code or you can continue with calling another generator (yo nuxeo <generator>..)');
+  },
+
+  install: function() {
+    var skip = this.options.skipInstall;
+    this._eachGenerator((type, name, generator, cb) => {
+      if (generator.install === undefined) {
+        return cb();
+      }
+
+      if (skip) {
+        this.log.info('Post install commands are disabled; you have to run them manually:');
+      }
+
+      var installs = generator.install;
+      if (!_.isArray(installs)) {
+        installs = [installs];
+      }
+
+      var cwd = process.cwd();
+      _(installs).each(install => {
+        process.chdir(cwd);
+
+        var args = install.args || [];
+        var opts = install.opts || {};
+
+        args = args.concat(dargs(opts));
+        if (skip) {
+          this.log.info('- ' + install.cmd + ' ' + args.join(' '));
+        } else {
+          process.chdir(path.join(cwd, this._getBaseFolderName(type)));
+          this.spawnCommand(install.cmd, args);
+        }
+      });
+
+      return cb();
+    });
   }
 });

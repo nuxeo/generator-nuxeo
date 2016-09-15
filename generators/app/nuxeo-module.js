@@ -2,6 +2,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var maven = require('../../utils/maven.js');
 var path = require('path');
+var async = require('async');
 
 module.exports = {
   _moduleExists: function(module) {
@@ -128,6 +129,25 @@ module.exports = {
       return _(modules).map((module) => {
         return this.nuxeo.modules[module].order || 0;
       }).min();
+    });
+  },
+
+  _eachGenerator: function(gcb) {
+    var done = this.async();
+    var types = this._moduleSortedKeys();
+
+    async.eachSeries(types, (type, parentCb) => {
+      var items = this.nuxeo.selectedModules[type];
+
+      async.eachSeries(items, (item, callback) => {
+        var generator = this.nuxeo.modules[item];
+
+        gcb(type, item, generator, callback);
+      }, () => {
+        parentCb();
+      });
+    }, () => {
+      done();
     });
   }
 };
