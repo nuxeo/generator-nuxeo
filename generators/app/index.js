@@ -323,9 +323,11 @@ module.exports = nuxeo.extend({
         var opts = install.opts || {};
 
         args = args.concat(dargs(opts));
+        var cmd = install.cmd + ' ' + args.join(' ');
         if (skip) {
-          this.log.info('- ' + install.cmd + ' ' + args.join(' '));
+          this.log.info('- ' + cmd);
         } else {
+          this.log.info(install.cmd + ' ' + args.join(' '));
           process.chdir(path.join(cwd, this._getBaseFolderName(type)));
           this.spawnCommand(install.cmd, args);
         }
