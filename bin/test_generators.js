@@ -111,7 +111,7 @@ async.waterfall([function(callback) {
     route: 'myPolymerApp'
   });
 
-  env.run(`nuxeo:test --meta=${branch} --nologo=true polymer`, callback);
+  env.run(`nuxeo:test --meta=${branch} --skipInstall=true --nologo=true polymer`, callback);
 }, function(callback) {
   // Add a Polymer app in web module
   adapter.responses({
@@ -120,7 +120,7 @@ async.waterfall([function(callback) {
     route: 'myAngularApp'
   });
 
-  env.run(`nuxeo:test --meta=${branch} --type=angu --nologo=true angular2`, callback);
+  env.run(`nuxeo:test --meta=${branch} --type=angu --skipInstall=true --nologo=true angular2`, callback);
 }, function(callback) {
   // Add it a sync Listener
   adapter.responses({
