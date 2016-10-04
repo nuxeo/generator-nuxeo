@@ -42,11 +42,15 @@ Check the `nuxeo/generator` [Docker Hub page](https://hub.docker.com/r/nuxeo/gen
 
 ## Usage
 Docker equivalent of `yo nuxeo`
-```docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo
+
+```
+docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo
 ```
 
 Docker equivalent of `yo nuxeo:sample`
-```docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo:sample
+
+```
+docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo:sample
 ```
 
 Those commands could be embedded in a local script to ease them.
