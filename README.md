@@ -37,7 +37,21 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 - Nuxeo Platform 7.10 and newer
 - If you are using Nuxeo Platform 5.8 or 6.0, code templates are available in [Nuxeo IDE](https://doc.nuxeo.com/x/ZYKE) using the [Nuxeo wizard](https://doc.nuxeo.com/x/uoSN).
 
-# Installation
+# Docker
+Check the `nuxeo/generator` [Docker Hub page](https://hub.docker.com/r/nuxeo/generator/). 
+
+## Usage
+Docker equivalent of `yo nuxeo`
+```docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo
+```
+
+Docker equivalent of `yo nuxeo:sample`
+```docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo:sample
+```
+
+Those commands could be embedded in a local script to ease them.
+
+# Node Module
 
 ## Requirements
 
