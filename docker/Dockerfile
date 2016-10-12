@@ -17,4 +17,4 @@ RUN cd /opt && \
 WORKDIR /workdir
 VOLUME  /workdir
 
-ENTRYPOINT ["yo"]
+ENTRYPOINT ["yo", "--skipInstall=true"]
