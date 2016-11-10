@@ -99,7 +99,7 @@ module.exports = nuxeo.extend({
     var init = this._init(this.options);
 
     this.conflicter = new Conflicter(this.env.adapter, (filename) => {
-      return this.options.force || filename.match(/\/pom\.xml$/) || filename.match(/\/MANIFEST\.MF$/);
+      return this.options.force || filename.match(/pom\.xml$/) || filename.match(/MANIFEST\.MF$/);
     });
 
     if (!this.options.nologo) {

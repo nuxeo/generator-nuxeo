@@ -44,6 +44,7 @@ Adapter.prototype.prompt = function(questions, callback) {
     }
   }.bind(this));
 
+  res.action = 'force';
   callback(res);
 };
 
