@@ -19,50 +19,48 @@ describe('nuxeo-base', function() {
     }.bind(this));
   });
 
-  describe(':init should', function() {
-    it('clone the repository', function() {
-      assert.ok(this.remote);
-    });
+  it('clone the repository', function() {
+    assert.ok(this.remote);
+  });
 
-    it('read the descriptor', function() {
-      assert.ok(this.gene.nuxeo);
-      assert.ok(_.keys(this.gene.nuxeo.modules).length > 0);
-      assert.ok(this.gene.nuxeo.modules['single-module']);
-    });
+  it('read the descriptor', function() {
+    assert.ok(this.gene.nuxeo);
+    assert.ok(_.keys(this.gene.nuxeo.modules).length > 0);
+    assert.ok(this.gene.nuxeo.modules['single-module']);
+  });
 
-    it('resolve module heritance', function() {
-      // Single module
-      var deps = this.gene._moduleFindParents(['single-module']);
-      assert.deepEqual(['single-module'], deps);
+  it('resolve module heritance', function() {
+    // Single module
+    var deps = this.gene._moduleFindParents(['single-module']);
+    assert.deepEqual(['single-module'], deps);
 
-      // Operation
-      deps = this.gene._moduleFindParents(['operation']);
-      assert.deepEqual(['single-module', 'operation'], deps);
+    // Operation
+    deps = this.gene._moduleFindParents(['operation']);
+    assert.deepEqual(['single-module', 'operation'], deps);
 
-      // Nuxeo Package
-      deps = this.gene._moduleFindParents(['package']);
-      assert.deepEqual(['package'], deps);
+    // Nuxeo Package
+    deps = this.gene._moduleFindParents(['package']);
+    assert.deepEqual(['package'], deps);
 
-      // Operation and Nuxeo Package
-      deps = this.gene._moduleFindParents(['package', 'operation']);
-      assert.deepEqual(['package', 'operation'], deps);
-    });
+    // Operation and Nuxeo Package
+    deps = this.gene._moduleFindParents(['package', 'operation']);
+    assert.deepEqual(['package', 'operation'], deps);
+  });
 
-    it('detect if multi module is needed or not', function() {
-      this.gene.args = [];
-      assert.ok(this.gene._createMultiModuleIsNeeded([]));
-      assert.ok(this.gene._createMultiModuleIsNeeded(['core']));
-      assert.ok(this.gene._createMultiModuleIsNeeded(['core', 'web']));
+  it('detect if multi module is needed or not', function() {
+    this.gene.args = [];
+    assert.ok(this.gene._createMultiModuleIsNeeded([]));
+    assert.ok(this.gene._createMultiModuleIsNeeded(['core']));
+    assert.ok(this.gene._createMultiModuleIsNeeded(['core', 'web']));
 
-      this.gene.args = ['operation'];
-      assert.ok(!this.gene._createMultiModuleIsNeeded([]));
-      assert.ok(!this.gene._createMultiModuleIsNeeded(['core']));
+    this.gene.args = ['operation'];
+    assert.ok(!this.gene._createMultiModuleIsNeeded([]));
+    assert.ok(!this.gene._createMultiModuleIsNeeded(['core']));
 
-      this.gene.args = ['single-module', 'polymer'];
-      assert.ok(this.gene._createMultiModuleIsNeeded(['core', 'web']));
+    this.gene.args = ['single-module', 'polymer'];
+    assert.ok(this.gene._createMultiModuleIsNeeded(['core', 'web']));
 
-      this.gene.args = ['single-module', 'multi-module'];
-      assert.ok(this.gene._createMultiModuleIsNeeded(['core']));
-    });
+    this.gene.args = ['single-module', 'multi-module'];
+    assert.ok(this.gene._createMultiModuleIsNeeded(['core']));
   });
 });
