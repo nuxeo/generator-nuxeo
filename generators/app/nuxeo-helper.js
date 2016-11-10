@@ -7,6 +7,7 @@ var nuxeowelcome = require('../../utils/welcome.js');
 var recursiveSync = require('../../utils/recursive-readdirSync.js');
 var fs = require('fs');
 var s = require('../../utils/nuxeo.string.js');
+var v = require('../../utils/version-helper.js');
 var maven = require('../../utils/maven.js');
 
 module.exports = {
@@ -15,7 +16,8 @@ module.exports = {
     return _.template(str, {
       interpolate: regex,
       imports: {
-        s: s
+        s: s,
+        v: v
       }
     })(ctx);
   },
