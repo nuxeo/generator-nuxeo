@@ -1,3 +1,6 @@
+/*eslint strict:0*/
+'use strict';
+
 var assert = require('yeoman-assert');
 var Conflicter = require('../utils/conflicter.js');
 var fs = require('fs-extra');
@@ -25,7 +28,8 @@ function createFile(filePath, content) {
 
 describe('Conflicter override should', function() {
   beforeEach(function() {
-    this.folder = fs.mkdtempSync(path.join(os.tmpdir(), 'conflicter-tmp-'));
+    this.folder = path.join(os.tmpdir(), 'conflicter-tmp-' + Math.random());
+    fs.mkdirSync(this.folder);
   });
 
   it('still be able to force a diff', function(done) {

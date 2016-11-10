@@ -68,6 +68,7 @@ gulp.task('test', ['lint', 'pre-test'], function(cb) {
       reporter: 'spec'
     }))
     .on('error', function(err) {
+      console.log(err);
       mochaErr = err;
     })
     .pipe(istanbul.writeReports())
