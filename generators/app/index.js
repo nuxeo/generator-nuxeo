@@ -12,6 +12,7 @@ var s = require('../../utils/nuxeo.string.js');
 var maven = require('../../utils/maven.js');
 var manifestmf = require('../../utils/manifestmf.js');
 var propHolder = require('../../utils/property-holder.js');
+var Conflicter = require('../../utils/conflicter.js');
 var isBinaryFile = require('isbinaryfile').sync;
 var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
@@ -53,7 +54,6 @@ module.exports = nuxeo.extend({
 
   constructor: function() {
     // Do not ask user when modifying twice a file
-    arguments[1].force = true;
     yeoman.Base.apply(this, arguments);
 
     this.options.namespace = 'nuxeo [<generator>..]';
@@ -86,11 +86,21 @@ module.exports = nuxeo.extend({
       defaults: false,
       desc: 'Skip external commands installation'
     });
+    this.option('force', {
+      type: Boolean,
+      alias: 'f',
+      defaults: false,
+      desc: 'Force conflict when generate an existing file'
+    });
   },
 
   initializing: function() {
     var done = this.async();
     var init = this._init(this.options);
+
+    this.conflicter = new Conflicter(this.env.adapter, (filename) => {
+      return this.options.force || filename.match(/\/pom\.xml$/) || filename.match(/\/MANIFEST\.MF$/);
+    });
 
     if (!this.options.nologo) {
       this._showHello();
