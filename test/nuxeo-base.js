@@ -6,8 +6,12 @@ describe('nuxeo-base', function() {
   this.timeout(5000);
 
   before(function(done) {
-    var deps = ['./generators/app/'];
-    this.gene = helpers.createGenerator('nuxeo', deps);
+    var cwd = process.cwd();
+    // Hack as Jenkins clone git repo in arbitrary folder names
+    var namespace = cwd.substr(cwd.lastIndexOf('generator-') + 'generator-'.length);
+
+    var generatorPath = './generators/app';
+    this.gene = helpers.createGenerator(namespace + ':app', [generatorPath]);
 
     this.init = this.gene._init();
     this.init.fetch.call(this.gene, function(err, remote) {
