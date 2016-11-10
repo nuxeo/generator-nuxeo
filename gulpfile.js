@@ -11,14 +11,6 @@ var istanbul = require('gulp-istanbul');
 var nsp = require('gulp-nsp');
 var plumber = require('gulp-plumber');
 
-gulp.task('static', function() {
-  return gulp.src('**/*.js')
-    .pipe(excludeGitignore())
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
-});
-
 gulp.task('nsp', function(cb) {
   nsp({
     shrinkwrap: __dirname + '/npm-shrinkwrap.json',
@@ -48,12 +40,14 @@ gulp.task('checkstyle', function() {
   fs.mkdirSync('target');
 
   return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'])
+    .pipe(excludeGitignore())
     .pipe(eslint())
     .pipe(eslint.format('checkstyle', fs.createWriteStream(path.join(targetFolder, '/checkstyle-result.xml'))));
 });
 
 gulp.task('lint', ['checkstyle'], function() {
   return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'])
+    .pipe(excludeGitignore())
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
@@ -68,7 +62,6 @@ gulp.task('test', ['lint', 'pre-test'], function(cb) {
       reporter: 'spec'
     }))
     .on('error', function(err) {
-      console.log(err);
       mochaErr = err;
     })
     .pipe(istanbul.writeReports())
@@ -78,4 +71,4 @@ gulp.task('test', ['lint', 'pre-test'], function(cb) {
 });
 
 gulp.task('prepublish', ['test', 'nsp']);
-gulp.task('default', ['static', 'test']);
+gulp.task('default', ['test']);
