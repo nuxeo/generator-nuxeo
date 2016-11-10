@@ -7,7 +7,7 @@ var gh = new GitHubApi();
 module.exports._git = {
   fetchBranches: function(repository) {
     return gh.repos.getBranches({
-      user: repository.user,
+      owner: repository.user,
       repo: repository.repo,
       per_page: 100
     });
