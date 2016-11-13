@@ -50,6 +50,5 @@ describe('Templating', function() {
         assert.ok(s.endsWith(dest, expect));
       }
     });
-
   });
 });

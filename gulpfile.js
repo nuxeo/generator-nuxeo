@@ -54,19 +54,19 @@ gulp.task('lint', ['checkstyle'], function() {
 });
 
 gulp.task('test', ['lint', 'pre-test'], function(cb) {
-  var mochaErr;
-
   gulp.src('test/**/*.js')
     .pipe(plumber())
     .pipe(mocha({
       reporter: 'spec'
     }))
     .on('error', function(err) {
-      mochaErr = err;
+      if (err) {
+        throw err;
+      }
     })
     .pipe(istanbul.writeReports())
     .on('end', function() {
-      cb(mochaErr);
+      cb();
     });
 });
 

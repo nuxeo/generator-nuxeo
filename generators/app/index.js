@@ -9,6 +9,7 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var nuxeo = require('./nuxeo-base.js');
 var s = require('../../utils/nuxeo.string.js');
+var v = require('../../utils/version-helper.js');
 var maven = require('../../utils/maven.js');
 var manifestmf = require('../../utils/manifestmf.js');
 var propHolder = require('../../utils/property-holder.js');
@@ -163,6 +164,7 @@ module.exports = nuxeo.extend({
         }
         that.prompt(params, function(props) {
           propHolder.store(params, props);
+          that._findNuxeoVersion(props); // Resolve and Save Nuxeo Version
           that.props[item] = _.assign(propHolder.stored(), props);
           callback();
         });
@@ -199,7 +201,8 @@ module.exports = nuxeo.extend({
     var generatorType = that._moduleResolveType(item);
 
     // XXX Should be handled differently
-    props.s = s;
+    props.s = s; // String utils
+    props.v = v.fromVersion(this._getNuxeoVersion()); // Version utils
     props.multi = that._isMultiModule();
 
     // handling configuration
