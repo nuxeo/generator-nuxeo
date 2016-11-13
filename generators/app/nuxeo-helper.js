@@ -17,7 +17,7 @@ module.exports = {
       interpolate: regex,
       imports: {
         s: s,
-        v: v
+        v: v.fromVersion(this._getNuxeoVersion())
       }
     })(ctx);
   },

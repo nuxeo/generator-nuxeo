@@ -163,6 +163,7 @@ module.exports = nuxeo.extend({
         }
         that.prompt(params, function(props) {
           propHolder.store(params, props);
+          this._findNuxeoVersion(props); // Resolve and Save Nuxeo Version
           that.props[item] = _.assign(propHolder.stored(), props);
           callback();
         });

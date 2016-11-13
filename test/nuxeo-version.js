@@ -1,0 +1,85 @@
+var assert = require('yeoman-assert');
+var NuxeoVersion = require('../generators/app/nuxeo-version');
+
+// Mock some mehtods
+NuxeoVersion.log = {
+  info: function(s) { }, //console.log(`I: ${s}`) },
+  error: function(s) { }, //console.log(`E: ${s}`)}
+}
+let storedVersion = undefined;
+NuxeoVersion._setNuxeoVersion = function(version) { storedVersion = version; }
+NuxeoVersion._getNuxeoVersion = function() { return storedVersion; }
+
+describe('nuxeo-version', function() {
+  beforeEach(function() {
+    storedVersion = undefined;
+  });
+
+  it('find nuxeo_version param', function() {
+    let answers = {
+      blafl: 'fdfsdf',
+      nuxeo_version: '8.3-SNAPSHOT'
+    }
+
+    assert.ok(NuxeoVersion._findNuxeoVersion(answers));
+    assert.equal('8.3-SNAPSHOT', NuxeoVersion._getNuxeoVersion());
+  });
+
+  it('find super_version param', function() {
+    let answers = {
+      blafl: 'fdfsdf',
+      super_version: '8.3-SNAPSHOT'
+    }
+    assert.ok(!NuxeoVersion._findNuxeoVersion(answers));
+
+    answers = {
+      blafl: 'fdfsdf',
+      super_package: 'org.nn.dsadsa',
+      super_version: '8.3-SNAPSHOT'
+    }
+    assert.ok(!NuxeoVersion._findNuxeoVersion(answers));
+
+    answers = {
+      blafl: 'fdfsdf',
+      super_package: 'org.nuxeo.blabla',
+      super_version: '8.3-SNAPSHOT'
+    }
+    assert.ok(NuxeoVersion._findNuxeoVersion(answers));
+    assert.equal('8.3-SNAPSHOT', NuxeoVersion._getNuxeoVersion());
+  });
+
+  it('find parent_version param', function() {
+    let answers = {
+      blafl: 'fdfsdf',
+      parent_version: '8.3-SNAPSHOT'
+    }
+    assert.ok(!NuxeoVersion._findNuxeoVersion(answers));
+
+    answers = {
+      blafl: 'fdfsdf',
+      parent_package: 'org.nn.dsadsa',
+      parent_version: '8.3-SNAPSHOT'
+    }
+    assert.ok(!NuxeoVersion._findNuxeoVersion(answers));
+
+    answers = {
+      blafl: 'fdfsdf',
+      parent_package: 'org.nuxeo.blabla',
+      parent_version: '8.3-SNAPSHOT'
+    }
+    assert.ok(NuxeoVersion._findNuxeoVersion(answers));
+    assert.equal('8.3-SNAPSHOT', NuxeoVersion._getNuxeoVersion());
+  });
+
+  it('not override existing versnion', function() {
+    let answers = {
+      nuxeo_version: '8.3-SNAPSHOT'
+    }
+    assert.ok(NuxeoVersion._findNuxeoVersion(answers));
+    assert.equal('8.3-SNAPSHOT', NuxeoVersion._getNuxeoVersion());
+
+    answers.nuxeo_version = '8.3';
+    assert.ok(!NuxeoVersion._findNuxeoVersion(answers));
+    assert.equal('8.3-SNAPSHOT', NuxeoVersion._getNuxeoVersion());
+  });
+});
