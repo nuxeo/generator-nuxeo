@@ -64,7 +64,9 @@ gulp.task('test', ['lint', 'pre-test'], function(cb) {
         throw err;
       }
     })
-    .pipe(istanbul.writeReports())
+    .pipe(istanbul.writeReports({
+      reporters: ['lcov', 'json', 'text', 'text-summary', 'cobertura']
+    }))
     .on('end', function() {
       cb();
     });
