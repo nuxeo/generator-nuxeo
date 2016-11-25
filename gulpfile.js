@@ -1,3 +1,6 @@
+/*eslint strict:0*/
+'use strict';
+
 var path = require('path');
 var gulp = require('gulp');
 var fs = require('fs');
@@ -21,7 +24,7 @@ gulp.task('nsp', function(cb) {
 gulp.task('pre-test', function() {
   return gulp.src(['generators/**/*.js', 'utils/*.js'])
     .pipe(istanbul({
-      includeUntested: true
+      includeUntested: false
     }))
     .pipe(istanbul.hookRequire());
 });

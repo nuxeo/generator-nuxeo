@@ -1,13 +1,10 @@
-/*eslint strict:0*/
-'use strict';
+const assert = require('yeoman-assert');
+const Conflicter = require('../utils/conflicter.js');
+const fs = require('fs-extra');
+const path = require('path');
+const os = require('os');
 
-var assert = require('yeoman-assert');
-var Conflicter = require('../utils/conflicter.js');
-var fs = require('fs-extra');
-var path = require('path');
-var os = require('os');
-
-var adapter = {
+const adapter = {
   log: {
     create: function() {},
     conflict: function() {},
@@ -34,7 +31,9 @@ describe('Conflicter override should', function() {
 
   it('still be able to force a diff', function(done) {
     let file = path.join(this.folder, 'test.json');
-    var content = { test: 'ok'};
+    var content = {
+      test: 'ok'
+    };
     createFile(file, content);
 
     var c = new Conflicter(adapter, true);
@@ -49,7 +48,9 @@ describe('Conflicter override should', function() {
 
   it('be able to prompt a conflict', function(done) {
     let file = path.join(this.folder, 'test.json');
-    var content = { test: 'ok'};
+    var content = {
+      test: 'ok'
+    };
     createFile(file, content);
 
     var c = new Conflicter(adapter, false);
@@ -64,7 +65,9 @@ describe('Conflicter override should', function() {
 
   it('be able to change force mode with a handler - conflict', function(done) {
     let file = path.join(this.folder, 'test.json');
-    var content = { test: 'ok'};
+    var content = {
+      test: 'ok'
+    };
     createFile(file, content);
 
     var c = new Conflicter(adapter, (filename) => {
@@ -82,7 +85,9 @@ describe('Conflicter override should', function() {
 
   it('be able to change force mode with a handler - force', function(done) {
     let file = path.join(this.folder, 'pom.xml');
-    var content = { test: 'ok'};
+    var content = {
+      test: 'ok'
+    };
     createFile(file, content);
 
     var c = new Conflicter(adapter, (filename) => {
