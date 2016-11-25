@@ -1,8 +1,9 @@
 /*eslint strict:0*/
 'use strict';
 
-let _ = require('lodash');
-let yeoman = require('yeoman-generator');
+const _ = require('lodash');
+const isDocker = require('is-docker');
+const yeoman = require('yeoman-generator');
 
 var App = {
   _getGlobalStorage: function() {
@@ -20,6 +21,11 @@ var App = {
   },
 
   initializing: function() {
+    if (isDocker()) {
+      this.info.error('Sorry, nuxeo:hotreload is not available inside a Docker Container.');
+      process.exit(2);
+    }
+
     // Setting delegate following the pattern _${delegateName}Delegate
     this.delegate = this[`_${this.delegateName.toLowerCase()}Delegate`];
     delegate(this, 'initializing');
@@ -61,5 +67,6 @@ function delegate(that, methodName, fallback) {
 
 App = _.extend(App, require('./configure.js'));
 App = _.extend(App, require('./configure-delegate.js'));
-App = _.extend(App, require('./module.js'));
+App = _.extend(App, require('./hotreload.js'));
+App = _.extend(App, require('./hotreload-delegate.js'));
 module.exports = yeoman.Base.extend(App);

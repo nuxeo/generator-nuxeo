@@ -34,12 +34,14 @@ module.exports = {
 
   _saveDistributionPath: function(distributionPath) {
     if (!(exists(distributionPath) && fs.statSync(distributionPath).isDirectory())) {
-      throw new Error(`Directory ${distributionPath} do not exists.`);
+      this.log.error(`Directory ${distributionPath} do not exists.`);
+      process.exit(1);
     }
 
     let nuxeoConf = getNuxeoConfPath(distributionPath);
     if (!exists(nuxeoConf)) {
-      throw new Error(`Unable to reach nuxeo.conf file from: ${nuxeoConf}`);
+      this.log.error(`Unable to reach nuxeo.conf file from: ${nuxeoConf}`);
+      process.exit(1);
     }
 
     this.config.set(DISTRIBUTION_PATH, distributionPath);
