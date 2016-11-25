@@ -39,4 +39,25 @@ describe('Hot Reload Maven Module should', function() {
     content = `before## GENERATOR-NUXEO STUFF - DO NOT EDIT\nbundle:dummy\nanother:content\n## GENERATOR-NUXEO STUFF - ENDafter`;
     assert.equal('beforeafter', hotreload._cleanDevBundlesFileContent(content));
   });
+
+  it('clean/generate multiple times generated dev.bundles', function() {
+    const modules = ['dummy'];
+    let content = hotreload._renderDevBundlesContent(modules);
+    content = hotreload._cleanDevBundlesFileContent(content);
+    assert.equal('', content);
+
+    content = 'before';
+    content += hotreload._renderDevBundlesContent(modules);
+    content = hotreload._cleanDevBundlesFileContent(content);
+    assert.equal('before', content);
+
+    content = 'before\n\n';
+    content += hotreload._renderDevBundlesContent(modules);
+    content = hotreload._cleanDevBundlesFileContent(content);
+    content += hotreload._renderDevBundlesContent(modules);
+    content = hotreload._cleanDevBundlesFileContent(content);
+    content += hotreload._renderDevBundlesContent(modules);
+    content = hotreload._cleanDevBundlesFileContent(content);
+    assert.equal('before\n\n', content);
+  });
 });

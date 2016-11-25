@@ -21,12 +21,12 @@ function readFile(filePath) {
 
 module.exports = {
   _cleanDevBundlesFileContent: function(content) {
-    return content.replace(new RegExp(`${TXT_START}(?:\n|.)*${TXT_END}`), '').trim();
+    return content.replace(new RegExp(`${TXT_START}(?:\n|.)*${TXT_END}\n?`), '');
   },
 
   _isFullyGeneratedFile: function() {
     const file = this._buildDevBundlesPath(this._getDistributionPath());
-    return this._cleanDevBundlesFileContent(readFile(file)).length === 0;
+    return this._cleanDevBundlesFileContent(readFile(file)).trim().length === 0;
   },
 
   _buildDevBundlesPath: function(root) {
