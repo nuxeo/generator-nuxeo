@@ -27,7 +27,9 @@ const delegate = {
   },
 
   writing: function() {
-    this._generateDevBundle();
+    let content = this._generateDevBundle();
+    this.log.info('Writing changes on `dev.bundles` file:');
+    this.fs.write(this._getDevBuildsPath(), content);
   },
 
   end: function() {

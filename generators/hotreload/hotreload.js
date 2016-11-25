@@ -38,6 +38,7 @@ module.exports = {
   },
 
   _listModules: function(parentFolder) {
+    this.log.info(`Looking for Maven modules in ${parentFolder}/pom.xml file.`);
     let pomPath = path.join(parentFolder, 'pom.xml');
     if (!exists(pomPath)) {
       this.log.error(`No pom.xml file found in ${parentFolder}.`);
@@ -60,16 +61,19 @@ module.exports = {
   },
 
   _renderDevBundlesContent: function(pModules) {
-    let modules = pModules || this._listModules(process.cwd());
+    let modules = pModules || this._listModules(this.destinationRoot());
     // XXX Resolve module type: bundle,library,seam,resourceBundleFragment
     return `${TXT_START}\n${this._buildBundlesList(modules)}\n${TXT_END}\n`;
   },
 
+  _getDevBuildsPath: function() {
+    return this._buildDevBundlesPath(this._getDistributionPath());
+  },
+
   _generateDevBundle: function() {
-    let devBundlesFile = this._buildDevBundlesPath(this._getDistributionPath());
+    let devBundlesFile = this._getDevBuildsPath();
     let content = readFile(devBundlesFile);
     content = this._cleanDevBundlesFileContent(content);
-    content += this._renderDevBundlesContent();
-    this.fs.write(devBundlesFile, content);
+    return content + this._renderDevBundlesContent();
   }
 };
