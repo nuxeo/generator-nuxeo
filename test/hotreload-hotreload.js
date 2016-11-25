@@ -2,6 +2,16 @@ const assert = require('yeoman-assert');
 const hotreload = require('../generators/hotreload/hotreload.js');
 
 describe('Hot Reload Maven Module should', function() {
+  before(function() {
+    hotreload.options = {
+      classesFolder: 'target/classes'
+    };
+
+    hotreload.destinationRoot = function() {
+      return process.cwd();
+    };
+  });
+
   it('build default bundles list', function() {
     const modules = ['myapp-core', 'myapp-web'];
     const str = hotreload._buildBundlesList(modules);

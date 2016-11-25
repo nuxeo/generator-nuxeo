@@ -8,10 +8,6 @@ let process = require('process');
 const TXT_START = '## GENERATOR-NUXEO STUFF - DO NOT EDIT';
 const TXT_END = '## GENERATOR-NUXEO STUFF - END';
 
-function buildMavenTargetPath(module) {
-  return path.join(process.cwd(), module, 'target', 'classes');
-}
-
 function readFile(filePath) {
   // Volontarly Silent not existing file
   return exists(filePath) ? fs.readFileSync(filePath, {
@@ -20,6 +16,10 @@ function readFile(filePath) {
 }
 
 module.exports = {
+  _computeClassesFolder: function(module) {
+    return path.join(this.destinationRoot(), module, this.options.classesFolder);
+  },
+
   _cleanDevBundlesFileContent: function(content) {
     return content.replace(new RegExp(`${TXT_START}(?:\n|.)*${TXT_END}\n?`), '');
   },
@@ -56,7 +56,7 @@ module.exports = {
     }
 
     return _(modules).map((m) => {
-      return `${type}:${buildMavenTargetPath(m)}`;
+      return `${type}:${this._computeClassesFolder(m)}`;
     }).join('\n');
   },
 

@@ -18,6 +18,12 @@ var App = {
       Type: 'String',
       defaults: 'hotreload'
     });
+
+    this.option('classesFolder', {
+      desc: 'Define where is the classes folder under the module\'s one',
+      Type: 'String',
+      defaults: 'target/classes'
+    });
   },
 
   initializing: function() {
