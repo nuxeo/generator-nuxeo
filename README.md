@@ -41,16 +41,16 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 Check the `nuxeo/generator` [Docker Hub page](https://hub.docker.com/r/nuxeo/generator/). 
 
 ## Usage
-Docker equivalent of `yo nuxeo`
+Docker equivalent of `yo nuxeo`:
 
 ```
-docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo
+docker run -ti --rm -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo
 ```
 
 Docker equivalent of `yo nuxeo:sample`
 
 ```
-docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo:sample
+docker run -ti --rm -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo:sample
 ```
 
 Those commands could be embedded in a local script to ease them.
@@ -107,13 +107,16 @@ yo nuxeo [options] [<generator>..]
 ## Options
 
 ```
--h,   --help          # Print the generator's options and usage
-      --skip-cache    # Do not remember prompt answers                         Default: false
-      --skip-install  # Do not automatically install dependencies              Default: false
--n,   --meta          # Branch of `nuxeo/generator-nuxeo-meta`                 Default: stable
--l,   --localPath     # Path to a local clone of `nuxeo/generator-nuxeo-meta`
--n,   --nologo        # Disable welcome logo                                   Default: false
--t,   --type          # Set module target's type                               Default: core
+  -h,   --help          # Print the generator's options and usage
+        --skip-cache    # Do not remember prompt answers                         Default: false
+        --skip-install  # Do not automatically install dependencies              Default: false
+  -m,   --meta          # Branch of `nuxeo/generator-nuxeo-meta`                 Default: stable
+  -l,   --localPath     # Path to a local clone of `nuxeo/generator-nuxeo-meta`
+  -n,   --nologo        # Disable welcome logo                                   Default: false
+  -t,   --type          # Set module target's type                               Default: core
+  -s,   --skipInstall   # Skip external commands installation                    Default: false
+  -f,   --force         # Force conflict when generate an existing file          Default: false
+  -d,   --dirname       # Set parent folder prefix name                          Default: <PWD>
 ```
 
 # Available Generators

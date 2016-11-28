@@ -16,5 +16,6 @@ RUN cd /opt && \
 
 WORKDIR /workdir
 VOLUME  /workdir
+ADD entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT ["yo", "--skipInstall=true"]
+ENTRYPOINT ["/entrypoint.sh"]
