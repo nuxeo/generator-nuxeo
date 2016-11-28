@@ -40,6 +40,9 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 # Docker
 Check the `nuxeo/generator` [Docker Hub page](https://hub.docker.com/r/nuxeo/generator/). 
 
+## Embedded Script
+Running Nuxeo Generator inside a Container could be a little bit tricky with several parameters; the easiest way is to put the [nuxeocli script](https://raw.githubusercontent.com/nuxeo/generator-nuxeo/master/bin/nuxeocli) in your PATH environment. And run it directly from an empty directory.
+
 ## Usage
 Docker equivalent of `yo nuxeo`:
 
