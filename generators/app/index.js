@@ -93,6 +93,12 @@ module.exports = nuxeo.extend({
       defaults: false,
       desc: 'Force conflict when generate an existing file'
     });
+    this.option('dirname', {
+      type: String,
+      alias: 'd',
+      defaults: path.basename(this.destinationRoot()),
+      desc: 'Set parent folder prefix name'
+    });
   },
 
   initializing: function() {
