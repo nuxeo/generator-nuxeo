@@ -28,7 +28,7 @@ var App = {
 
   initializing: function() {
     if (isDocker()) {
-      this.info.error('Sorry, nuxeo:hotreload is not available inside a Docker Container.');
+      this.log.error('Sorry, nuxeo:hotreload is not available inside a Docker Container.');
       process.exit(2);
     }
 
