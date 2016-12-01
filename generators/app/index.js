@@ -17,6 +17,8 @@ var Conflicter = require('../../utils/conflicter.js');
 var isBinaryFile = require('isbinaryfile').sync;
 var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
+global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
+
 module.exports = nuxeo.extend({
   _getGlobalStorage: function() {
     // Override Yeoman global storage; use only the local one
