@@ -28,8 +28,20 @@ const targetPlatforms = _(res).filter((tp) => {
 });
 
 const choices = _(targetPlatforms).map((tp) => {
-  return `${tp.version} (${tp.label})`;
+  return tp.label ? `${tp.version} (${tp.label})` : tp.version;
 }).sortBy().value();
+
+// Handle Current -SNAPSHOT version
+// XXX Hacky: this code cannot handle x.4-SNAPSHOT -> x.10-SNAPSHOT.
+const lastVersion = _(choices).findLast();
+let [, major, minor] = lastVersion.match(/^(\d+)\.(\d+)\s+/);
+if (minor === '10') {
+  major = parseInt(major) + 1;
+  minor = 1;
+} else {
+  minor = parseInt(minor) + 1;
+}
+choices.push(`${major}.${minor}-SNAPSHOT`);
 
 let dtp = _(targetPlatforms).find((tp) => {
   return tp.default;
