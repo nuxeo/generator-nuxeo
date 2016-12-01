@@ -45,6 +45,7 @@
     "path": "^0.12.7",
     "path-exists": "^3.0.0",
     "promise": "^7.1.1",
+    "sync-request": "^3.0.1",
     "underscore.string": "^3.2.2",
     "yeoman-generator": "^0.24.1",
     "yeoman-remote": "^1.0.1",

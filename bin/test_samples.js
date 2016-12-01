@@ -2,10 +2,7 @@
 
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
-var fs = require('fs');
-var mkdirp = require('mkdirp');
 var path = require('path');
-var childProcess = require('child_process');
 var log = require('yeoman-environment/lib/util/log')();
 
 helpers.run(path.join(__dirname, '../generators/sample'))
