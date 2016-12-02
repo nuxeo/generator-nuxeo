@@ -160,6 +160,14 @@ function maven(content) {
       return $groupId.text().trim();
     },
 
+    version: function() {
+      return $('project>version').text().trim() || $('project>parent>version').text().trim();
+    },
+
+    packaging: function() {
+      return $('project>packaging').text().trim() || 'jar';
+    },
+
     _dependenciesNode: function() {
       var isBom = this.isBom();
       if (isBom && $('dependencyManagement').length === 0) {

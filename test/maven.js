@@ -183,4 +183,26 @@ describe('Maven module can', function() {
     assert.ok(pom._xml().match('<modules'));
   });
 
+  it('read pom packaging', function() {
+    let pom = openPomFile(this.fs, 'bom.xml');
+    assert.equal('pom', pom.packaging());
+
+    pom = openPomFile(this.fs, 'pom-without-deps.xml');
+    // Packaging not specified in this one; and fallback on jar
+    assert.equal('jar', pom.packaging());
+  });
+
+  it('read version node', function() {
+    let pom = openPomFile(this.fs, 'bom.xml');
+    assert.equal('1.0-SNAPSHOT', pom.version());
+
+    pom = openPomFile(this.fs, 'pom.xml');
+    // Read pom version not parent's one
+    assert.equal('1.0-SNAPSHOT', pom.version());
+
+    pom = openPomFile(this.fs, 'pom-without-deps.xml');
+    // Fallback on parent's one if empty
+    assert.equal('0.1-SNAPSHOT', pom.version());
+  });
+
 });
