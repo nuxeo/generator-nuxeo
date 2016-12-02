@@ -45,8 +45,13 @@ module.exports = {
     }
 
     let pom = maven.open(this.fs.read(pomPath));
-    // XXX Todo ensure module is a bundle; <type>undefined|jar</type>
-    return pom.isBom() ? pom.modules() : ['.'];
+    // If parent pom is not a BOM; there is no child module.
+    if (!pom.isBom()) {
+      return ['.'];
+    }
+    return _(pom.modules()).filter((module) => {
+      return maven.open(path.join(this.destinationRoot(), module, 'pom.xml')).packaging() === 'jar';
+    }).value();
   },
 
   _buildBundlesList: function(type, modules) {
