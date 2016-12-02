@@ -13,12 +13,13 @@ The generated components all come with unit tested sample code; for instance the
 
 That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web).
 
-## Features
+## Generator Features
+- Trigger the Hot reload which allows you to update the deployed bundles without restarting the Nuxeo Server.
 - Discover some sample Nuxeo Projects.
 - Bootstrap an empty Nuxeo Project with multi modules support.
 - Bootstrap a single empty Nuxeo Project.
 - Add a Nuxeo Package module to distribute your Project ([Marketplace](https://connect.nuxeo.com/nuxeo/site/marketplace))
-- Add a ready-to-use empty [Polymer](https://www.polymer-project.org) Application.
+- Add a ready-to-use empty [Polymer](https://www.polymer-project.org) or [Angular2](https://angular.io/) Application.
 - Create your own business rules or logic as an [Automation Operation](https://doc.nuxeo.com/x/Go0ZAQ).
 - Enrich REST API responses using a [content-enricher](https://doc.nuxeo.com/x/5wUuAQ).
 - Manipulate Business Object using a Document Adapter
@@ -27,7 +28,6 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 
 ## Incoming Features
 - Functional Testing module
-- Angular2 Empty Application
 - REST endpoint
 - Scheduler / Worker
 - Blob Provider
@@ -47,18 +47,33 @@ Running Nuxeo Generator inside a Container could be a little bit tricky with sev
 Docker equivalent of `yo nuxeo`:
 
 ```
+# Docker
 docker run -ti --rm -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo
+# Embedded Script
+nuxeocli nuxeo
+```
+
+Docker equivalent of `yo nuxeo operation listener`:
+
+```
+# Docker
+docker run -ti --rm -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo operation listener
+# Embedded Script
+nuxeocli nuxeo operation listener
 ```
 
 Docker equivalent of `yo nuxeo:sample`
 
 ```
+# Docker
 docker run -ti --rm -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo:sample
+# Embedded Script
+nuxeocli nuxeo:sample
 ```
 
 Those commands could be embedded in a local script to ease them.
 
-# Node Module
+# Local Installation
 
 ## Requirements
 
@@ -82,12 +97,28 @@ npm install -g yo nuxeo/generator-nuxeo
 ```
 
 # Quickstart
-## Discover Sample projects
+## Discover Sample Projects
 Using the generator let you have access to some ready to use Nuxeo Code Sample:
 
 ```bash
 yo nuxeo:sample
 ```
+
+## Hot Reload
+Using the generator let you trigger a Hot Reload on your Server which allows you to update the deployed bundles without restarting the Nuxeo Server. To be done, it requires to enable the `sdk` template in your `nuxeo.conf` file.
+
+First step is to associate a Nuxeo Server with your project root. It will ask you the distribution path and if you want to let the `generator-nuxeo` configure the file for you. Reexecute it to change the distribution path.
+
+```bash
+yo nuxeo:hotreload configure
+```
+
+Then, you will be able to trigger it using:
+
+```bash
+yo nuxeo:hotreload
+```
+
 
 ## Bootstrap an Empty Nuxeo Project with Multi Modules Support
 To bootstrap an empty Nuxeo Project (based on a Maven multi-module project), execute the following lines:
@@ -127,7 +158,7 @@ The main Generator can render templates defined in [https://github.com/nuxeo/gen
 
 > Terminology
 >  - _ADD_: Add a dedicated module to your project. For instance, in a `myapp` project, a Polymer Application will add a `myapp-web` submodule.
->  - _CREATE_: Create the files needed for the feature, without specifying a `--type` option, the generation will occurs in the `myapp-core` submodule.
+>  - _CREATE_: Create the files needed for the feature, without specifying a `--type` option, the generation will occurs in the `myapp-core` submodule. When using the `--type` option, files will be generated to a (new) module named `myapp-{type}`;
 
 ## Discover Sample Projects
 To select a sample project that lets you know how a feature is built.
@@ -208,14 +239,27 @@ yo nuxeo adapter
 ```
 
 ## Add an Empty Polymer Application
-Creates an application based on [Polymer Starter Kit](https://github.com/PolymerElements/polymer-starter-kit) bundled as a Nuxeo Project.
+Add an application based on [Polymer Starter Kit](https://github.com/PolymerElements/polymer-starter-kit) bundled as a Nuxeo Project.
 
 ```bash
 yo nuxeo polymer
-cd *-web && npm install && bower install
+# npm and bower install must be executed automatically, otherwise:
+# cd *-web && npm install && bower install
 
 # To run the application in dev mode; with file hot reload:
 cd *-web && gulp serve
+```
+
+## Add an Empty Angular2 Application
+Add an application using [Angular2](https://angular.io/) bundled as a Nuxeo Project.
+
+```bash
+yo nuxeo angular2
+# npm and bower install must be executed automatically, otherwise:
+# cd *-web && npm install && bower install
+
+# To run the application in dev mode; with file hot reload:
+cd *-web && npm run dev
 ```
 
 ## Add a Nuxeo Package Module
