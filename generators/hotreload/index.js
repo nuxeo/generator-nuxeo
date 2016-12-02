@@ -57,7 +57,7 @@ var App = {
 };
 
 function delegate(that, methodName, fallback) {
-  if (that.delegate && that.delegate[methodName]) {
+  if (that.delegate && that.delegate[methodName] && typeof that.delegate[methodName] === 'function') {
     that.delegate[methodName].apply(that);
   } else {
     if (fallback) {

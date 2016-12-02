@@ -34,7 +34,7 @@ let delegate = {
     }
 
     if (this._isDistributionConfigured() || this.addSdk) {
-      this.log.info(`Nuxeo Server (${this._getDistributionPath()}) is already ready to use.`);
+      this.log.ok(`Nuxeo Server (${this._getDistributionPath()}) is already ready to use.`);
     } else {
       this.log.error(`Nuxeo Server (${this._getDistributionPath()}) needs the sdk template.`);
     }

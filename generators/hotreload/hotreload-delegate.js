@@ -40,7 +40,7 @@ const delegate = {
         this.log.error(`Module ${chalk.red(module)} has never been built.`);
       }
     });
-    let content = this._generateDevBundle(modules);
+    let content = this._generateDevBundleContent(modules);
 
     this.log.writeln();
     this.log.info('Writing changes on `dev.bundles` file:');

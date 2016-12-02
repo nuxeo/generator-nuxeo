@@ -80,10 +80,9 @@ module.exports = {
     return this._buildDevBundlesPath(this._getDistributionPath());
   },
 
-  _generateDevBundle: function() {
+  _generateDevBundleContent: function(modules) {
     let devBundlesFile = this._getDevBuildsPath();
     let content = readFile(devBundlesFile);
-    content = this._cleanDevBundlesFileContent(content);
-    return content + this._renderDevBundlesContent();
+    return this._cleanDevBundlesFileContent(content) + this._renderDevBundlesContent(modules);
   }
 };
