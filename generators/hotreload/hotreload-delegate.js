@@ -1,3 +1,5 @@
+const _ = require('lodash');
+const chalk = require('chalk');
 const Conflicter = require('../../utils/conflicter.js');
 const process = require('process');
 
@@ -27,12 +29,26 @@ const delegate = {
   },
 
   writing: function() {
-    let content = this._generateDevBundle();
+    const parentFolder = this.destinationRoot();
+    this.log.info(`Looking for Nuxeo bundles in ${parentFolder}/pom.xml file.`);
+    const modules = this._listModules(this.destinationRoot());
+
+    _(modules).each((module) => {
+      if (this._isModuleReady(module)) {
+        this.log.ok(`Module ${chalk.blue(module)} is ready to be hot reloaded.`);
+      } else {
+        this.log.error(`Module ${chalk.red(module)} has never been built.`);
+      }
+    });
+    let content = this._generateDevBundle(modules);
+
+    this.log.writeln();
     this.log.info('Writing changes on `dev.bundles` file:');
     this.fs.write(this._getDevBuildsPath(), content);
   },
 
   end: function() {
+    this.log.writeln();
     this.log.info(`Hot reload triggered on: ${this._getDistributionPath()}`);
   }
 };

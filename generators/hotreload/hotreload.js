@@ -38,7 +38,6 @@ module.exports = {
   },
 
   _listModules: function(parentFolder) {
-    this.log.info(`Looking for Maven modules in ${parentFolder}/pom.xml file.`);
     let pomPath = path.join(parentFolder, 'pom.xml');
     if (!exists(pomPath)) {
       this.log.error(`No pom.xml file found in ${parentFolder}.`);
@@ -60,8 +59,14 @@ module.exports = {
     }).join('\n');
   },
 
+  _isModuleReady: function(module) {
+    const modulePath = this._computeClassesFolder(module);
+    return exists(modulePath);
+  },
+
   _renderDevBundlesContent: function(pModules) {
-    let modules = pModules || this._listModules(this.destinationRoot());
+    let modules = pModules || [];
+
     // XXX Resolve module type: bundle,library,seam,resourceBundleFragment
     return `${TXT_START}\n${this._buildBundlesList(modules)}\n${TXT_END}\n`;
   },
