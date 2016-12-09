@@ -23,6 +23,13 @@ var App = {
       Type: 'String',
       defaults: 'target/classes'
     });
+
+    this.option('nologo', {
+      type: Boolean,
+      alias: 'n',
+      defaults: false,
+      desc: 'Disable welcome logo'
+    });
   },
 
   initializing: function() {

@@ -1,17 +1,27 @@
+const chalk = require('chalk');
 const isDocker = require('is-docker');
+const welcome = require('../../utils/welcome.js');
 
 const delegate = {
+  initializing: function() {
+    if (!this.options.nologo) {
+      this.log(welcome);
+    }
+
+    this.log.info(chalk.green('You\'ll be prompted for setting a target Nuxeo Server to trigger hot reload.'));
+  },
+
   prompting: function() {
     let done = this.async();
     return this.prompt([{
       type: 'input',
       name: 'distributionPath',
-      message: 'Distribution path:',
+      message: 'Nuxeo Server path:',
       when: () => {
         return !isDocker();
       },
       validate: (input) => {
-        return input && this._isDistributionPath(input) || 'Distribution path must be absolute, and contain a Nuxeo Server';
+        return input && this._isDistributionPath(input) || 'Server path must be absolute, and contain a Nuxeo Server Distribution';
       },
       default: this._getDistributionPath()
     }]).then((answers) => {
@@ -39,7 +49,7 @@ const delegate = {
     }
 
     if (this._isDistributionConfigured() || this.addSdk) {
-      this.log.ok(`Nuxeo Server (${this._getDistributionPath()}) is already ready to use.`);
+      this.log.ok(`Nuxeo Server (${this._getDistributionPath()}) is already configured for hot reload.`);
     } else {
       this.log.error(`Nuxeo Server (${this._getDistributionPath()}) needs the sdk template.`);
     }

@@ -37,7 +37,7 @@ module.exports = {
     if (isDocker()) {
       // this#_getDistributionPath method return the distribution path inside the container.
       distributionPath = this._getDistributionPath();
-      this.log.ok(`Using container's volume ${distributionPath} as base distribution path.`);
+      this.log.ok(`Using container's volume ${distributionPath} as base Nuxeo Server path.`);
     }
 
     if (!(exists(distributionPath) && fs.statSync(distributionPath).isDirectory())) {
@@ -47,7 +47,7 @@ module.exports = {
 
     let nuxeoConf = getNuxeoConfPath(distributionPath);
     if (!exists(nuxeoConf)) {
-      this.log.error(`Unable to reach nuxeo.conf file from: ${nuxeoConf}`);
+      this.log.error(`Unable to reach nuxeo.conf file from "${nuxeoConf}".`);
       process.exit(1);
     }
 
