@@ -16,6 +16,7 @@ RUN cd /opt && \
 
 WORKDIR /workdir
 VOLUME  /workdir
+VOLUME  /distribution
 ADD entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

@@ -2,4 +2,8 @@
 GENERATOR_IMG=nuxeo/generator:latest
 
 which docker &> /dev/null || ( echo "Docker is missing from path." && exit 1; )
-docker run -ti --rm -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" ${GENERATOR_IMG} $@
+
+if [ ! -z ${DISTRIBUTION_PATH} ]; then
+  DISTRIBUTION_VOLUME="-v \"${DISTRIBUTION_PATH}:/distribution\""
+fi
+docker run -ti --rm ${DISTRIBUTION_VOLUME} -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" ${GENERATOR_IMG} $@

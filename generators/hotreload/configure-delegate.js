@@ -1,10 +1,15 @@
-let delegate = {
+const isDocker = require('is-docker');
+
+const delegate = {
   prompting: function() {
     let done = this.async();
     return this.prompt([{
       type: 'input',
       name: 'distributionPath',
       message: 'Distribution path:',
+      when: () => {
+        return !isDocker();
+      },
       validate: (input) => {
         return input && this._isDistributionPath(input) || 'Distribution path must be absolute, and contain a Nuxeo Server';
       },
