@@ -38,7 +38,7 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 - If you are using Nuxeo Platform 5.8 or 6.0, code templates are available in [Nuxeo IDE](https://doc.nuxeo.com/x/ZYKE) using the [Nuxeo wizard](https://doc.nuxeo.com/x/uoSN).
 
 # Docker
-Check the `nuxeo/generator` [Docker Hub page](https://hub.docker.com/r/nuxeo/generator/). 
+Check the `nuxeo/generator` image in [Docker Hub page](https://hub.docker.com/r/nuxeo/generator/). 
 
 ## Embedded Script
 Running Nuxeo Generator inside a Container could be a little bit tricky with several parameters; the easiest way is to put the [nuxeocli script](https://raw.githubusercontent.com/nuxeo/generator-nuxeo/master/bin/nuxeocli) in your PATH environment. And run it directly from an empty directory.
@@ -66,9 +66,18 @@ Docker equivalent of `yo nuxeo:sample`
 
 ```
 # Docker
-docker run -ti --rm -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo:sample
+docker run -ti --rm -v "`pwd`:/workdir" nuxeo/generator nuxeo:sample
 # Embedded Script
 nuxeocli nuxeo:sample
+```
+
+Docker equivalent of `yo nuxeo:hotreload`
+
+```
+# Docker
+docker run -ti --rm -v "$DISTRIBUTION_PATH:/distribution" -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo:hotreload
+# Embedded Script
+DISTRIBUTION_PATH=/somewhere/local/nuxeo nuxeocli nuxeo:hotreload
 ```
 
 Those commands could be embedded in a local script to ease them.
@@ -246,7 +255,7 @@ yo nuxeo polymer
 # npm and bower install must be executed automatically, otherwise:
 # cd *-web && npm install && bower install
 
-# To run the application in dev mode; with file hot reload:
+# To run the application in dev mode; with file changes watch:
 cd *-web && gulp serve
 ```
 
@@ -258,7 +267,7 @@ yo nuxeo angular2
 # npm and bower install must be executed automatically, otherwise:
 # cd *-web && npm install && bower install
 
-# To run the application in dev mode; with file hot reload:
+# To run the application in dev mode; with file changes watch:
 cd *-web && npm run dev
 ```
 
