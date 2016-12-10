@@ -24,7 +24,9 @@ module.exports = {
     if (!distributionPath) {
       return false;
     }
-    return fs.readFileSync(getNuxeoConfPath(distributionPath), {
+    const confPath = getNuxeoConfPath(distributionPath);
+
+    return exists(confPath) && fs.readFileSync(confPath, {
       encoding: 'UTF-8'
     }).match(/^nuxeo\.templates\s*=\s*.*sdk/m);
   },
