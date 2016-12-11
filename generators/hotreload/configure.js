@@ -6,6 +6,7 @@ const fs = require('fs');
 const maven = require('../../utils/maven.js');
 
 const DISTRIBUTION_PATH = 'distribution:path';
+const MODULE_IGNORED = 'module:ignored';
 
 function getNuxeoConfPath(distributionPath) {
   // XXX Handle it a saver way; using ENV variable + options
@@ -61,6 +62,14 @@ module.exports = {
     }
   },
 
+  _saveIgnoredModules(modules) {
+    this.config.set(MODULE_IGNORED, modules || []);
+  },
+
+  _getIgnoredModules() {
+    return this.config.get(MODULE_IGNORED) || [];
+  },
+
   _configureDistribution: function() {
     let nuxeoConfPath = getNuxeoConfPath(this._getDistributionPath());
 
@@ -81,7 +90,8 @@ module.exports = {
    * not contain any `pom.xml` file.
    */
   _listModules: function(parentFolder) {
-    let pomPath = path.join(parentFolder, 'pom.xml');
+    const _rootFolder = parentFolder || this.destinationRoot();
+    const pomPath = path.join(_rootFolder, 'pom.xml');
     if (!exists(pomPath)) {
       this.log.error(`No pom.xml file found in ${parentFolder}.`);
       process.exit(1);

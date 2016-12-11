@@ -45,7 +45,7 @@ module.exports = {
     }).join('\n');
   },
 
-  _isModuleReady: function(module) {
+  _isModuleBuilt: function(module) {
     const modulePath = this._computeClassesFolder(module);
     return exists(modulePath);
   },

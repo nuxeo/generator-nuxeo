@@ -1,6 +1,15 @@
+const _ = require('lodash');
 const chalk = require('chalk');
 const isDocker = require('is-docker');
 const welcome = require('../../utils/welcome.js');
+
+function modulesToChoices(modules) {
+  return _(modules).map((module) => {
+    return {
+      name: module
+    };
+  }).value();
+}
 
 const delegate = {
   initializing: function() {
@@ -24,8 +33,15 @@ const delegate = {
         return input && this._isDistributionPath(input) || 'Server path must be absolute, and contain a Nuxeo Server Distribution';
       },
       default: this._getDistributionPath()
+    }, {
+      type: 'checkbox',
+      name: 'ignoredModules',
+      message: 'Ignore selected modules:',
+      choices: modulesToChoices(this._listModules()),
+      store: true
     }]).then((answers) => {
       this._saveDistributionPath(answers.distributionPath);
+      this._saveIgnoredModules(answers.ignoredModules);
       // If Nuxeo Server is not configured; ask user to configure it automatically
       if (!this._isDistributionConfigured()) {
         return this.prompt([{

@@ -32,15 +32,24 @@ const delegate = {
     const parentFolder = this.destinationRoot();
     this.log.info(`Looking for Nuxeo bundles in ${parentFolder}/pom.xml file.`);
     const modules = this._listModules(this.destinationRoot());
+    const ignored = this._getIgnoredModules();
+    const filtered = [];
 
     _(modules).each((module) => {
-      if (this._isModuleReady(module)) {
-        this.log.ok(`Module ${chalk.blue(module)} is ready to be hot reloaded.`);
-      } else {
-        this.log.error(`Module ${chalk.red(module)} has never been built.`);
+      if (ignored.indexOf(module) >= 0) {
+        this.log.error(`${chalk.yellow(module)} is ignored.`);
+        return;
       }
+
+      if (!this._isModuleBuilt(module)) {
+        this.log.error(`${chalk.red(module)} has never been built.`);
+        return;
+      }
+
+      this.log.ok(`${chalk.green(module)} is ready.`);
+      filtered.push(module);
     });
-    let content = this._generateDevBundleContent(modules);
+    let content = this._generateDevBundleContent(filtered);
 
     this.log.writeln();
     this.log.info('Writing changes on `dev.bundles` file:');
