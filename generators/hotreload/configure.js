@@ -1,7 +1,9 @@
+const _ = require('lodash');
 const path = require('path');
 const exists = require('path-exists').sync;
 const isDocker = require('is-docker');
 const fs = require('fs');
+const maven = require('../../utils/maven.js');
 
 const DISTRIBUTION_PATH = 'distribution:path';
 
@@ -71,6 +73,28 @@ module.exports = {
     content = this._enableDevMode(content);
 
     this.fs.write(nuxeoConfPath, content);
+  },
+
+  /**
+   * List available Maven modules inside the `parentFolder`
+   * Process exit with error in case the `parentFolder` do
+   * not contain any `pom.xml` file.
+   */
+  _listModules: function(parentFolder) {
+    let pomPath = path.join(parentFolder, 'pom.xml');
+    if (!exists(pomPath)) {
+      this.log.error(`No pom.xml file found in ${parentFolder}.`);
+      process.exit(1);
+    }
+
+    let pom = maven.open(this.fs.read(pomPath));
+    // If parent pom is not a BOM; there is no child module.
+    if (!pom.isBom()) {
+      return ['.'];
+    }
+    return _(pom.modules()).filter((module) => {
+      return maven.open(path.join(this.destinationRoot(), module, 'pom.xml')).packaging() === 'jar';
+    }).value();
   },
 
   /**

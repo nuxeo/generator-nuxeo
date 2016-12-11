@@ -1,9 +1,7 @@
 let _ = require('lodash');
 let exists = require('path-exists').sync;
 let fs = require('fs');
-var maven = require('../../utils/maven.js');
 let path = require('path');
-let process = require('process');
 
 const TXT_START = '## GENERATOR-NUXEO STUFF - DO NOT EDIT';
 const TXT_END = '## GENERATOR-NUXEO STUFF - END';
@@ -35,23 +33,6 @@ module.exports = {
     }
 
     return path.join(root, 'nxserver', 'dev.bundles');
-  },
-
-  _listModules: function(parentFolder) {
-    let pomPath = path.join(parentFolder, 'pom.xml');
-    if (!exists(pomPath)) {
-      this.log.error(`No pom.xml file found in ${parentFolder}.`);
-      process.exit(1);
-    }
-
-    let pom = maven.open(this.fs.read(pomPath));
-    // If parent pom is not a BOM; there is no child module.
-    if (!pom.isBom()) {
-      return ['.'];
-    }
-    return _(pom.modules()).filter((module) => {
-      return maven.open(path.join(this.destinationRoot(), module, 'pom.xml')).packaging() === 'jar';
-    }).value();
   },
 
   _buildBundlesList: function(type, modules) {
