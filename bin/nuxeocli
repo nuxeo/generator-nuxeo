@@ -1,6 +1,5 @@
 #!/bin/sh -
-#GENERATOR_IMG=nuxeo/generator:latest
-GENERATOR_IMG=generator
+GENERATOR_IMG=nuxeo/generator:latest
 
 which docker &> /dev/null || ( echo "Docker is missing from path." && exit 1; )
 
