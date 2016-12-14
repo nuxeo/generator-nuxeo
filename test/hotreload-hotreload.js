@@ -43,10 +43,10 @@ describe('Hot Reload Maven Module should', function() {
   });
 
   it('clean generated dev.bundles content', function() {
-    let content = `## GENERATOR-NUXEO STUFF - DO NOT EDIT\nbundle:dummy\nanother:content\n## GENERATOR-NUXEO STUFF - END`;
+    let content = '## GENERATOR-NUXEO STUFF - DO NOT EDIT\nbundle:dummy\nanother:content\n## GENERATOR-NUXEO STUFF - END';
     assert.equal('', hotreload._cleanDevBundlesFileContent(content));
 
-    content = `before## GENERATOR-NUXEO STUFF - DO NOT EDIT\nbundle:dummy\nanother:content\n## GENERATOR-NUXEO STUFF - ENDafter`;
+    content = 'before## GENERATOR-NUXEO STUFF - DO NOT EDIT\nbundle:dummy\nanother:content\n## GENERATOR-NUXEO STUFF - ENDafter';
     assert.equal('beforeafter', hotreload._cleanDevBundlesFileContent(content));
   });
 

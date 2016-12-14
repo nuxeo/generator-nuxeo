@@ -10,8 +10,7 @@ RUN cd /opt && \
     npm install -g yo && \
     npm link && \
     npm cache clear && \
-    mkdir -p /root/.config/configstore /workdir && \
-    chmod g+rwx /root /root/.config /root/.config/configstore /workdir && \
+    mkdir -p /root/.config/configstore /workdir /distribution && \
     echo '{"clientId": 0, "optOut": true}' > /root/.config/configstore/insight-yo.json
 
 WORKDIR /workdir
