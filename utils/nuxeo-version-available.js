@@ -24,12 +24,14 @@ try {
 
 // Filter CMF and version before 7.10 (even if it should be handle Target Platform side)
 const targetPlatforms = _(res).filter((tp) => {
-  return !(tp.deprecated || tp.name === 'cmf' || version.isBefore(tp.version, '7.10'));
+  return tp.enabled && !(tp.name === 'cmf' || version.isBefore(tp.version, '7.10'));
 });
 
-const choices = _(targetPlatforms).map((tp) => {
+const choices = _(targetPlatforms).sortBy((o) => {
+  return o.releaseDate;
+}).map((tp) => {
   return tp.label ? `${tp.version} (${tp.label})` : tp.version;
-}).sortBy().value();
+}).value();
 
 // Handle Current -SNAPSHOT version
 // XXX Hacky: this code cannot handle x.4-SNAPSHOT -> x.10-SNAPSHOT.
