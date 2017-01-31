@@ -75,7 +75,7 @@ Docker equivalent of `yo nuxeo:hotreload`
 
 ```
 # Docker
-docker run -ti --rm -v "$DISTRIBUTION_PATH:/distribution" -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo:hotreload
+docker run -ti --rm -v "$DISTRIBUTION_PATH:/opt/server/nuxeo" -v "`pwd`:/workdir" -e "workdir=`basename $PWD`" nuxeo/generator nuxeo:hotreload
 # Embedded Script
 DISTRIBUTION_PATH=/somewhere/local/nuxeo nuxeocli nuxeo:hotreload
 ```

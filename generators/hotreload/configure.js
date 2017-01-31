@@ -35,7 +35,7 @@ module.exports = {
   },
 
   _getDistributionPath: function() {
-    return isDocker() ? '/distribution' : this.config.get(DISTRIBUTION_PATH);
+    return isDocker() ? '/opt/nuxeo/server' : this.config.get(DISTRIBUTION_PATH);
   },
 
   _saveDistributionPath: function(distributionPath) {
