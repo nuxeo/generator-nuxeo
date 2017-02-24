@@ -11,6 +11,7 @@ var App = {
   },
 
   constructor: function() {
+    this.usage = require('../../utils/usage');
     yeoman.Base.apply(this, arguments);
     this.argument('delegateName', {
       desc: 'Define which action you want to do',
@@ -52,7 +53,7 @@ var App = {
 
   end: function() {
     delegate(this, 'end', () => {
-      this.log.info('Thank you for using generator-nuxeo.');
+      this.log.info('Thank you.');
     });
   }
 };

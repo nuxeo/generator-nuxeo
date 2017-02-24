@@ -20,28 +20,28 @@ var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'
 global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
 
 module.exports = nuxeo.extend({
-  _getGlobalStorage: function() {
+  _getGlobalStorage: function () {
     // Override Yeoman global storage; use only the local one
     return this._getStorage();
   },
 
-  prompt: function(questions, callback) {
+  prompt: function (questions, callback) {
     if (!questions || !_.isArray(questions)) {
       return this;
     }
 
     // Do not consider computed default as not stored ones.
     var computedDefaultIndices = [];
-    _.each(questions, function(question, index) {
+    _.each(questions, function (question, index) {
       if (_.isFunction(question.default)) {
         computedDefaultIndices.push(index);
       }
     });
     questions = promptSuggestion.prefillQuestions(this._globalConfig, questions);
-    this.env.adapter.prompt(questions, function(answers) {
+    this.env.adapter.prompt(questions, function (answers) {
       if (!this.options['skip-cache']) {
         // Reset computed default value to ensure the user input is stored
-        _.each(computedDefaultIndices, function(index) {
+        _.each(computedDefaultIndices, function (index) {
           questions[index].default = undefined;
         });
         promptSuggestion.storeAnswers(this._globalConfig, questions, answers);
@@ -55,8 +55,8 @@ module.exports = nuxeo.extend({
     return this;
   },
 
-  constructor: function() {
-    // Do not ask user when modifying twice a file
+  constructor: function () {
+    this.usage = require('../../utils/usage');
     yeoman.Base.apply(this, arguments);
 
     this.options.namespace = 'nuxeo [<generator>..]';
@@ -103,7 +103,7 @@ module.exports = nuxeo.extend({
     });
   },
 
-  initializing: function() {
+  initializing: function () {
     var done = this.async();
     var init = this._init(this.options);
 
@@ -118,12 +118,12 @@ module.exports = nuxeo.extend({
     // Expose options in the global scope for accessing them in generator's decriptors.
     global._options = this.options;
     var seq = async.seq(init.fetch, init.saveRemote, init.readDescriptor, init.resolveModule, init.filterModulesPerType, init.saveModules).bind(this);
-    seq(function() {
+    seq(function () {
       done();
     });
   },
 
-  prompting: function() {
+  prompting: function () {
     var done = this.async();
     var that = this;
     var types = this._moduleSortedKeys();
@@ -165,12 +165,12 @@ module.exports = nuxeo.extend({
           that.log.create(txt);
           // Show asked parameters
           var trimParams = [];
-          _.forEach(params, function(p) {
+          _.forEach(params, function (p) {
             trimParams.push(s.humanize(s.trim(p.message.replace(/\(.+\)/, ''), '?\\s+:_-')));
           });
           that.log.info('  ' + chalk.blue('Parameters: ') + trimParams.join(', '));
         }
-        that.prompt(params, function(props) {
+        that.prompt(params, function (props) {
           propHolder.store(params, props);
           that._findNuxeoVersion(props); // Resolve and Save Nuxeo Version
           that.props[item] = _.assign(propHolder.stored(), props);
@@ -185,7 +185,7 @@ module.exports = nuxeo.extend({
 
   },
 
-  writing: function() {
+  writing: function () {
     var done = this.async();
     var types = this._moduleSortedKeys();
 
@@ -197,12 +197,12 @@ module.exports = nuxeo.extend({
       }, () => {
         parentCb();
       });
-    }, function() {
+    }, function () {
       done();
     });
   },
 
-  _doWrite: function(item, callback) {
+  _doWrite: function (item, callback) {
     var that = this;
     var generator = that.currentGenerator = that.nuxeo.modules[item];
     var props = that.currentProps = that.props[item] || {};
@@ -214,7 +214,7 @@ module.exports = nuxeo.extend({
     props.multi = that._isMultiModule();
 
     // handling configuration
-    _.forEach(generator.config, function(value, key) {
+    _.forEach(generator.config, function (value, key) {
       if (typeof value === 'function') {
         value = value.call(that);
       } else if (typeof value === 'string' && value.match(/{{.+}}/)) {
@@ -236,7 +236,7 @@ module.exports = nuxeo.extend({
     var destPath = that._getBaseFolderName(generatorType);
     var ignorePatterns = generator['templates-ignore'] || [];
     if (fs.existsSync(tmplPath)) {
-      _.forEach(that._recursivePath(tmplPath), function(template) {
+      _.forEach(that._recursivePath(tmplPath), function (template) {
         var dest = that._tplPath(template, props).replace(tmplPath, destPath);
         if (s.startsWith(path.basename(dest), '.empty')) {
           mkdirp(path.dirname(dest));
@@ -248,9 +248,9 @@ module.exports = nuxeo.extend({
       });
     }
 
-    _(generator['main-java']).filter(function(source) {
+    _(generator['main-java']).filter(function (source) {
       return typeof source.when !== 'function' || source.when(props);
-    }).forEach(function(source) {
+    }).forEach(function (source) {
       // XXX To be refactored
       var args = [that._getBaseFolderName(generatorType), 'src/main/java'];
       args.push(props.package.split('.'));
@@ -260,9 +260,9 @@ module.exports = nuxeo.extend({
       that.fs.copyTpl(src, dest, props);
     });
 
-    _(generator['test-java']).filter(function(source) {
+    _(generator['test-java']).filter(function (source) {
       return typeof source.when !== 'function' || source.when(props);
-    }).forEach(function(source) {
+    }).forEach(function (source) {
       // XXX To be refactored
       var args = [that._getBaseFolderName(generatorType), 'src/test/java'];
       args.push(props.package.split('.'));
@@ -280,7 +280,7 @@ module.exports = nuxeo.extend({
       if (generator.dependencies === 'inherited') {
         that._addModulesDependencies(pom);
       } else {
-        _.forEach(generator.dependencies, function(dependency) {
+        _.forEach(generator.dependencies, function (dependency) {
           that.log.info('Maven dependency: ' + dependency);
           pom.addDependency(dependency);
         });
@@ -290,7 +290,7 @@ module.exports = nuxeo.extend({
     }
 
     // handling contributions
-    _(generator.contributions).forEach(function(contribution) {
+    _(generator.contributions).forEach(function (contribution) {
       if (!mf) {
         mf = manifestmf.open(manifestPath, that.fs);
         if (!mf) {
@@ -316,11 +316,11 @@ module.exports = nuxeo.extend({
     }
   },
 
-  end: function() {
-    this.log.info('You can start editing code or you can continue with calling another generator (yo nuxeo <generator>..)');
+  end: function () {
+    this.log.info(`You can start editing code or you can continue with calling another generator (${this.usage.prototype.resolvebinary(this.options)})`);
   },
 
-  install: function() {
+  install: function () {
     var skip = this.options.skipInstall;
     this._eachGenerator((type, name, generator, cb) => {
       if (generator.install === undefined) {

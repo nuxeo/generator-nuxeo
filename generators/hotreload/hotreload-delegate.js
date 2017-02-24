@@ -17,12 +17,12 @@ const delegate = {
   configuring: function() {
     if (!this._isDistributionConfigured()) {
       if (!this._getDistributionPath()) {
-        this.log.error('Any Nuxeo Server configured.');
+        this.log.error('No Nuxeo Server configured.');
       } else {
         this.log.error('Your nuxeo.conf file is not properly configured.');
       }
 
-      this.log.error('You must run `yo nuxeo:hotreload configure` first.');
+      this.log.error(`You must run \`${this.usage.prototype.resolvebinary(this.options)} configure\` first.`);
 
       process.exit(1);
     }
