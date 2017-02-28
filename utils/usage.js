@@ -25,9 +25,13 @@ var usage = module.exports = function () {
   return out;
 };
 
+usage.prototype.isYeoman = function(opts) {
+  return !opts._;
+};
+
 usage.prototype.resolvebinary = function(opts) {
   var name = ' ' + opts.namespace.replace(/^yeoman:/, '');
-  if (!opts._) {
+  if (usage.prototype.isYeoman()) {
     return 'yo' + name;
   } else {
     const ext = name.match(/(\[.*\])/);

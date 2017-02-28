@@ -25,7 +25,9 @@ module.exports = {
   },
 
   _showHello: function() {
-    this.log(nuxeowelcome);
+    if (this.usage.prototype.isYeoman(this.options)) {
+      this.log(nuxeowelcome);
+    }
   },
 
   _isUnknownBom: function(filename) {
