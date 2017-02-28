@@ -26,7 +26,7 @@ var usage = module.exports = function () {
 };
 
 usage.prototype.isYeoman = function(opts) {
-  return !opts._;
+  return opts ? !opts._ : true;
 };
 
 usage.prototype.resolvebinary = function(opts) {

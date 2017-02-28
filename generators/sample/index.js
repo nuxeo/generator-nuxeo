@@ -10,6 +10,7 @@ var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'
 
 var App = {
   constructor: function() {
+    this.usage = require('../../utils/usage');
     yeoman.Base.apply(this, arguments);
 
     this.option('localPath', {
