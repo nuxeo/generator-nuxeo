@@ -1,15 +1,19 @@
 /*eslint camelcase:0*/
-var GitHubApi = require('github');
-var clone = require('yeoman-remote');
+const GitHubApi = require('github');
+const clone = require('yeoman-remote');
+const _ = require('lodash');
 
-var gh = new GitHubApi();
+const gh = new GitHubApi();
 
 module.exports._git = {
-  fetchBranches: function(repository) {
-    return gh.repos.getBranches({
+  fetchReleases: function(repository) {
+    return gh.repos.getTags({
       owner: repository.user,
       repo: repository.repo,
       per_page: 100
+    }).then((tags) => {
+      // Add master to be able to fetch latest dev version
+      return _.concat(tags, 'master');
     });
   },
 

@@ -78,9 +78,9 @@ var App = {
         type: 'list',
         name: 'branch',
         defalut: 'master',
-        message: 'Which branch do you want?',
+        message: 'Which release do you want?',
         choices: function() {
-          return this._git.fetchBranches(answers.repository);
+          return this._git.fetchReleases(answers.repository);
         }.bind(this)
       }]);
     }).then((answers) => {
