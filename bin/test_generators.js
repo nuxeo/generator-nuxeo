@@ -123,7 +123,7 @@ async.waterfall([function(callback) {
 
   env.run(`nuxeo:test --meta=${branch} --skipInstall=true --nologo=true polymer`, callback);
 }, function(callback) {
-  // Add a Polymer app in web module
+  // Add a Polymer app
   adapter.responses({
     artifact: 'my-angular-app-artifact',
     name: 'Sample-angular-app',
@@ -131,6 +131,15 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --type=angu --skipInstall=true --nologo=true angular2`, callback);
+}, function(callback) {
+  // Add a ReactJS app
+  adapter.responses({
+    artifact: 'my-reactjs-app-artifact',
+    name: 'Sample-reactjs-app',
+    route: 'myReactApp'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --type=reactjs --skipInstall=true --nologo=true reactjs`, callback);
 }, function(callback) {
   // Add it a sync Listener
   adapter.responses({
