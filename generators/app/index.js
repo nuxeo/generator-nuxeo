@@ -30,9 +30,10 @@ module.exports = nuxeo.extend({
       return this;
     }
 
-    // Do not consider computed default as not stored ones.
     var computedDefaultIndices = [];
     _.each(questions, function (question, index) {
+      // Yeoman prompt do not store value if it's the same as the default one
+      // As a workaround, if the default value is a function; we undefine it to make the store ok
       if (_.isFunction(question.default)) {
         computedDefaultIndices.push(index);
       }
@@ -139,14 +140,19 @@ module.exports = nuxeo.extend({
       this.log.info = t;
 
       if (!_.isEmpty(module)) {
-        types.splice(0, 0, 'base');
-        this.nuxeo.selectedModules.base = module;
+        types.splice(0, 0, 'root');
+        this.nuxeo.selectedModules.root = module;
       }
     }
 
     async.eachSeries(types, (type, parentCb) => {
       var items = this.nuxeo.selectedModules[type];
-      if (type !== 'base') {
+      // Add type to a global value to be referenced in the metamodele
+      global._scope = {
+        type
+      };
+
+      if (type !== 'root') {
         this.log('');
         this.log.create(chalk.yellow('Generate Module: ' + this._resolveTypeFolderName(type)));
       }
@@ -154,6 +160,7 @@ module.exports = nuxeo.extend({
       async.eachSeries(items, (item, callback) => {
         var params = that.nuxeo.modules[item].params || [];
 
+        // Showing what will be prompted
         if (!_.isEmpty(params)) {
           params = propHolder.filter(params);
 
@@ -170,10 +177,12 @@ module.exports = nuxeo.extend({
           });
           that.log.info('  ' + chalk.blue('Parameters: ') + trimParams.join(', '));
         }
+
+        // Prompting for tue
         that.prompt(params, function (props) {
           propHolder.store(params, props);
           that._findNuxeoVersion(props); // Resolve and Save Nuxeo Version
-          that.props[item] = _.assign(propHolder.stored(), props);
+          that.props[type + item] = _.assign(propHolder.stored(), props);
           callback();
         });
       }, () => {
@@ -193,7 +202,7 @@ module.exports = nuxeo.extend({
       var items = this.nuxeo.selectedModules[type];
 
       async.eachSeries(items, (item, callback) => {
-        this._doWrite(item, callback);
+        this._doWrite(type, item, callback);
       }, () => {
         parentCb();
       });
@@ -202,11 +211,12 @@ module.exports = nuxeo.extend({
     });
   },
 
-  _doWrite: function (item, callback) {
+  _doWrite: function (generatorType, item, callback) {
+    console.log(item);
+
     var that = this;
     var generator = that.currentGenerator = that.nuxeo.modules[item];
-    var props = that.currentProps = that.props[item] || {};
-    var generatorType = that._moduleResolveType(item);
+    var props = that.currentProps = that.props[generatorType + item] || {};
 
     // XXX Should be handled differently
     props.s = s; // String utils
