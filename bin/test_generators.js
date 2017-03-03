@@ -198,6 +198,16 @@ async.waterfall([function(callback) {
 }, function(callback) {
   // Add it a Package
   adapter.responses({
+    artifact: 'my-test-jsf',
+    package: 'org.nuxeo.generator.sample.jsf',
+    controller_name: 'MyController',
+    action_name: 'PrettyCool'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true seam-controller seam-action`, callback);
+}, function(callback) {
+  // Add it a Package
+  adapter.responses({
     artifact: 'my-test-package',
     name: 'My test package',
     company: 'Nuxeo'
