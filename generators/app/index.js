@@ -212,8 +212,6 @@ module.exports = nuxeo.extend({
   },
 
   _doWrite: function (generatorType, item, callback) {
-    console.log(item);
-
     var that = this;
     var generator = that.currentGenerator = that.nuxeo.modules[item];
     var props = that.currentProps = that.props[generatorType + item] || {};

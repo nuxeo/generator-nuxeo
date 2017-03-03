@@ -31,7 +31,7 @@ usage.prototype.isYeoman = function(opts) {
 
 usage.prototype.resolvebinary = function(opts) {
   var name = ' ' + opts.namespace.replace(/^yeoman:/, '');
-  if (usage.prototype.isYeoman()) {
+  if (usage.prototype.isYeoman(opts)) {
     return 'yo' + name;
   } else {
     const ext = name.match(/(\[.*\])/);
