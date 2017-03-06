@@ -58,7 +58,7 @@ module.exports = nuxeo.extend({
 
   constructor: function () {
     this.usage = require('../../utils/usage');
-    yeoman.Base.apply(this, arguments);
+    yeoman.apply(this, arguments);
 
     this.options.namespace = 'nuxeo [<generator>..]';
     this.option('meta', {

@@ -8,4 +8,4 @@ app = _.extend(app, require('./nuxeo-helper.js'));
 app = _.extend(app, require('./nuxeo-init-meta.js'));
 app = _.extend(app, require('./nuxeo-version.js'));
 
-module.exports = yeoman.Base.extend(app);
+module.exports = yeoman.extend(app);

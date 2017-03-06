@@ -6,6 +6,7 @@ var gulp = require('gulp');
 var fs = require('fs');
 var rimraf = require('rimraf');
 var watch = require('gulp-watch');
+const debug = require('gulp-debug');
 var batch = require('gulp-batch');
 var eslint = require('gulp-eslint');
 var excludeGitignore = require('gulp-exclude-gitignore');
@@ -19,14 +20,6 @@ gulp.task('nsp', function(cb) {
     shrinkwrap: __dirname + '/npm-shrinkwrap.json',
     package: path.resolve('package.json')
   }, cb);
-});
-
-gulp.task('pre-test', function() {
-  return gulp.src(['generators/**/*.js', 'utils/*.js'])
-    .pipe(istanbul({
-      includeUntested: false
-    }))
-    .pipe(istanbul.hookRequire());
 });
 
 gulp.task('watch-test', function() {
@@ -56,8 +49,18 @@ gulp.task('lint', ['checkstyle'], function() {
     .pipe(eslint.failAfterError());
 });
 
-gulp.task('test', ['lint', 'pre-test'], function(cb) {
+gulp.task('pre-test', function() {
+  return gulp.src(['generators/**/*.js', 'utils/*.js'])
+    .pipe(debug())
+    .pipe(istanbul({
+      includeUntested: false
+    }))
+    .pipe(istanbul.hookRequire());
+});
+
+gulp.task('test', ['pre-test'], function(cb) {
   gulp.src('test/**/*.js')
+    .pipe(debug())
     .pipe(plumber())
     .pipe(mocha({
       reporter: 'spec'
@@ -75,5 +78,5 @@ gulp.task('test', ['lint', 'pre-test'], function(cb) {
     });
 });
 
-gulp.task('prepublish', ['test', 'nsp']);
-gulp.task('default', ['test']);
+gulp.task('prepublish', ['lint', 'test', 'nsp']);
+gulp.task('default', ['lint', 'test']);

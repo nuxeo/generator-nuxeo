@@ -12,7 +12,7 @@ var App = {
 
   constructor: function() {
     this.usage = require('../../utils/usage');
-    yeoman.Base.apply(this, arguments);
+    yeoman.apply(this, arguments);
     this.argument('delegateName', {
       desc: 'Define which action you want to do',
       Type: 'String',

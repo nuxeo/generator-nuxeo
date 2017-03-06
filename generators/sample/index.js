@@ -11,7 +11,7 @@ var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'
 var App = {
   constructor: function() {
     this.usage = require('../../utils/usage');
-    yeoman.Base.apply(this, arguments);
+    yeoman.apply(this, arguments);
 
     this.option('localPath', {
       type: String,
@@ -117,4 +117,4 @@ var App = {
 App = _.extend(App, require('./github-provider.js'));
 App = _.extend(App, require('../app/nuxeo-init-meta.js'));
 App = _.extend(App, require('../app/nuxeo-helper.js'));
-module.exports = yeoman.Base.extend(App);
+module.exports = yeoman.extend(App);
