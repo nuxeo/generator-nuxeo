@@ -6,6 +6,7 @@ describe('Usage resolvebinary method', function() {
     const opts = {
       namespace: 'test',
       _: ['wrapped'],
+      _ncli: true,
       $0: 'wrapper'
     };
 
@@ -24,6 +25,7 @@ describe('Usage resolvebinary method', function() {
     const opts = {
       namespace: 'test [toto..]',
       _: ['test'],
+      _ncli: true,
       $0: 'wrapped'
     };
 
