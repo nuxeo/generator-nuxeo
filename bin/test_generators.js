@@ -3,6 +3,7 @@
 /*eslint camelcase:0*/
 const _ = require('lodash');
 const request = require('sync-request');
+const rimraf = require('rimraf');
 
 // Fetch Target Plaforms from Connect
 const response = request('GET', 'https://connect.nuxeo.com/nuxeo/restAPI/target-platforms').getBody('UTF-8');
@@ -21,7 +22,6 @@ if (version === 'latest') {
 var yo = require('yeoman-environment');
 var path = require('path');
 var mkdirp = require('mkdirp');
-var child_process = require('child_process');
 var fs = require('fs');
 var log = require('yeoman-environment/lib/util/log')();
 var async = require('async');
@@ -30,8 +30,9 @@ var async = require('async');
 var tmp = path.join(path.dirname(__filename), '..', '/tmp');
 if (fs.existsSync(tmp)) {
   log.info('Cleaning an existing folder.');
-  child_process.execSync('rm -rf ' + tmp);
+  rimraf.sync(tmp);
 }
+
 mkdirp.sync(tmp);
 process.chdir(tmp);
 log.info('Working directory is: ' + tmp);
@@ -94,7 +95,7 @@ async.waterfall([function(callback) {
 }, function(callback) {
   // Bootstrap the project and a first Operation
   adapter.responses({
-    artifact: 'my-test-artifact',
+    artifact: 'my-test-core',
     package: 'org.nuxeo.generator.sample',
     version: '1.0-SNAPSHOT',
     operation_name: 'MyOperation',
