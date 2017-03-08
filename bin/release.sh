@@ -43,7 +43,7 @@ git add package.json
 gulp prepublish
 npm publish
 
-git commit -m "Release $VERSION"
+git commit -m "Release $VERSION - meta: $BRANCH"
 git tag v$VERSION
 
 # cleanup
