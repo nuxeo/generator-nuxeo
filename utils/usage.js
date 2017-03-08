@@ -1,7 +1,7 @@
 function formatArg(argItem) {
   var arg = '<' + argItem.name + '>';
 
-  if (!argItem.config.required) {
+  if (!argItem.required) {
     arg = '[' + arg + ']';
   }
 

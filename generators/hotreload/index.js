@@ -35,7 +35,7 @@ var App = {
 
   initializing: function() {
     // Setting delegate following the pattern _${delegateName}Delegate
-    this.delegate = this[`_${this.delegateName.toLowerCase()}Delegate`];
+    this.delegate = this[`_${this.options.delegateName.toLowerCase()}Delegate`];
     delegate(this, 'initializing');
   },
 
@@ -81,4 +81,4 @@ App = _.extend(App, require('./configure.js'));
 App = _.extend(App, require('./configure-delegate.js'));
 App = _.extend(App, require('./hotreload.js'));
 App = _.extend(App, require('./hotreload-delegate.js'));
-module.exports = yeoman.Base.extend(App);
+module.exports = yeoman.extend(App);
