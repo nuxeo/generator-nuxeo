@@ -124,13 +124,6 @@ The main Generator can render templates defined in [https://github.com/nuxeo/gen
 >  - _ADD_: Add a dedicated module to your project. For instance, in a `myapp` project, a Polymer Application will add a `myapp-web` submodule.
 >  - _CREATE_: Create the files needed for the feature, without specifying a `--type` option, the generation will occurs in the `myapp-core` submodule. When using the `--type` option, files will be generated to a (new) module named `myapp-{type}`;
 
-## Discover Sample Projects
-To select a sample project that lets you know how a feature is built.
-
-```bash
-yo nuxeo:sample
-```
-
 ## Bootstrap an Empty Nuxeo Project with Multi Modules
 Set up an empty Nuxeo Bundle using Maven multi module support.
 
