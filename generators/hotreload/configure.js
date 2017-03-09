@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const path = require('path');
 const exists = require('path-exists').sync;
-const isDocker = require('is-docker');
 const fs = require('fs');
 const maven = require('../../utils/maven.js');
 
@@ -35,16 +34,10 @@ module.exports = {
   },
 
   _getDistributionPath: function() {
-    return isDocker() ? '/opt/nuxeo/server' : this.config.get(DISTRIBUTION_PATH);
+    return this.config.get(DISTRIBUTION_PATH);
   },
 
   _saveDistributionPath: function(distributionPath) {
-    if (isDocker()) {
-      // this#_getDistributionPath method return the distribution path inside the container.
-      distributionPath = this._getDistributionPath();
-      this.log.ok(`Using container's volume ${distributionPath} as base Nuxeo Server path.`);
-    }
-
     if (!(exists(distributionPath) && fs.statSync(distributionPath).isDirectory())) {
       this.log.error(`Directory ${distributionPath} do not exists.`);
       process.exit(1);
@@ -56,10 +49,8 @@ module.exports = {
       process.exit(1);
     }
 
-    if (!isDocker()) {
-      // Do not override any value if .yo-rc file has been intiated outside a container.
-      this.config.set(DISTRIBUTION_PATH, distributionPath);
-    }
+    // Do not override any value if .yo-rc file has been intiated outside a container.
+    this.config.set(DISTRIBUTION_PATH, distributionPath);
   },
 
   _saveIgnoredModules(modules) {

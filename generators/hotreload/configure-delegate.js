@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const chalk = require('chalk');
-const isDocker = require('is-docker');
 const welcome = require('../../utils/welcome.js');
 
 function modulesToChoices(modules) {
@@ -26,9 +25,6 @@ const delegate = {
       type: 'input',
       name: 'distributionPath',
       message: 'Nuxeo Server path:',
-      when: () => {
-        return !isDocker();
-      },
       validate: (input) => {
         return input && this._isDistributionPath(input) || 'Server path must be absolute, and contain a Nuxeo Server Distribution';
       },
