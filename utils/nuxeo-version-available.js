@@ -14,11 +14,13 @@ try {
   // do not break anything, restreint to LTS Versions
   res = [{
     label: 'Nuxeo Platform LTS 2015',
-    version: '7.10'
+    version: '7.10',
+    enabled: true
   }, {
     label: 'Nuxeo Platform LTS 2016',
     default: true,
-    version: '8.10'
+    version: '8.10',
+    enabled: true
   }];
 }
 
@@ -36,6 +38,7 @@ const choices = _(targetPlatforms).sortBy((o) => {
 // Handle Current -SNAPSHOT version
 // XXX Hacky: this code cannot handle x.4-SNAPSHOT -> x.10-SNAPSHOT.
 const lastVersion = _(choices).findLast();
+
 let [, major, minor] = lastVersion.match(/^(\d+)\.(\d+)\s+/);
 if (minor === '10') {
   major = parseInt(major) + 1;
