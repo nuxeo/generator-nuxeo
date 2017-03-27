@@ -16,20 +16,20 @@ var App = {
     yeoman.apply(this, arguments);
     this.argument('delegateName', {
       desc: 'Define which action you want to do',
-      Type: 'String',
-      defaults: 'hotreload'
+      type: String,
+      default: 'hotreload'
     });
 
     this.option('classesFolder', {
       desc: 'Define where is the classes folder under the module\'s one',
-      Type: 'String',
-      defaults: 'target/classes'
+      type: String,
+      default: 'target/classes'
     });
 
     this.option('nologo', {
       type: Boolean,
       alias: 'n',
-      defaults: false,
+      default: false,
       desc: 'Disable welcome logo'
     });
   },
