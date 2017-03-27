@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const chalk = require('chalk');
-const welcome = require('../../utils/welcome.js');
 
 function modulesToChoices(modules) {
   return _(modules).map((module) => {
@@ -12,10 +11,6 @@ function modulesToChoices(modules) {
 
 const delegate = {
   initializing: function() {
-    if (!this.options.nologo) {
-      this.log(welcome);
-    }
-
     this.log.info(chalk.green('You\'ll be prompted for setting a target Nuxeo Server to trigger hot reload.'));
   },
 

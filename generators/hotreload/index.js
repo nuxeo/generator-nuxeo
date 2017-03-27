@@ -3,6 +3,7 @@
 
 const _ = require('lodash');
 const yeoman = require('yeoman-generator');
+const welcome = require('../../utils/welcome.js');
 
 var App = {
   _getGlobalStorage: function() {
@@ -34,6 +35,10 @@ var App = {
   },
 
   initializing: function() {
+    if (this.usage.prototype.isYeoman(this.options)) {
+      this.log(welcome);
+    }
+
     // Setting delegate following the pattern _${delegateName}Delegate
     this.delegate = this[`_${this.options.delegateName.toLowerCase()}Delegate`];
     delegate(this, 'initializing');
