@@ -204,8 +204,11 @@ yo nuxeo polymer
 # cd *-web && npm install && bower install
 
 # To run the application in dev mode; with file changes watch:
-cd *-web && gulp serve
+cd *-web && npm run serve
 ```
+
+### Warning
+Common bundle's files like `MANIFEST.MF` and `OSGI-INF/*` are stored inside a `nuxeo` folder.
 
 ## Add an Empty Angular2 Application
 Add an application using [Angular2](https://angular.io/) bundled as a Nuxeo Project.
