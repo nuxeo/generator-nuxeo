@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
+    "flow-bin": "^0.43.0",
     "gulp": "^3.9.1",
     "gulp-batch": "^1.0.5",
     "gulp-debug": "^3.1.0",
@@ -69,7 +70,9 @@
   "repository": "nuxeo/generator-nuxeo",
   "scripts": {
     "prepublish": "gulp prepublish",
-    "test": "gulp test"
+    "pretest": "npm run flow -- check",
+    "test": "gulp test",
+    "flow": "flow"
   },
   "license": "Apache-2.0"
 }
