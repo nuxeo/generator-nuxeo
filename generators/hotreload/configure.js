@@ -7,6 +7,13 @@ const maven = require('../../utils/maven.js');
 const DISTRIBUTION_PATH = 'distribution:path';
 const MODULE_IGNORED = 'module:ignored';
 
+// Notes:
+//
+// Check dev.mode + template sdk
+// nxserver/dev.bundles format:
+// type:filepath
+// type: bundle,library,seam,resourceBundleFragment
+
 function getNuxeoConfPath(distributionPath) {
   // XXX Handle it a saver way; using ENV variable + options
   return path.join(distributionPath, 'bin', 'nuxeo.conf');
