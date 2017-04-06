@@ -40,6 +40,7 @@
     "lodash": "^4.13.0",
     "minimatch": "^3.0.2",
     "mkdirp": "^0.5.1",
+    "ora": "^1.2.0",
     "path": "^0.12.7",
     "path-exists": "^3.0.0",
     "promise": "^7.1.1",
@@ -72,7 +73,8 @@
     "prepublish": "gulp prepublish",
     "pretest": "npm run flow -- check",
     "test": "gulp test",
-    "flow": "flow"
+    "flow": "flow",
+    "mocha": "mocha -b"
   },
   "license": "Apache-2.0"
 }
