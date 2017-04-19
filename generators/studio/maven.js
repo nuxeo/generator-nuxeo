@@ -41,7 +41,7 @@ module.exports = {
       const fp = path.join(this.destinationRoot(), elt, 'pom.xml');
       return {
         fp,
-        pom: maven.open()
+        pom: maven.open(this.fs.read(fp))
       };
     }).filter((m) => {
       // Skip Modules that do not produces a jar

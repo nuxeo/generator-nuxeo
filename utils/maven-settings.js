@@ -65,13 +65,13 @@ function settings(filename) {
       this._ensureServersNode();
       $('servers').append($(xml({
         server: [{
-            id
-          }, {
-            username
-          },
-          {
-            password
-          }
+          id
+        }, {
+          username
+        },
+        {
+          password
+        }
         ]
       })));
 
