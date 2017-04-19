@@ -2,11 +2,11 @@ const Connect = require('../generators/studio/connect');
 const Studio = require('../generators/studio/studio');
 const assert = require('yeoman-assert');
 
-const TEST_ENV = 'https://nos-dev03-connect.nos.nuxeo.com/nuxeo';
+const TEST_ENV = 'https://nos-test-connect.nos.nuxeo.com/nuxeo';
 
-const USERNAME = 'akervern';
-const PASSWD = process.env.PASSWORD || 'FIXME';
-const PROJECT = 'akervern-SANDBOX';
+const USERNAME = 'zpsfktef@eelmail.com';
+const PASSWD = process.env.CPWD || 'FIXME';
+const PROJECT = 'tests-studio4';
 
 let connect = Object.assign({}, Connect);
 connect = Object.assign(connect, Studio);
@@ -57,6 +57,11 @@ describe('Connect authorization', function () {
 
   it('can fetch an authorized project', function () {
     assert.ok(connect._getProject(PROJECT));
+  });
+
+  it('can get project\'s Maven GAV', function () {
+    const maven = connect._getProjectMavenCoordonates(PROJECT);
+    assert.equal('nuxeo-studio:tests-studio4:0.0.0-SNAPSHOT', maven);
   });
 
   it('can revoke a token', function () {

@@ -15,19 +15,29 @@ Usage:
      pom.save(this.fs, filename);
 */
 
-function maven(content) {
-  if (typeof content === 'undefined') {
-    content = fse.readFileSync('pom.xml', {
-      encoding: 'UTF-8'
-    });
+function maven(content, fsl) {
+  let filename;
+  content = content || 'pom.xml';
+
+  // Not an XML; assuming it's a path
+  if (!content.startsWith('<')) {
+    const fs = fsl || fse;
+    const readFile = fs.readFileSync || fs.read;
+
+    filename = content;
+    // content = readFile(content, {
+    //   encoding: 'UTF-8'
+    // });
+    content = readFile(content);
   }
+
   var $ = cheerio.load(content, {
     xmlMode: true,
     lowerCaseTags: false
   });
 
   return {
-    convertToXml: function(dep) {
+    convertToXml: function (dep) {
       var $dep = $('<dependency />');
       $dep.append('<groupId>' + dep.groupId + '</groupId>');
       $dep.append('<artifactId>' + dep.artifactId + '</artifactId');
@@ -43,7 +53,7 @@ function maven(content) {
       return $dep;
     },
 
-    convertToObject: function(elt) {
+    convertToObject: function (elt) {
       var n = $(elt);
       return {
         groupId: n.find('groupId').text() || undefined,
@@ -54,7 +64,7 @@ function maven(content) {
       };
     },
 
-    addDependency: function() {
+    addDependency: function () {
       var args = Array.prototype.slice.call(arguments, 0);
       if (args.length === 1) {
         args = args[0].split(':');
@@ -79,13 +89,13 @@ function maven(content) {
       return dep;
     },
 
-    containsDependency: function(dep) {
+    containsDependency: function (dep) {
       // XXX Should handle the case of adding a "compile" dependency after a "test" dependency.
       // Test dependency should be removed to be cleaner.
       var that = this;
-      return this._dependenciesNode().find('artifactId').filter(function(i, elt) {
+      return this._dependenciesNode().find('artifactId').filter(function (i, elt) {
         return $(elt).text() === dep.artifactId;
-      }).parent().filter(function(i, elt) {
+      }).parent().filter(function (i, elt) {
         // Ensure each string keyed properties are setted to something
         var od = _.defaults(that.convertToObject(elt), {
           groupId: '',
@@ -106,9 +116,26 @@ function maven(content) {
       }).length > 0;
     },
 
-    dependencies: function() {
+    removeDependency: function (dep) {
+      const [groupId, artifactId, version, extension = 'jar', classifier] = dep.split(':');
+      this._dependenciesNode().find('artifactId').filter((i, elt) => {
+        return $(elt).text() === artifactId;
+      }).parent().filter((i, elt) => {
+        const gm = $(elt).find('groupId').text() === groupId;
+        const vm = !version || !$(elt).find('version').text() || $(elt).find('version').text() === version;
+        const em = !$(elt).find('type').text() && extension === 'jar' || $(elt).find('type').text() === extension;
+        const sm = !classifier || $(elt).find('scope').text() === classifier;
+        // console.log('R: ' + dep)
+        // console.log('F: ' + this._toGav(elt));
+        // console.log(`${gm}:${vm}:${em}:${sm} => ${gm && vm && em && sm}`);
+        // console.log('--');
+        return gm && vm && em && sm;
+      }).remove();
+    },
+
+    dependencies: function () {
       var dependencies = [];
-      this._dependenciesNode().find('dependency').each(function(i, elt) {
+      this._dependenciesNode().find('dependency').each(function (i, elt) {
         var el = $(elt);
         dependencies.push({
           artifactId: el.first('artifactId').text(),
@@ -118,7 +145,7 @@ function maven(content) {
       return dependencies;
     },
 
-    addModule: function(module) {
+    addModule: function (module) {
       if (!this.containsModule(module)) {
         if ($('modules').length === 0) {
           $('project').append($('<modules />'));
@@ -130,29 +157,29 @@ function maven(content) {
       return module;
     },
 
-    isBom: function() {
+    isBom: function () {
       return $('packaging').text() === 'pom';
     },
 
-    containsModule: function(module) {
-      return $('modules module').filter(function(i, elt) {
+    containsModule: function (module) {
+      return $('modules module').filter(function (i, elt) {
         return $(elt).text() === module;
       }).length > 0;
     },
 
-    modules: function() {
+    modules: function () {
       var modules = [];
-      $('modules module').each(function(i, elt) {
+      $('modules module').each(function (i, elt) {
         modules.push($(elt).text());
       });
       return modules;
     },
 
-    artifactId: function() {
+    artifactId: function () {
       return $('project>artifactId').text().trim();
     },
 
-    groupId: function() {
+    groupId: function () {
       var $groupId = $('project>groupId');
       if ($groupId.length === 0) {
         $groupId = $('parent>groupId');
@@ -160,15 +187,15 @@ function maven(content) {
       return $groupId.text().trim();
     },
 
-    version: function() {
+    version: function () {
       return $('project>version').text().trim() || $('project>parent>version').text().trim();
     },
 
-    packaging: function() {
+    packaging: function () {
       return $('project>packaging').text().trim() || 'jar';
     },
 
-    _dependenciesNode: function() {
+    _dependenciesNode: function () {
       var isBom = this.isBom();
       if (isBom && $('dependencyManagement').length === 0) {
         $('project').append($('<dependencyManagement />'));
@@ -181,14 +208,18 @@ function maven(content) {
       return $root.children('dependencies');
     },
 
-    _xml: function() {
+    _xml: function () {
       return beautify($.xml(), {
         indent_size: 2,
         preserve_newlines: 1
       });
     },
-    save: function(fs, file) {
-      fs.write(file, this._xml());
+    _toGav: function (elt) {
+      const $elt = $(elt);
+      return `${$elt.find('groupId').text()}:${$elt.find('artifactId').text()}:${$elt.find('version').text()}:${$elt.find('type').text()}:${$elt.find('scope').text()}`;
+    },
+    save: function (fs, file) {
+      fs.write(file || filename, this._xml());
     }
   };
 }

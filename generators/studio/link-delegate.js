@@ -1,6 +1,24 @@
 const spinner = require('../../utils/spinner');
+const chalk = require('chalk');
+const Conflicter = require('../../utils/conflicter.js');
 
 const delegate = {
+  initializing: function() {
+    this.conflicter = new Conflicter(this.env.adapter, (filename) => {
+      return this.options.force || filename.match(/pom\.xml$/);
+    });
+
+    const d = this.destinationRoot();
+    if (!this._containsPom(d)) {
+      this.log.error(`Folder ${chalk.blue(d)} has to be initialized as a Maven project`);
+      process.exit(1);
+    }
+  },
+
+  welcome: function() {
+    this.log.info('You are going to link a Studio project to this project.');
+  },
+
   prompting: function () {
     const that = this;
     const done = that.async();
@@ -9,9 +27,7 @@ const delegate = {
       type: 'input',
       name: 'username',
       message: 'NOS Username:',
-      when: function () {
-        return !that._hasToken();
-      },
+      store: true,
       validate: (input) => {
         return input && input.length > 0 || 'Username is empty';
       }
@@ -19,9 +35,6 @@ const delegate = {
       type: 'password',
       name: 'password',
       message: 'NOS Password:',
-      when: function () {
-        return !that._hasToken();
-      },
       validate: (input, answers) => {
         if (!(input && input.length > 0)) {
           return 'Password is empty';
@@ -44,15 +57,55 @@ const delegate = {
           return that._isProjectAccessible(input);
         }) || 'Unknow project';
       }
+    }, {
+      type: 'confirm',
+      name: 'settings',
+      message: 'Do you want to update your Maven settings.xml file accordingly?',
+      default: true
+    }, {
+      type: 'confirm',
+      name: 'settings_override',
+      message: 'Some credentials are already set for nuxeo-studio server, do you want to override them?',
+      default: false,
+      when: (answers) => {
+        return answers.settings && that._hasCredentials();
+      }
     }])
     .then((answers) => {
       that._setSymbolicName(answers.project);
+      that._saveSettingsAnswers(answers.settings, answers.settings_override);
+      that._answers = answers;
       done();
     })
     .catch((e) => {
       that.log.error(e.message);
       done();
     });
+  },
+
+  writing: function () {
+    // Get full GAV from Studio API
+    const gav = spinner(() => {
+      return this._getProjectMavenCoordonates();
+    });
+
+    // Remove previous Studio project
+    this._removeDependency();
+
+    // Add dependency to the root module and submodules
+    this._addDependency(gav);
+
+    if (this._canAddCredentials()) {
+      this._addConnectCredentials(this._answers.username, this._answers.password);
+    }
+  },
+
+  end: function() {
+    if (this._answers.settings && typeof this._answers.settings_override === 'undefined' || this._answers.settings_override) {
+      this.log.info(chalk.yellow('WARNING:'));
+      this.log.info(`We modified '${chalk.blue(this._getSettingsPath())}' file and settings your password in plain text inside.`);
+      this.log.info(`You must read ${chalk.blue('https://maven.apache.org/guides/mini/guide-encryption.html')} and using an encrypted one.`);
+    }
   }
 };
 

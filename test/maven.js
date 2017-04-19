@@ -4,28 +4,28 @@ var maven = require('../utils/maven.js');
 var memFs = require('mem-fs');
 var editor = require('mem-fs-editor');
 
-describe('Maven module can', function() {
+describe('Maven module can', function () {
   function openPomFile(fs, filename) {
     var pomPath = path.join(__dirname, 'templates', filename);
     return maven.open(fs.read(pomPath));
   }
 
-  before(function() {
+  before(function () {
     this.pomPath = path.join(__dirname, 'templates', 'pom.xml');
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     this.fs = editor.create(memFs.create());
     this.pom = maven.open(this.fs.read(this.pomPath));
   });
 
-  it('add dependency', function() {
+  it('add dependency', function () {
     assert.equal(0, this.pom.dependencies().length);
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-core');
     assert.equal(1, this.pom.dependencies().length);
   });
 
-  it('can read name and group id', function() {
+  it('can read name and group id', function () {
     assert.equal('myartifact', this.pom.artifactId());
     // Inherited groupId
     assert.equal('org.nuxeo.sandbox', this.pom.groupId());
@@ -35,7 +35,7 @@ describe('Maven module can', function() {
     assert.equal('org.nuxeo.sandbox', bom.groupId());
   });
 
-  it('write beautified file content', function() {
+  it('write beautified file content', function () {
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon');
     this.pom.save(this.fs, this.pomPath);
 
@@ -46,12 +46,12 @@ describe('Maven module can', function() {
     assert.notEqual(null, content.match('<groupId>'));
   });
 
-  it('not add wrong dependency', function() {
+  it('not add wrong dependency', function () {
     assert.equal(null, this.pom.addDependency('org.nuxeo.addon'));
     assert.notEqual(null, this.pom.addDependency('org.nuxeo.addon', 'something'));
   });
 
-  it('find existing dependency', function() {
+  it('find existing dependency', function () {
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-core');
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-api');
     var dep = {
@@ -67,7 +67,7 @@ describe('Maven module can', function() {
     assert.equal(true, this.pom.containsDependency(dep));
   });
 
-  it('add dependency independantly of the GAV', function() {
+  it('add dependency independantly of the GAV', function () {
     var dep = this.pom.addDependency('org.nuxeo.addon:mynewadon-core');
     assert.equal('org.nuxeo.addon', dep.groupId);
     assert.equal('mynewadon-core', dep.artifactId);
@@ -100,7 +100,7 @@ describe('Maven module can', function() {
     assert.equal('test', dep.classifier);
   });
 
-  it('not add a dependency twice', function() {
+  it('not add a dependency twice', function () {
     assert.equal(0, this.pom.dependencies().length);
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-core');
     assert.equal(1, this.pom.dependencies().length);
@@ -116,7 +116,7 @@ describe('Maven module can', function() {
     assert.equal(4, this.pom.dependencies().length);
   });
 
-  it('convert dependency to XML node', function() {
+  it('convert dependency to XML node', function () {
     var dep = this.pom.addDependency('org.nuxeo.addon:mynewadon-jar:1.1-SNAPSHOT:jar:test');
     var xml = this.pom.convertToXml(dep);
     assert.equal(1, xml.find('groupId').length);
@@ -138,7 +138,7 @@ describe('Maven module can', function() {
     assert.equal(0, xml.find('version').length);
   });
 
-  it('add child module', function() {
+  it('add child module', function () {
     assert.equal(0, this.pom.modules().length);
     this.pom.addModule('my-module-core');
     assert.equal(1, this.pom.modules().length);
@@ -148,7 +148,7 @@ describe('Maven module can', function() {
     assert.equal(2, this.pom.modules().length);
   });
 
-  it('add dependency to the dependencyManagement', function() {
+  it('add dependency to the dependencyManagement', function () {
     var bom = openPomFile(this.fs, 'bom.xml');
     assert.equal(0, bom.dependencies().length);
     bom.addDependency('org.nuxeo.addon:mynewadon-jar:1.0');
@@ -157,7 +157,7 @@ describe('Maven module can', function() {
     assert.ok(bom._xml().match('<dependencyManagement>'));
   });
 
-  it('handle pom without expected nodes', function() {
+  it('handle pom without expected nodes', function () {
     var pom = openPomFile(this.fs, 'pom-without-deps.xml');
 
     // Ensure there is any nodes
@@ -183,7 +183,7 @@ describe('Maven module can', function() {
     assert.ok(pom._xml().match('<modules'));
   });
 
-  it('read pom packaging', function() {
+  it('read pom packaging', function () {
     let pom = openPomFile(this.fs, 'bom.xml');
     assert.equal('pom', pom.packaging());
 
@@ -192,7 +192,7 @@ describe('Maven module can', function() {
     assert.equal('jar', pom.packaging());
   });
 
-  it('read version node', function() {
+  it('read version node', function () {
     let pom = openPomFile(this.fs, 'bom.xml');
     assert.equal('1.0-SNAPSHOT', pom.version());
 
@@ -203,6 +203,59 @@ describe('Maven module can', function() {
     pom = openPomFile(this.fs, 'pom-without-deps.xml');
     // Fallback on parent's one if empty
     assert.equal('0.1-SNAPSHOT', pom.version());
+  });
+
+  it('remove dependency based on gav selection', function () {
+    const pom = openPomFile(this.fs, 'pom-to-remove-deps.xml');
+    const length = pom.dependencies().length;
+    assert.equal(8, length);
+
+    // Try to remove not existing deps
+    // Existing dep: org.nuxeo.sample:dummy-conflict-{1..4}:1.0-SNAPSHOT:pom:import
+    // Existing dep: org.nuxeo.sample:dummy-conflict-5::pom:import
+    // Existing dep: org.nuxeo.sample:dummy-conflict-6::pom
+    // Existing dep: org.nuxeo.sample:dummy-conflict-7:::import
+    // Existing dep: org.nuxeo.sample:dummy-conflict-8::jar
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-0');
+    assert.equal(length, pom.dependencies().length);
+    pom.removeDependency('org.nuxeo.sample-p:dummy-conflict-1');
+    assert.equal(length, pom.dependencies().length);
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-1:1.1-SNAPSHOT');
+    assert.equal(length, pom.dependencies().length);
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-1:1.0-SNAPSHOT:jar');
+    assert.equal(length, pom.dependencies().length);
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-1:1.0-SNAPSHOT:pom:test');
+    assert.equal(length, pom.dependencies().length);
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-1:1.0-SNAPSHOT:pom:import');
+    assert.equal(length - 1, pom.dependencies().length, 'Unable to delete fully qualifier dep.');
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-2:1.0-SNAPSHOT:pom');
+    assert.equal(length - 2, pom.dependencies().length, 'Unable to delete dep without classifier.');
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-3:1.0-SNAPSHOT');
+    assert.equal(length - 3, pom.dependencies().length, 'Unable to delete dep without classifier and scope.');
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-4');
+    assert.equal(length - 4, pom.dependencies().length, 'Unable to delete dep without version, classifier and scope.');
+
+    pom.removeDependency(':dummy-conflict-5');
+    assert.equal(length - 4, pom.dependencies().length, 'Dependency should not be deleted without a group');
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-8:1.0-SNAPSHOT');
+    assert.equal(length - 5, pom.dependencies().length, 'Dependency should not be deleted without any type and using another type that jar');
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-5:1.0-SNAPSHOT:zip');
+    assert.equal(length - 5, pom.dependencies().length, 'Dependency without a version and wrong type');
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-6:1.0-SNAPSHOT:pom:test');
+    assert.equal(length - 5, pom.dependencies().length, 'Dependecy with a missing scope should not be deleted');
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-6:1.0-SNAPSHOT:pom');
+    assert.equal(length - 6, pom.dependencies().length, 'Should not delete dependency with a specific scope');
+
+    pom.removeDependency('org.nuxeo.sample:dummy-conflict-7:1.0-SNAPSHOT:jar:import');
+    assert.equal(length - 7, pom.dependencies().length, 'Dependecy with a missing type should not be deleted');
   });
 
 });

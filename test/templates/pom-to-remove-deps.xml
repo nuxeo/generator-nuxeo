@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.nuxeo.sandbox</groupId>
+    <artifactId>parent-artifact</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>myartifact</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>dummy</name>
+  <description>Dummy pom.xml</description>
+  <packaging>pom</packaging>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.nuxeo.sample</groupId>
+        <artifactId>dummy-conflict-1</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo.sample</groupId>
+        <artifactId>dummy-conflict-2</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo.sample</groupId>
+        <artifactId>dummy-conflict-3</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <type>jar</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo.sample</groupId>
+        <artifactId>dummy-conflict-4</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <type>jar</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo.sample</groupId>
+        <artifactId>dummy-conflict-8</artifactId>
+        <type>jar</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo.sample</groupId>
+        <artifactId>dummy-conflict-5</artifactId>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo.sample</groupId>
+        <artifactId>dummy-conflict-6</artifactId>
+        <type>pom</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.nuxeo.sample</groupId>
+        <artifactId>dummy-conflict-7</artifactId>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

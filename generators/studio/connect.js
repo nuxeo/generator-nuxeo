@@ -25,6 +25,10 @@ module.exports = {
     return !!this.config.get(CONNECT_TOKEN);
   },
   _generateToken: function (username, password) {
+    if (this._hasToken()) {
+      this._revokeToken();
+    }
+
     const res = request('GET', this._getConnectUrl() + '/authentication/token', {
       qs: {
         applicationName: this._getApplicationName(),
@@ -37,7 +41,7 @@ module.exports = {
     });
 
     if (res.statusCode === 201) {
-      const tok = _.trim(res.getBody());
+      const tok = _.trim(res.getBody('UTF-8'));
       this.config.set(CONNECT_TOKEN, tok);
       return tok;
     } else {
