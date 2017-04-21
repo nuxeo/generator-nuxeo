@@ -40,12 +40,11 @@ log.info('Using branch: ' + branch);
 log.info('Nuxeo version: ' + version);
 
 /** ADAPTER */
-var Adapter = function() {};
-Adapter.prototype.prompt = function(questions, callback) {
+const Adapter = function () {};
+Adapter.prototype.prompt = function (questions, callback) {
   // Handling diff prompt
-
   var res = {};
-  questions.forEach(function(question) {
+  questions.forEach(function (question) {
     if (!this._responses[question.name] && !question.default) {
       this.log.error('No response found for: ' + question.name);
       res[question.name] = undefined;
@@ -58,13 +57,13 @@ Adapter.prototype.prompt = function(questions, callback) {
   callback(res);
 };
 
-Adapter.prototype.diff = function() {
+Adapter.prototype.diff = function () {
   return 'Y';
 };
 
 Adapter.prototype.log = log;
 
-Adapter.prototype.responses = function(responses) {
+Adapter.prototype.responses = function (responses) {
   this._responses = responses;
 };
 /***************/
@@ -74,7 +73,7 @@ var env = yo.createEnv(undefined, undefined, adapter);
 
 env.register(require.resolve(path.join(__dirname, '../generators/app/index.js')), 'nuxeo:test');
 
-async.waterfall([function(callback) {
+async.waterfall([function (callback) {
   // Bootstrap the parent and the core module
   adapter.responses({
     super_artifact: 'nuxeo-distribution',
@@ -92,7 +91,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} multi-module`, callback);
-}, function(callback) {
+}, function (callback) {
   // Bootstrap the project and a first Operation
   adapter.responses({
     artifact: 'my-test-core',
@@ -103,7 +102,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true operation`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add it an aync Listener
   adapter.responses({
     package: 'org.nuxeo.generator.sample',
@@ -114,7 +113,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true listener`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add a Polymer app in web module
   adapter.responses({
     artifact: 'my-polymer-app-artifact',
@@ -123,7 +122,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --skipInstall=true --nologo=true polymer`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add a Polymer app
   adapter.responses({
     artifact: 'my-angular-app-artifact',
@@ -132,7 +131,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --type=angu --skipInstall=true --nologo=true angular2`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add a ReactJS app
   adapter.responses({
     artifact: 'my-reactjs-app-artifact',
@@ -141,7 +140,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --type=reactjs --skipInstall=true --nologo=true reactjs`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add it a sync Listener
   adapter.responses({
     artifact: 'my-test-listener-artifact',
@@ -153,7 +152,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --type=listener --meta=${branch} --nologo=true listener`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add it a Service
   adapter.responses({
     package: 'org.nuxeo.generator.sample',
@@ -161,7 +160,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true service`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add a DocumentAdapter
   adapter.responses({
     package: 'org.nuxeo.generator.sample',
@@ -169,7 +168,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true adapter`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add it a Service in a new artifact
   adapter.responses({
     artifact: 'my-test-web-artifact',
@@ -178,7 +177,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --type=service --meta=${branch} --nologo=true service`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add a DocumentModel enricher
   adapter.responses({
     package: 'org.nuxeo.generator.sample.enricher',
@@ -187,7 +186,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true enricher`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add a NuxeoPrincipal enricher
   adapter.responses({
     package: 'org.nuxeo.generator.sample.enricher',
@@ -196,7 +195,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true enricher`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add it a Package
   adapter.responses({
     artifact: 'my-test-jsf',
@@ -206,7 +205,7 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true seam-controller seam-action`, callback);
-}, function(callback) {
+}, function (callback) {
   // Add it a Package
   adapter.responses({
     artifact: 'my-test-package',
@@ -215,4 +214,53 @@ async.waterfall([function(callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true package`, callback);
+}, function (callback) { // Unit Testing - CoreFeature
+  adapter.responses({
+    package: 'org.nuxeo.generator.tests',
+    test_name: 'EmptyCoreTest',
+    runner_feature: 'CoreFeature'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true test-empty`, callback);
+}, function (callback) { // Unit Testing - PlatformFeature
+  adapter.responses({
+    package: 'org.nuxeo.generator.tests',
+    test_name: 'EmptyPlatformTest',
+    runner_feature: 'PlatformFeature'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true test-empty`, callback);
+}, function (callback) { // Unit Testing - AutomationFeature
+  adapter.responses({
+    package: 'org.nuxeo.generator.tests',
+    test_name: 'EmptyAutomationTest',
+    runner_feature: 'AutomationFeature'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true test-empty`, callback);
+}, function (callback) { // Unit Testing - EmbeddedAutomationServerFeature
+  adapter.responses({
+    package: 'org.nuxeo.generator.tests',
+    test_name: 'EmptyEmbeddedAutomationTest',
+    runner_feature: 'EmbeddedAutomationServerFeature'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true test-empty`, callback);
+}, function (callback) { // Unit Testing - AuditFeature
+  adapter.responses({
+    package: 'org.nuxeo.generator.tests',
+    test_name: 'EmptyAuditTest',
+    runner_feature: 'AuditFeature'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true test-empty`, callback);
+}, function (callback) { // Unit Testing - AuditFeature
+  adapter.responses({
+    package: 'org.nuxeo.generator.tests',
+    contribution_name: 'MySampleContribution',
+    target: 'org.nuxeo.ecm.core.event.EventServiceComponent',
+    point: 'listener'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true contribution`, callback);
 }]);
