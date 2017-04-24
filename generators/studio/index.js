@@ -1,17 +1,19 @@
+const chalk = require('chalk');
 const yeoman = require('yeoman-generator');
 
 var App = {
   _beforeConstructor: function () {
     this.option('connectUrl', {
-      desc: 'Set and save base Connect URL',
-      type: String
+      desc: 'Use and save as default base Connect URL',
+      type: String,
+      default: this._getConnectUrl()
     });
   },
 
   _beforeInitializing: function () {
     const url = this.options.connectUrl;
-    if (url) {
-      this.log.info('New Connect URL saved: ' + url);
+    if (this._isNewConnectUrl(url)) {
+      this.log.info('New Connect URL saved: ' + chalk.blue(url));
       this._setConnectUrl(url);
     }
   }

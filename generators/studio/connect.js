@@ -20,6 +20,9 @@ module.exports = {
   _setConnectUrl: function (value) {
     this.config.set(CONNECT_URL, value);
   },
+  _isNewConnectUrl: function(value) {
+    return value !== this._getConnectUrl();
+  },
 
   _hasToken: function () {
     return !!this.config.get(CONNECT_TOKEN);
