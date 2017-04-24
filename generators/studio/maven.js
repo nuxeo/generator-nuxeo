@@ -9,7 +9,7 @@ const HF_SNAPSHOTS = 'hotfix-snapshots';
 const MAVEN_GAV = 'maven:gav';
 
 module.exports = {
-  _saveSettingsAnswers: function (updateSettings = false, force = false) {
+  _saveSettingsAnswers: function (updateSettings = false, force = true) {
     this._mvnSettings = {
       updateSettings,
       force

@@ -62,14 +62,6 @@ const delegate = {
       name: 'settings',
       message: 'Do you want to update your Maven settings.xml file accordingly?',
       default: true
-    }, {
-      type: 'confirm',
-      name: 'settings_override',
-      message: 'Some credentials are already set for nuxeo-studio server, do you want to override them?',
-      default: false,
-      when: (answers) => {
-        return answers.settings && that._hasCredentials();
-      }
     }])
     .then((answers) => {
       that._setSymbolicName(answers.project);
@@ -101,10 +93,10 @@ const delegate = {
   },
 
   end: function() {
-    if (this._answers.settings && typeof this._answers.settings_override === 'undefined' || this._answers.settings_override) {
+    if (this._answers.settings) {
       this.log.info(chalk.yellow('WARNING:'));
-      this.log.info(`We modified '${chalk.blue(this._getSettingsPath())}' file and settings your password in plain text inside.`);
-      this.log.info(`You must read ${chalk.blue('https://maven.apache.org/guides/mini/guide-encryption.html')} and using an encrypted one.`);
+      this.log.info(`We modified '${chalk.blue(this._getSettingsPath())}' file and wrote your password in plain text inside.`);
+      this.log.info(`You must read ${chalk.blue('https://maven.apache.org/guides/mini/guide-encryption.html')} and use an encrypted one.`);
     }
   }
 };
