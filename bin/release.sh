@@ -50,6 +50,8 @@ git tag v$VERSION
 git checkout master
 git branch -D release
 
+npm version prepatch
+
 # push everything
 git push origin master
 git push origin v$VERSION
