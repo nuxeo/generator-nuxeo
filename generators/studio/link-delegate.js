@@ -50,7 +50,7 @@ const delegate = {
       default: that._getSymbolicName(),
       validate: (input) => {
         if (!(input && input.length > 0)) {
-          return 'Username is empty';
+          return 'Studio Project is empty';
         }
 
         return spinner(() => {
