@@ -50,7 +50,7 @@ git tag v$VERSION
 git checkout master
 git branch -D release
 
-npm version prepatch
+npm version prepatch --git-tag-version=false
 
 # push everything
 git push origin master
