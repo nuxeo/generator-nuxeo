@@ -4,8 +4,7 @@ var r = require('../utils/usage.js').prototype.resolvebinary;
 describe('Usage resolvebinary method', function() {
   it('display generator wrapper name', function() {
     const opts = {
-      namespace: 'test',
-      _: ['wrapped'],
+      namespace: 'nuxeo:wrapped',
       _ncli: true,
       $0: 'wrapper'
     };

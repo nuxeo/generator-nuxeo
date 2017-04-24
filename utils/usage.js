@@ -25,16 +25,19 @@ var usage = module.exports = function () {
   return out;
 };
 
-usage.prototype.isYeoman = function(opts) {
+usage.prototype.isYeoman = function (opts) {
   return opts ? !opts._ncli : true;
 };
 
-usage.prototype.resolvebinary = function(opts) {
-  var name = ' ' + opts.namespace.replace(/^yeoman:/, '');
+usage.prototype.resolvebinary = function (opts) {
+  let name = opts.namespace.replace(/^yeoman:/, '');
   if (usage.prototype.isYeoman(opts)) {
-    return 'yo' + name;
+    return 'yo ' + name;
   } else {
-    const ext = name.match(/(\[.*\])/);
-    return opts.$0 + ' ' + opts._[0] + (ext ? ' ' + ext[0] : '');
+    let [, cmd, ext = ''] = name.match(/(?:nuxeo:)?([\w]+)(\s*\[.*\])?/);
+    if (cmd === 'nuxeo') {
+      cmd = 'bootstrap';
+    }
+    return opts.$0 + ' ' + cmd + ext;
   }
 };
