@@ -15,9 +15,11 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 
 ## Generator Features
 - Trigger the Hot reload which allows you to update the deployed bundles without restarting the Nuxeo Server.
+- Connect your project to a Studio's one
 - Discover some sample Nuxeo Projects.
 - Bootstrap an empty Nuxeo Project with multi modules support.
 - Bootstrap a single empty Nuxeo Project.
+- Initiate an empty component or an empty unit test
 - Add a Nuxeo Package module to distribute your Project ([Marketplace](https://connect.nuxeo.com/nuxeo/site/marketplace))
 - Add a ready-to-use empty [Polymer](https://www.polymer-project.org) or [Angular2](https://angular.io/) Application.
 - Create your own business rules or logic as an [Automation Operation](https://doc.nuxeo.com/x/Go0ZAQ).
@@ -25,13 +27,6 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 - Manipulate Business Object using a Document Adapter
 - Declare your new [Nuxeo Service](https://doc.nuxeo.com/x/DIAO)
 - Plug your logic to the event bus using an [Event Listener](https://doc.nuxeo.com/x/C4AO)
-
-## Incoming Features
-- Functional Testing module
-- REST endpoint
-- Scheduler / Worker
-- Blob Provider
-- ...
 
 ## Supported Nuxeo Platform Versions
 - Nuxeo Platform 7.10 and newer
@@ -44,7 +39,9 @@ That tool is based on [Yeoman](http://yeoman.io) (a scaffolding tool for the web
 - [node.js](https://nodejs.org/) v6.0.0 or newer.
 - [npm](https://www.npmjs.com/) v3.0.0 or newer.
 
-## Install
+## [DEPRECATED] - Install
+
+> We strongly recommend you to use our new tool [Nuxeo CLI](https://www.npmjs.com/package/nuxeo-cli) instead of the generator. It embbed all generator's features in a more friendly command line interface.
 
 First, install [Yeoman](http://yeoman.io) and [generator-nuxeo](https://github.com/nuxeo/generator-nuxeo/tree/master):
 
@@ -61,7 +58,9 @@ npm install -g yo nuxeo/generator-nuxeo
 ```
 
 # Quickstart
+
 ## Discover Sample Projects
+
 Using the generator let you have access to some ready to use Nuxeo Code Sample:
 
 ```bash
@@ -69,6 +68,7 @@ yo nuxeo:sample
 ```
 
 ## Hot Reload
+
 Using the generator let you trigger a Hot Reload on your Server which allows you to update the deployed bundles without restarting the Nuxeo Server. To be done, it requires to enable the `sdk` template in your `nuxeo.conf` file.
 
 First step is to associate a Nuxeo Server with your project root. It will ask you the distribution path and if you want to let the `generator-nuxeo` configure the file for you. Reexecute it to change the distribution path.
@@ -83,8 +83,24 @@ Then, you will be able to trigger it using:
 yo nuxeo:hotreload
 ```
 
+## Studio Connection
+
+Connect your Java project let you have your Studio Project exposed as a dependency and be able to tests anything declared in it, like your Automation Scripting, listeners, Document Types, ...
+
+Link your project to Studio:
+
+```bash
+yo nuxeo:studio [link]
+```
+
+Unlink your project:
+
+```bash
+yo nuxeo:studio unlink
+```
 
 ## Bootstrap an Empty Nuxeo Project with Multi Modules Support
+
 To bootstrap an empty Nuxeo Project (based on a Maven multi-module project), execute the following lines:
 
 ```bash
