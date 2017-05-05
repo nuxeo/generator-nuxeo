@@ -170,6 +170,20 @@ yo nuxeo single-module
 ### Important Notes
 This option should not be called directly to bootstrap a new project; use the multi-module option instead so that you can generate a Nuxeo Package later on.
 
+## Create an Empty Unit Test
+Add an empty [Unit Test](https://doc.nuxeo.com/corg/unit-testing/)
+
+```bash
+yo nuxeo test-empty
+```
+
+## Create a Bare Component
+Add an empty [Contribution](https://doc.nuxeo.com/nxdoc/contributing-to-nuxeo/)
+
+```bash
+yo nuxeo contribution
+```
+
 ## Create Your Own Business Rules or Logic - Automation Operation
 Adds an empty Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ) along with a corresponding unit test.
 
