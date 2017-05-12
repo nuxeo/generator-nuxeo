@@ -4,3 +4,4 @@ tmp*
 npm-shrinkwrap.json
 npm-debug.log
 .vscode
+mochawesome-report

@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
+    "concurrently": "^3.4.0",
     "flow-bin": "^0.43.0",
     "gulp": "^3.9.1",
     "gulp-batch": "^1.0.5",
@@ -65,6 +66,7 @@
     "gulp-watch": "^4.3.5",
     "mem-fs": "^1.1.3",
     "mem-fs-editor": "^3.0.2",
+    "npm-watch": "^0.1.9",
     "rimraf": "^2.5.2",
     "yeoman-assert": "^3.0.0",
     "yeoman-environment": "^1.6.5",
@@ -76,7 +78,12 @@
     "pretest": "npm run flow -- check",
     "test": "gulp test",
     "flow": "flow",
-    "mocha": "mocha -b"
+    "mocha": "mocha -b",
+    "watch": "npm-watch",
+    "watch-test": "mocha -i -g '/connect/i' $npm_config_test"
+  },
+  "watch": {
+    "watch-test": "{generators,utils,test}/**/*.js"
   },
   "license": "Apache-2.0"
 }
