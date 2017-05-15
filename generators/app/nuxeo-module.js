@@ -69,10 +69,6 @@ module.exports = {
     // this.log(this.nuxeo.modules);
   },
 
-  _isMultiModule: function() {
-    return this.config.get('multi') || this._isUnknownBom() || false;
-  },
-
   _addModulesDependencies: function(pomParent) {
     var that = this;
     var dirs = _.filter(fs.readdirSync('.'), function(file) {

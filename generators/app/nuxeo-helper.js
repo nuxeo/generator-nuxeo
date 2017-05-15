@@ -20,6 +20,10 @@ module.exports = {
     })(ctx);
   },
 
+  _isMultiModule: function() {
+    return this.config.get('multi') || this._isUnknownBom() || false;
+  },
+
   _recursivePath: function(basePath) {
     return recursiveSync(basePath, ['.DS_Store']);
   },

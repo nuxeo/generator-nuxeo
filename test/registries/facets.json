@@ -1,0 +1,29 @@
+{
+  "facets": [{
+      "categories": [
+        "document"
+      ],
+      "deprecated": false,
+      "description": "Document becomes a container for other documents. Needed for folders or similar document types.",
+      "id": "Folderish",
+      "label": "Document is folderish"
+    },
+    {
+      "categories": [
+        "document"
+      ],
+      "deprecated": false,
+      "description": "Allows to manage the order of this document\"s children. Requires the folderish facet.",
+      "id": "Orderable",
+      "label": "Children of this document are orderable"
+    },
+    {
+      "categories": [
+        "document"
+      ],
+      "deprecated": true,
+      "id": "MultiviewPicture",
+      "label": "Multi-resolutions pictures can be generated and stored on this document"
+    }
+  ]
+}

@@ -1,0 +1,431 @@
+{
+  "documentTypes": [{
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Folderish"
+      ],
+      "id": "Root",
+      "parent": "Folder",
+      "schemas": [
+        "common",
+        "dublincore"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [],
+      "id": "Document",
+      "parent": "null",
+      "schemas": [],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_VIEW",
+        "TAB_EDIT",
+        "TAB_FILES_EDIT",
+        "TAB_PUBLISH",
+        "TAB_RELATIONS",
+        "TAB_CONTENT_JBPM",
+        "TAB_MY_SUBSCRIPTIONS",
+        "view_comments",
+        "TAB_CONTENT_HISTORY",
+        "TAB_PREVIEW",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Versionable",
+        "Publishable",
+        "Commentable",
+        "Downloadable",
+        "HasRelatedText"
+      ],
+      "id": "File",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore",
+        "file",
+        "uid",
+        "files"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_VIEW",
+        "TAB_EDIT",
+        "TAB_FILES_EDIT",
+        "TAB_PUBLISH",
+        "TAB_RELATIONS",
+        "TAB_CONTENT_JBPM",
+        "TAB_MY_SUBSCRIPTIONS",
+        "view_comments",
+        "TAB_CONTENT_HISTORY",
+        "TAB_PREVIEW",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Versionable",
+        "Publishable",
+        "Commentable",
+        "HasRelatedText"
+      ],
+      "id": "Note",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore",
+        "note",
+        "uid",
+        "files"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_CONTENT",
+        "TAB_EDIT",
+        "TAB_MY_SUBSCRIPTIONS",
+        "TAB_CONTENT_HISTORY",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Folderish"
+      ],
+      "id": "Folder",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_CONTENT",
+        "TAB_EDIT",
+        "TAB_MY_SUBSCRIPTIONS",
+        "TAB_CONTENT_HISTORY",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Folderish",
+        "Orderable"
+      ],
+      "id": "OrderedFolder",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_CONTENT",
+        "TAB_WORKSPACE_EDIT",
+        "TAB_MY_SUBSCRIPTIONS",
+        "TAB_CONTENT_HISTORY",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "SuperSpace"
+      ],
+      "id": "Workspace",
+      "parent": "Folder",
+      "schemas": [
+        "file",
+        "files",
+        "webcontainer",
+        "publishing"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_SECTION_CONTENT",
+        "TAB_EDIT",
+        "TAB_MY_SUBSCRIPTIONS",
+        "TAB_CONTENT_HISTORY",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "SuperSpace"
+      ],
+      "id": "Section",
+      "parent": "Folder",
+      "schemas": [
+        "file"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_CONTENT",
+        "TAB_WORKSPACE_EDIT",
+        "TAB_CONTENT_HISTORY",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "SuperSpace"
+      ],
+      "id": "Domain",
+      "parent": "Folder",
+      "schemas": [
+        "domain"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_CONTENT",
+        "TAB_WORKSPACE_EDIT",
+        "TAB_CONTENT_HISTORY",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "SuperSpace"
+      ],
+      "id": "WorkspaceRoot",
+      "parent": "Folder",
+      "schemas": [],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_CONTENT",
+        "TAB_WORKSPACE_EDIT",
+        "TAB_CONTENT_HISTORY",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "SuperSpace"
+      ],
+      "id": "SectionRoot",
+      "parent": "Folder",
+      "schemas": [],
+      "subtypes": []
+    },
+    {
+      "actions": [
+        "TAB_CONTENT",
+        "TAB_WORKSPACE_EDIT",
+        "TAB_CONTENT_HISTORY",
+        "TAB_MANAGE"
+      ],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "SuperSpace"
+      ],
+      "id": "TemplateRoot",
+      "parent": "Folder",
+      "schemas": [],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Folderish"
+      ],
+      "id": "FileCustom",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Commentable"
+      ],
+      "id": "Thread",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore",
+        "thread"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "HiddenInNavigation",
+        "Commentable"
+      ],
+      "id": "Post",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore",
+        "post"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Commentable"
+      ],
+      "id": "MailMessage",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore",
+        "uid",
+        "mail",
+        "files"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [],
+      "id": "MailFolder",
+      "parent": "Folder",
+      "schemas": [
+        "protocol"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "SuperSpace",
+        "WebView"
+      ],
+      "id": "BlogSite",
+      "parent": "Folder",
+      "schemas": [
+        "blog",
+        "webcontainer",
+        "files"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Commentable"
+      ],
+      "id": "BlogPost",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore",
+        "blogpost",
+        "webpage",
+        "files"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "WebView"
+      ],
+      "id": "WebSite",
+      "parent": "Folder",
+      "schemas": [
+        "webcontainer",
+        "files"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "Commentable"
+      ],
+      "id": "WebPage",
+      "parent": "Folder",
+      "schemas": [
+        "dublincore",
+        "webpage",
+        "files"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [],
+      "id": "ContextualLink",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "dublincore",
+        "contextualLink"
+      ],
+      "subtypes": []
+    },
+    {
+      "actions": [],
+      "canOverrideType": false,
+      "defaultView": "view_documents",
+      "facets": [
+        "MultiviewPicture",
+        "Picture",
+        "Versionable",
+        "Publishable",
+        "Commentable",
+        "HasRelatedText",
+        "Asset"
+      ],
+      "id": "Picture",
+      "parent": "Document",
+      "schemas": [
+        "common",
+        "uid",
+        "dublincore"
+      ],
+      "subtypes": []
+    }
+  ]
+}

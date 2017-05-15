@@ -1,0 +1,20 @@
+{
+  "operationScriptings": [{
+    "@id": "demo",
+    "@version": "1.2",
+    "script": "function run(input, params) {\n\treturn 100;\n}",
+    "params": [{
+        "@name": "amount",
+        "@type": "string"
+      },
+      {
+        "@name": "total",
+        "@type": "string"
+      }
+    ],
+    "description": "",
+    "inputType": "document",
+    "outputType": "document",
+    "category": "javascript"
+  }]
+}

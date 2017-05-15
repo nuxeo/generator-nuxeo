@@ -1,0 +1,131 @@
+{
+  "schemas": [{
+      "fields": [
+        [
+          "icon",
+          {
+            "id": "icon",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "icon-expanded",
+          {
+            "id": "icon-expanded",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "size",
+          {
+            "id": "size",
+            "isMultiValue": false,
+            "type": "integer"
+          }
+        ]
+      ],
+      "id": "common",
+      "prefix": "common"
+    },
+    {
+      "fields": [
+        [
+          "uid",
+          {
+            "id": "uid",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "major_version",
+          {
+            "id": "major_version",
+            "isMultiValue": false,
+            "type": "integer"
+          }
+        ],
+        [
+          "minor_version",
+          {
+            "id": "minor_version",
+            "isMultiValue": false,
+            "type": "integer"
+          }
+        ]
+      ],
+      "id": "uid",
+      "prefix": "uid"
+    },
+    {
+      "fields": [
+        [
+          "title",
+          {
+            "id": "title",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "description",
+          {
+            "id": "description",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "lastContributor",
+          {
+            "id": "lastContributor",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "nature",
+          {
+            "id": "nature",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "publisher",
+          {
+            "id": "publisher",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ]
+      ],
+      "id": "dublincore",
+      "prefix": "dc"
+    },
+    {
+      "fields": [
+        [
+          "filename",
+          {
+            "id": "filename",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "content",
+          {
+            "id": "content",
+            "isMultiValue": false,
+            "type": "blob"
+          }
+        ]
+      ],
+      "id": "file",
+      "prefix": "file"
+    }
+  ]
+}

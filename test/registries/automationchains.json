@@ -1,0 +1,73 @@
+{
+  "operationChains": [{
+      "@id": "ComputeContratTitle",
+      "@version": "1.2",
+      "chain": {
+        "@type": "Event",
+        "doc": "",
+        "operations": [{
+            "@id": "Context.FetchDocument",
+            "params": []
+          },
+          {
+            "@id": "Document.SetProperty",
+            "params": [{
+                "@name": "value",
+                "@type": "serializable",
+                "value": "@{CurrentDate.year}_@{Document[\"contrat:reference\"]}_@{Fn.getNextId(Document[\"contrat:reference\"])}"
+              },
+              {
+                "@name": "xpath",
+                "@type": "string",
+                "value": "dc:title"
+              },
+              {
+                "@name": "save",
+                "@type": "boolean",
+                "value": "false"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "@id": "FetchiDocument",
+      "@version": "1.2",
+      "chain": {
+        "@type": "Default",
+        "doc": "",
+        "inputParams": [{
+          "@name": "path",
+          "@type": "string"
+        }],
+        "operations": [{
+          "@id": "Context.FetchDocument",
+          "params": []
+        }]
+      }
+    },
+    {
+      "@id": "validateDocument",
+      "@version": "1.2",
+      "@source": "nuxeo-routing-default#5.6.0-4",
+      "chain": {
+        "@type": "Default",
+        "doc": "",
+        "operations": [{
+            "@id": "Context.FetchDocument",
+            "params": []
+          },
+          {
+            "@id": "Document.SetLifeCycle",
+            "params": [{
+              "@name": "value",
+              "@type": "string",
+              "value": "approve"
+            }]
+          }
+        ]
+      }
+    }
+  ]
+}
