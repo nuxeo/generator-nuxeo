@@ -1,3 +1,4 @@
+const qs = require('querystring');
 const STUDIO_SYMNAME = 'studio:symbolicname';
 let projectCache = {};
 
@@ -35,13 +36,13 @@ module.exports = {
     return `${mc.groupId}:${mc.artifactId}:${mc.version}`;
   },
 
-  _getWorkspaceRegistries: function(symName) {
+  _getWorkspaceRegistries: function(symName, exclude = 'tp') {
     const symbolicName = symName || this._getSymbolicName();
     if (!symbolicName) {
       throw new Error('Symbolic name is empty');
     }
 
-    const res = this._request('GET', this._getConnectUrl() + '/site/studio/v2/project/' + symbolicName + '/workspace/ws.registries');
+    const res = this._request('GET', `${this._getConnectUrl()}/site/studio/v2/project/${symbolicName}/workspace/ws.registries?exclude=${qs.escape(exclude)}`);
     if (res.statusCode !== 200) {
       throw new Error('Unable to read Maven Coordonates for ' + symbolicName);
     }

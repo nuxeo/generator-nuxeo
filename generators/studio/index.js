@@ -8,6 +8,12 @@ var App = {
       type: String,
       default: this._getConnectUrl()
     });
+
+    this.option('exclude', {
+      desc: 'Exclude synchronization registries kind',
+      type: String,
+      default: 'tp'
+    });
   },
 
   _beforeInitializing: function () {

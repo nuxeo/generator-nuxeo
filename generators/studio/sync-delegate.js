@@ -61,7 +61,7 @@ const delegate = {
 
   writing: function () {
     const res = spinner(() => {
-      return this._getWorkspaceRegistries();
+      return this._getWorkspaceRegistries(undefined, this.options.exclude);
     });
     const name = this.answers['studio:constant'];
     const pkg = this.answers['studio:package'];
