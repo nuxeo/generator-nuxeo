@@ -99,6 +99,12 @@ Unlink your project:
 yo nuxeo:studio unlink
 ```
 
+Generate a Java Constant class with everything that is contributed from Studio
+
+```bash
+yo nuxeo:studio sync
+```
+
 ## Bootstrap an Empty Nuxeo Project with Multi Modules Support
 
 To bootstrap an empty Nuxeo Project (based on a Maven multi-module project), execute the following lines:
