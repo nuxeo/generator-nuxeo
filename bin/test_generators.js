@@ -205,15 +205,6 @@ async.waterfall([function (callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true seam-controller seam-action`, callback);
-}, function (callback) {
-  // Add it a Package
-  adapter.responses({
-    artifact: 'my-test-package',
-    name: 'My test package',
-    company: 'Nuxeo'
-  });
-
-  env.run(`nuxeo:test --meta=${branch} --nologo=true package`, callback);
 }, function (callback) { // Unit Testing - CoreFeature
   adapter.responses({
     package: 'org.nuxeo.generator.tests',
@@ -263,4 +254,22 @@ async.waterfall([function (callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true contribution`, callback);
+}, function (callback) {
+  // Add Kotlin module + Operation
+  adapter.responses({
+    artifact: 'my-test-kotlin',
+    package: 'org.nuxeo.generator.kotlin',
+    operation_name: 'KotlinOperation'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true kotlin-operation`, callback);
+}, function (callback) {
+  // Add it a Package
+  adapter.responses({
+    artifact: 'my-test-package',
+    name: 'My test package',
+    company: 'Nuxeo'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true package`, callback);
 }]);
