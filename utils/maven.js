@@ -20,7 +20,7 @@ function maven(content, fsl) {
   content = content || 'pom.xml';
 
   // Not an XML; assuming it's a path
-  if (!content.startsWith('<')) {
+  if (!content.match(/^\s*</)) {
     const fs = fsl || fse;
     const readFile = fs.readFileSync || fs.read;
 
