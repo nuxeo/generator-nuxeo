@@ -17,11 +17,11 @@ const delegate = {
       name: 'unlink',
       message: 'Are you sure to unlink?'
     }])
-    .then(function (answers) {
-      this.answers = answers;
+      .then(function (answers) {
+        this.answers = answers;
 
-      done();
-    }.bind(this));
+        done();
+      }.bind(this));
   },
 
   writing: function () {

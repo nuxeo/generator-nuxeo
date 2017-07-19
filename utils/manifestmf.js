@@ -40,7 +40,7 @@ function manifest(filep, fsp) {
       });
 
       if (index > 0) {
-        return content[index].match(/^Bundle-SymbolicName:\s*([\w\.-]+)/i)[1];
+        return content[index].match(/^Bundle-SymbolicName:\s*([\w.-]+)/i)[1];
       } else {
         throw 'Bundle SymbolicName is missing.';
       }
@@ -67,10 +67,10 @@ function manifest(filep, fsp) {
         return [];
       }
 
-      var comps = content[index].match(/^Nuxeo-Component:\s*([\w\.\-/,]+)/)[1];
+      var comps = content[index].match(/^Nuxeo-Component:\s*([\w.\-/,]+)/)[1];
       while (content[index + 1].match('^ ')) {
         index += 1;
-        comps += content[index].match(/^\s+([\w\.\-/,]+)/)[1];
+        comps += content[index].match(/^\s+([\w.\-/,]+)/)[1];
       }
 
       return comps.split(',');

@@ -63,16 +63,16 @@ const delegate = {
       message: 'Do you want to update your Maven settings.xml file accordingly?',
       default: true
     }])
-    .then((answers) => {
-      that._setSymbolicName(answers.project);
-      that._saveSettingsAnswers(answers.settings, answers.settings_override);
-      that._answers = answers;
-      done();
-    })
-    .catch((e) => {
-      that.log.error(e.message);
-      done();
-    });
+      .then((answers) => {
+        that._setSymbolicName(answers.project);
+        that._saveSettingsAnswers(answers.settings, answers.settings_override);
+        that._answers = answers;
+        done();
+      })
+      .catch((e) => {
+        that.log.error(e.message);
+        done();
+      });
   },
 
   writing: function () {

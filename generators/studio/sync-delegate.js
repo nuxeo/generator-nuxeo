@@ -31,7 +31,7 @@ const delegate = {
       name: 'studio:package',
       message: 'Constant package:',
       validate: (value) => {
-        return value.split('.').length > 1 && !value.match(/\.{2,}/) && !value.match(/^\./) && !value.match(/\.$/) && !value.match(/[^\w\.]/) ? true : 'Value must contain at least one "." char and no special chars.';
+        return value.split('.').length > 1 && !value.match(/\.{2,}/) && !value.match(/^\./) && !value.match(/\.$/) && !value.match(/[^\w.]/) ? true : 'Value must contain at least one "." char and no special chars.';
       },
       default: () => {
         const [group] = this._getMavenGav().split(':');
@@ -39,7 +39,7 @@ const delegate = {
         if (group === 'nuxeo-studio') {
           return 'com.nuxeo.studio';
         }
-        return group.replace(/\s+/g, '.').replace(/[^\w\.]+/g, '_');
+        return group.replace(/\s+/g, '.').replace(/[^\w.]+/g, '_');
       },
       store: true
     }, {
@@ -52,11 +52,11 @@ const delegate = {
         return value.length > 1 && value.match(/^[A-Z]/) !== null && !value.match(/[^\w]/) ? true : 'Class name must be in mixed case with the first letter of each internal word capitalized.';
       }
     }])
-    .then(function (answers) {
-      this.answers = answers;
+      .then(function (answers) {
+        this.answers = answers;
 
-      done();
-    }.bind(this));
+        done();
+      }.bind(this));
   },
 
   writing: function () {
