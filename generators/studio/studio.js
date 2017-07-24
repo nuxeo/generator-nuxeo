@@ -47,6 +47,7 @@ module.exports = {
       throw new Error('Unable to read Maven Coordonates for ' + symbolicName);
     }
 
+    console.log(`${this._getConnectUrl()}/site/studio/v2/project/${symbolicName}/workspace/ws.registries?exclude=${qs.escape(exclude)}`)
     return JSON.parse(res.getBody('UTF-8'));
   },
 
