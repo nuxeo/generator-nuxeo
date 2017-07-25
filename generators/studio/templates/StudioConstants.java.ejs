@@ -1,19 +1,19 @@
-package <%= pkg %>;
+package <%- pkg %>;
 
-public class <%= s.classify(name) %> {
-    public static final String BUNDLE_NAME = "studio.extensions.<%= symbolicName %>";
+public class <%- s.classify(name) %> {
+    public static final String BUNDLE_NAME = "studio.extensions.<%- symbolicName %>";
 
 <% _.forEach(res.documentTypes, function(docType) { -%>
-    public static final String <%= s.enumize(docType.id, 'DocType', 'doc', 'type', 'document') %> = "<%= docType.id %>";
+    public static final String <%- s.enumize(docType.id, 'DocType', 'doc', 'type', 'document') %> = "<%- docType.id %>";
 
 <% });
    _.forEach(res.schemas, function(schema) {
     var schemaName = s.enumize(schema.id, 'schema') ;
      -%>
-    public static final String <%= schemaName %> = "<%= schema.id %>";
+    public static final String <%- schemaName %> = "<%- schema.id %>";
 
 <%     _.forEach(schema.fields, function(field) { -%>
-    public static final String <%= schemaName %>_<%= s.enumize(field[0], 'property') %> = "<%= schema.prefix + ':' + field[0] %>";
+    public static final String <%- schemaName %>_<%- s.enumize(field[0], 'property') %> = "<%- schema.prefix + ':' + field[0] %>";
 
 <%     });
    });
@@ -21,34 +21,47 @@ public class <%= s.classify(name) %> {
    _.forEach(res.facets, function(facet) {
     if (facet.deprecated) { return; } // Skip deprecated facet
 -%>
-    public static final String <%= s.enumize(facet.id, 'facet') %> = "<%= facet.id %>";
+    public static final String <%- s.enumize(facet.id, 'facet') %> = "<%- facet.id %>";
 
 <% });
    _.forEach(res.operationChains, function(chain) {
     var chainName = s.enumize(chain['@id'], 'chain');
 -%>
-    public static final String <%= chainName %> = "<%= chain['@id'] %>";
+    public static final String <%- chainName %> = "<%- chain['@id'] %>";
 
 <%     _.forEach(chain.chain.inputParams, function(param) { -%>
     /**
-     * Parameter name: <%= param['@name'] %>
-     * Parameter type: <%= param['@type'] %>
+     * Parameter name: <%- param['@name'] %>
+     * Parameter type: <%- param['@type'] %>
      */
-    public static final String <%= chainName %>_<%= s.enumize(param['@name'], 'parameter', 'param') %> = "<%= param['@name'] %>";
+    public static final String <%- chainName %>_<%- s.enumize(param['@name'], 'parameter', 'param') %> = "<%- param['@name'] %>";
 
 <%     });
    });
    _.forEach(res.operationScriptings, function(script) {
     var scriptName = s.enumize(script['@id'], 'script');
 -%>
-    public static final String <%= scriptName %> = "<%= script['category'] + '.' + script['@id'] %>";
+    public static final String <%- scriptName %> = "<%- script['category'] + '.' + script['@id'] %>";
 
 <%     _.forEach(script.params, function(param) { -%>
     /**
-     * Parameter name: <%= param['@name'] %>
-     * Parameter type: <%= param['@type'] %>
+     * Parameter name: <%- param['@name'] %>
+     * Parameter type: <%- param['@type'] %>
      */
-    public static final String <%= scriptName %>_<%= s.enumize(param['@name'], 'parameter') %> = "<%= param['@name'] %>";
+    public static final String <%- scriptName %>_<%- s.enumize(param['@name'], 'parameter') %> = "<%- param['@name'] %>";
+
+<%     });
+   });
+   _.forEach(res.pageProviders, function(pp) {
+    var ppName = s.enumize(pp['id'], 'PageProvider', 'page', 'pp', 'provider');
+-%>
+    /**
+     * Fixed Part: "<%- pp['fixedPart'] %>"
+     */
+    public static final String <%- ppName %> = "<%- pp['id'] %>";
+
+<%     _.forEach(pp.queryParameters, function(param) { -%>
+    public static final String <%- ppName %>_<%- s.enumize(param, 'parameter', 'param') %> = "<%= param %>";
 
 <%     });
    }); -%>

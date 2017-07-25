@@ -34,7 +34,7 @@ describe('Constant Template', function () {
       suffixes: ['doc'],
       expected: 'MY_DOC'
     }, {
-      label: 'Should hide multiple dupplicate suffixes',
+      label: 'Should hide multiple suffixes',
       input: 'myDocType',
       suffixes: ['DocType', 'doc', 'type'],
       expected: 'MY_DOC_TYPE'
@@ -43,6 +43,11 @@ describe('Constant Template', function () {
       input: 'myDocType',
       suffixes: ['chain', 'doc', 'type'],
       expected: 'MY_DOC_CHAIN'
+    }, {
+      label: 'Should handle dashed entry',
+      input: 'my-doc',
+      suffixes: ['document', 'doc'],
+      expected: 'MY_DOCUMENT'
     }];
 
     _.forEach(entries, (entry) => {
@@ -98,6 +103,15 @@ describe('Constant Template', function () {
     assert.ok(res.match(/^ {4}public static final String DEMO_SCRIPT = "javascript.demo";$/m));
     assert.ok(res.match(/^ {4}public static final String DEMO_SCRIPT_AMOUNT_PARAMETER = "amount";$/m));
     assert.ok(res.match(/^ {4}public static final String DEMO_SCRIPT_TOTAL_PARAMETER = "total";$/m));
+  });
+
+  it('render Page Provider constants', function() {
+    const res = this.template(this.opts('page_providers.json'));
+
+    assert.ok(res.match(/^ {4}public static final String MY_PAGE_PROVIDER = "my-pp";$/m));
+    assert.ok(res.match(/^ {5}\* Fixed Part: "ecm:mixinType != 'HiddenInNavigation' AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted'"$/m));
+    assert.ok(res.match(/^ {4}public static final String MY_PAGE_PROVIDER_MY_DOC_PARAMETER = "myDoc";$/m));
+    assert.ok(res.match(/^ {4}public static final String MY_PAGE_PROVIDER_MY_USER_PARAMETER = "myUser";$/m));
   });
 
 });

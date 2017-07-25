@@ -56,7 +56,6 @@
     "babel-eslint": "^7.1.1",
     "concurrently": "^3.5.0",
     "ejs": "^2.5.6",
-    "flow-bin": "^0.50.0",
     "gulp": "^3.9.1",
     "gulp-batch": "^1.0.5",
     "gulp-debug": "^3.1.0",
@@ -76,9 +75,8 @@
   "repository": "nuxeo/generator-nuxeo",
   "scripts": {
     "prepare": "gulp prepublish",
-    "pretest": "npm run flow -- check",
     "test": "gulp test",
-    "flow": "flow",
+    "lint": "gulp lint",
     "mocha": "mocha -b",
     "watch": "npm-watch",
     "watch-test": "mocha -i -g '/connect/i' $npm_config_test"

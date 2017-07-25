@@ -13,7 +13,7 @@ s.enumize = function(value, suffix) {
     }
     value = value.replace(new RegExp(arguments[i] + '$', 'i'), '');
   });
-  return s(value).underscored().toUpperCase().value() + '_' + s(suffix).underscored().toUpperCase().value();
+  return s(value).camelize().underscored().toUpperCase().value() + '_' + s(suffix).underscored().toUpperCase().value();
 };
 
 module.exports = s;
