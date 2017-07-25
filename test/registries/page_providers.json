@@ -1,0 +1,49 @@
+{
+  "pageProviders": [{
+    "id": "my-pp",
+    "searchDocumentType": "my-pp_pp",
+    "fixedPart": "ecm:mixinType != 'HiddenInNavigation' AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted'",
+    "queryParameters": [
+      "myDoc",
+      "myUser"
+    ],
+    "predicates": [],
+    "aggregates": [],
+    "defaultSortInfos": [],
+    "quickFilters": [],
+    "sortInfosBinding": "",
+    "sortable": true,
+    "pageSize": 10,
+    "pageSizeBinding": "",
+    "maxResults": "",
+    "pageProviderClass": "",
+    "properties": [],
+    "quotePatternParameters": true,
+    "escapePatternParameters": true,
+    "useElasticsearchIndex": true,
+    "multiRepo": false
+  }, {
+    "id": "aa-pp",
+    "searchDocumentType": "my-pp_pp",
+    "fixedPart": "ecm:mixinType != 'HiddenInNavigation' AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted'",
+    "queryParameters": [
+      "myDoc",
+      "aa"
+    ],
+    "predicates": [],
+    "aggregates": [],
+    "defaultSortInfos": [],
+    "quickFilters": [],
+    "sortInfosBinding": "",
+    "sortable": true,
+    "pageSize": 10,
+    "pageSizeBinding": "",
+    "maxResults": "",
+    "pageProviderClass": "",
+    "properties": [],
+    "quotePatternParameters": true,
+    "escapePatternParameters": true,
+    "useElasticsearchIndex": true,
+    "multiRepo": false
+  }]
+}
