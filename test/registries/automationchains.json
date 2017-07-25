@@ -48,12 +48,19 @@
       }
     },
     {
-      "@id": "validateDocument",
+      "@id": "AalidateDocument",
       "@version": "1.2",
       "@source": "nuxeo-routing-default#5.6.0-4",
       "chain": {
         "@type": "Default",
         "doc": "",
+        "inputParams": [{
+          "@name": "path",
+          "@type": "string"
+        }, {
+          "@name": "aaParameter",
+          "@type": "string"
+        }],
         "operations": [{
             "@id": "Context.FetchDocument",
             "params": []

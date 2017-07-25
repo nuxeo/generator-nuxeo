@@ -2,6 +2,8 @@ const ejs = require('ejs');
 const fs = require('fs');
 const _ = require('lodash');
 const assert = require('assert');
+const objectPath = require('object-path');
+const Studio = require('../generators/studio/studio');
 const s = require('../utils/nuxeo.string.js');
 
 describe('Constant Template', function () {
@@ -105,7 +107,7 @@ describe('Constant Template', function () {
     assert.ok(res.match(/^ {4}public static final String DEMO_SCRIPT_TOTAL_PARAMETER = "total";$/m));
   });
 
-  it('render Page Provider constants', function() {
+  it('render Page Provider constants', function () {
     const res = this.template(this.opts('page_providers.json'));
 
     assert.ok(res.match(/^ {4}public static final String MY_PAGE_PROVIDER = "my-pp";$/m));
@@ -114,4 +116,80 @@ describe('Constant Template', function () {
     assert.ok(res.match(/^ {4}public static final String MY_PAGE_PROVIDER_MY_USER_PARAMETER = "myUser";$/m));
   });
 
+  describe('gets ordered Registries', function () {
+    // ./registries/* files are manually unsorted.
+    const testRegistries = [{
+      file: 'page_providers.json',
+      entry: 'pageProviders',
+      key: 'id',
+      param: 'queryParameters',
+      paramKey: undefined,
+      expectedValue: {
+        key: 'aa-pp',
+        param: 'aa'
+      }
+    }, {
+      file: 'automationscripting.json',
+      entry: 'operationScriptings',
+      key: '@id',
+      param: 'params',
+      paramKey: '@name',
+      expectedValue: {
+        key: 'aaScript',
+        param: 'amount'
+      }
+    }, {
+      file: 'facets.json',
+      entry: 'facets',
+      key: 'id',
+      expectedValue: {
+        key: 'AMultiviewPicture'
+      }
+    }, {
+      file: 'schemas.json',
+      entry: 'schemas',
+      key: 'id',
+      expectedValue: {
+        key: 'aaschema'
+      }
+    }, {
+      file: 'doctypes.json',
+      entry: 'documentTypes',
+      key: 'id',
+      expectedValue: {
+        key: 'BlogPost'
+      }
+    }, {
+      file: 'automationchains.json',
+      entry: 'operationChains',
+      key: '@id',
+      param: 'chain.inputParams',
+      paramKey: '@name',
+      expectedValue: {
+        key: 'AalidateDocument',
+        param: 'aaParameter'
+      }
+    }];
+
+    _(testRegistries).forEach((testRegistry) => {
+      it(`on file ${testRegistry.file}`, function () {
+        const res = JSON.parse(fs.readFileSync(`test/registries/${testRegistry.file}`, 'UTF-8'));
+
+        const sortedRes = Studio._sortRegistries(res);
+        const sortedEntries = objectPath.get(sortedRes, testRegistry.entry);
+
+        assert.equal(testRegistry.expectedValue.key, objectPath.get(sortedEntries[0], testRegistry.key));
+
+        if (testRegistry.param) {
+          const param = objectPath.get(sortedEntries[0], testRegistry.param);
+          let value = param[0];
+          if (testRegistry.paramKey) {
+            value = objectPath.get(value, testRegistry.paramKey);
+          }
+
+          assert.equal(testRegistry.expectedValue.param, value);
+        }
+      });
+    });
+  });
 });

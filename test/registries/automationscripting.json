@@ -4,11 +4,28 @@
     "@version": "1.2",
     "script": "function run(input, params) {\n\treturn 100;\n}",
     "params": [{
-        "@name": "amount",
+        "@name": "total",
         "@type": "string"
       },
       {
+        "@name": "amount",
+        "@type": "string"
+      }
+    ],
+    "description": "",
+    "inputType": "document",
+    "outputType": "document",
+    "category": "javascript"
+  }, {
+    "@id": "aaScript",
+    "@version": "1.2",
+    "script": "function run(input, params) {\n\treturn 100;\n}",
+    "params": [{
         "@name": "total",
+        "@type": "string"
+      },
+      {
+        "@name": "amount",
         "@type": "string"
       }
     ],

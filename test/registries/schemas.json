@@ -126,6 +126,28 @@
       ],
       "id": "file",
       "prefix": "file"
+    },
+    {
+      "fields": [
+        [
+          "filename",
+          {
+            "id": "filename",
+            "isMultiValue": false,
+            "type": "string"
+          }
+        ],
+        [
+          "content",
+          {
+            "id": "content",
+            "isMultiValue": false,
+            "type": "blob"
+          }
+        ]
+      ],
+      "id": "aaschema",
+      "prefix": "file"
     }
   ]
 }

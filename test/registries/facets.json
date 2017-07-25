@@ -22,7 +22,7 @@
         "document"
       ],
       "deprecated": true,
-      "id": "MultiviewPicture",
+      "id": "AMultiviewPicture",
       "label": "Multi-resolutions pictures can be generated and stored on this document"
     }
   ]
