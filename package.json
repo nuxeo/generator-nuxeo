@@ -1,6 +1,6 @@
 {
   "name": "generator-nuxeo",
-  "version": "2.5.1-0",
+  "version": "2.6.0",
   "nuxeo": {
     "branch": "stable"
   },
@@ -70,7 +70,7 @@
     "npm-watch": "^0.2.0",
     "rimraf": "^2.5.2",
     "yeoman-assert": "^3.0.0",
-    "yeoman-environment": "^2.0.0",
+    "yeoman-environment": "^1.1.0",
     "yeoman-test": "^1.7.0"
   },
   "repository": "nuxeo/generator-nuxeo",
