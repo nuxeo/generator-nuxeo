@@ -83,6 +83,11 @@ describe('Constant Template', function () {
     assert.ok(res.match(/^ {4}public static final String DUBLINCORE_SCHEMA_LAST_CONTRIBUTOR_PROPERTY = "dc:lastContributor";$/m));
   });
 
+  it('do not render empty Schema', function() {
+    const res = this.template(this.opts('schemas.json'));
+    assert.ok(!res.match(/EMPTY_SCHEMA/m));
+  });
+
   it('render Facets constants', function () {
     const res = this.template(this.opts('facets.json'));
 

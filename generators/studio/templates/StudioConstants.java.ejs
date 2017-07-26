@@ -8,6 +8,10 @@ public class <%- s.classify(name) %> {
 
 <% });
    _.forEach(res.schemas, function(schema) {
+    if (!schema.fields.length) {
+      // Do not render empty schema
+      return;
+    }
     var schemaName = s.enumize(schema.id, 'schema') ;
      -%>
     public static final String <%- schemaName %> = "<%- schema.id %>";
