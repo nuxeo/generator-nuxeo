@@ -6,6 +6,7 @@ var chalk = require('chalk');
 var clone = require('yeoman-remote');
 var isDirectory = require('is-directory').sync;
 var path = require('path');
+const debug = require('debug')('nuxeo:app:init');
 
 function fetchRemote(callback) {
   // Silent logs while remote fetching
@@ -17,6 +18,7 @@ function fetchRemote(callback) {
   require('dns').resolve('www.github.com', (errco) => {
     if (errco) {
       this.log.info('Unable to fetch metamodel remotely... Trying locally.');
+      debug('%O', errco);
       let remote = this.config.get('lastRemote');
       if (!(remote && isDirectory(remote))) {
         this.log.error('You must initialize metamodel online once.');
@@ -74,6 +76,7 @@ module.exports = {
           cachePath: remote
         };
         this.config.set('lastRemote', remote);
+        debug('%O', this.nuxeo);
         callback(undefined, this.nuxeo);
       },
 

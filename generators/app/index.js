@@ -16,6 +16,7 @@ var propHolder = require('../../utils/property-holder.js');
 var Conflicter = require('../../utils/conflicter.js');
 var isBinaryFile = require('isbinaryfile').sync;
 var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
+const debug = require('debug')('nuxeo:app');
 
 global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
 
@@ -112,14 +113,21 @@ module.exports = nuxeo.extend({
       return this.options.force || filename.match(/pom\.xml$/) || filename.match(/MANIFEST\.MF$/);
     });
 
-    if (!this.options.nologo) {
+    if (!(this.options.nologo || debug.enabled)) {
       this._showHello();
     }
 
     // Expose options in the global scope for accessing them in generator's decriptors.
     global._options = this.options;
+    debug('%O', this.options);
+
     var seq = async.seq(init.fetch, init.saveRemote, init.readDescriptor, init.resolveModule, init.filterModulesPerType, init.saveModules).bind(this);
-    seq(function () {
+    seq(function (err) {
+      if (err) {
+        this.log.error(`Unable to get generators: ${err.message}`);
+        debug('%O', err);
+        process.exit(2);
+      }
       done();
     });
   },
@@ -215,6 +223,9 @@ module.exports = nuxeo.extend({
     var that = this;
     var generator = that.currentGenerator = that.nuxeo.modules[item];
     var props = that.currentProps = that.props[generatorType + item] || {};
+
+    debug(`Generating: ${item}`);
+    debug('%O', props);
 
     // XXX Should be handled differently
     props.s = s; // String utils

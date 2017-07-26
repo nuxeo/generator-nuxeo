@@ -13,6 +13,9 @@ if [ -z "$BRANCH" ]; then
   BRANCH=$VERSION
 fi
 
+echo "Checking if meta $BRANCH exists: https://github.com/nuxeo/generator-nuxeo-meta/archive/$BRANCH.tar.gz"
+curl -s -f -I -L https://github.com/nuxeo/generator-nuxeo-meta/archive/$BRANCH.tar.gz > /dev/null
+
 git checkout master
 
 # Update the version in package.json

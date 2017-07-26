@@ -30,6 +30,7 @@
     "cheerio": "^0.19.0",
     "compare-versions": "^3.0.0",
     "dargs": "^5.0.1",
+    "debug": "^2.6.8",
     "detect-conflict": "^1.0.1",
     "fs-extra": "^4.0.0",
     "github": "^9.1.0",
