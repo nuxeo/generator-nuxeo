@@ -104,7 +104,15 @@ describe('Constant Template', function () {
     assert.ok(res.match(/^ {4}public static final String FETCHI_DOCUMENT_CHAIN_PATH_PARAMETER = "path";$/m));
   });
 
-  it('render Automation Scripting constants', function () {
+  it('render Lifecycles contants', function () {
+    const res = this.template(this.opts('lifecycles.json'));
+
+    assert.ok(res.match(/^ {4}public static final String ATASK_LIFECYCLE = "atask";$/m));
+    assert.ok(res.match(/^ {4}public static final String ATASK_LIFECYCLE_OPENED_STATE = "opened";$/m));
+    assert.ok(res.match(/^ {4}public static final String ATASK_LIFECYCLE_CANCEL_TRANSITION = "cancel";$/m));
+  });
+
+  it('render Automation Scripting constants', function() {
     const res = this.template(this.opts('automationscripting.json'));
 
     assert.ok(res.match(/^ {4}public static final String DEMO_SCRIPT = "javascript.demo";$/m));
@@ -129,7 +137,7 @@ describe('Constant Template', function () {
       key: 'id',
       param: 'queryParameters',
       paramKey: undefined,
-      expectedValue: {
+      expectedValues: {
         key: 'aa-pp',
         param: 'aa'
       }
@@ -139,7 +147,7 @@ describe('Constant Template', function () {
       key: '@id',
       param: 'params',
       paramKey: '@name',
-      expectedValue: {
+      expectedValues: {
         key: 'aaScript',
         param: 'amount'
       }
@@ -147,21 +155,21 @@ describe('Constant Template', function () {
       file: 'facets.json',
       entry: 'facets',
       key: 'id',
-      expectedValue: {
+      expectedValues: {
         key: 'AMultiviewPicture'
       }
     }, {
       file: 'schemas.json',
       entry: 'schemas',
       key: 'id',
-      expectedValue: {
+      expectedValues: {
         key: 'aaschema'
       }
     }, {
       file: 'doctypes.json',
       entry: 'documentTypes',
       key: 'id',
-      expectedValue: {
+      expectedValues: {
         key: 'BlogPost'
       }
     }, {
@@ -170,9 +178,18 @@ describe('Constant Template', function () {
       key: '@id',
       param: 'chain.inputParams',
       paramKey: '@name',
-      expectedValue: {
+      expectedValues: {
         key: 'AalidateDocument',
         param: 'aaParameter'
+      }
+    }, {
+      file: 'lifecycles.json',
+      entry: 'lifeCycles',
+      key: 'id',
+      param: 'transitions',
+      expectedValues: {
+        key: 'atask',
+        param: 'cancel'
       }
     }];
 
@@ -183,7 +200,7 @@ describe('Constant Template', function () {
         const sortedRes = Studio._sortRegistries(res);
         const sortedEntries = objectPath.get(sortedRes, testRegistry.entry);
 
-        assert.equal(testRegistry.expectedValue.key, objectPath.get(sortedEntries[0], testRegistry.key));
+        assert.equal(testRegistry.expectedValues.key, objectPath.get(sortedEntries[0], testRegistry.key));
 
         if (testRegistry.param) {
           const param = objectPath.get(sortedEntries[0], testRegistry.param);
@@ -192,7 +209,7 @@ describe('Constant Template', function () {
             value = objectPath.get(value, testRegistry.paramKey);
           }
 
-          assert.equal(testRegistry.expectedValue.param, value);
+          assert.equal(testRegistry.expectedValues.param, value);
         }
       });
     });

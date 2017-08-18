@@ -28,6 +28,27 @@ public class <%- s.classify(name) %> {
     public static final String <%- s.enumize(facet.id, 'facet') %> = "<%- facet.id %>";
 
 <% });
+
+   _.forEach(res.lifeCycles, function(lifecycle) {
+     const lifecycleName = s.enumize(lifecycle.id, 'lifecycle');
+-%>
+    public static final String <%- lifecycleName %> = "<%- lifecycle.id %>";
+
+<%
+    _.forEach(lifecycle.transitions, function(transition) {
+-%>
+    public static final String <%- lifecycleName %>_<%- s.enumize(transition, 'transition') %> = "<%- transition %>";
+
+<%
+    });
+
+    _.forEach(lifecycle.states, function(state) {
+-%>
+    public static final String <%- lifecycleName %>_<%- s.enumize(state, 'state') %> = "<%- state %>";
+
+<%
+    });
+  });
    _.forEach(res.operationChains, function(chain) {
     var chainName = s.enumize(chain['@id'], 'chain');
 -%>

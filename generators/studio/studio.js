@@ -81,6 +81,16 @@ module.exports = {
     }, {
       type: 'schemas',
       key: 'id'
+    }, {
+      type: 'lifeCycles',
+      key: 'id',
+      parameterField: 'states',
+      parameterKey: undefined
+    }, {
+      type: 'lifeCycles',
+      key: 'id',
+      parameterField: 'transitions',
+      parameterKey: undefined
     }];
 
     _(sorters).forEach((sorter) => {
@@ -94,7 +104,7 @@ module.exports = {
         _(registry).filter((entry) => {
           return objectPath.has(entry, sorter.parameterField);
         }).forEach((entry) => {
-          objectPath.set(entry, sorter.parameterField, _.sortBy(objectPath.get(entry, sorter.parameterField), sorter.parameterKey));
+          objectPath.set(entry, sorter.parameterField, _(objectPath.get(entry, sorter.parameterField)).sortBy(sorter.parameterKey).uniq().value());
         });
       }
 

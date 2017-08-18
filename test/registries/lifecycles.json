@@ -1,0 +1,34 @@
+{
+  "lifeCycles": [{
+      "id": "default",
+      "description": "Default life cycle for documents",
+      "states": [
+        "project",
+        "approved",
+        "obsolete",
+        "deleted"
+      ],
+      "transitions": [
+        "obsolete",
+        "delete",
+        "undelete",
+        "approve",
+        "backToProject"
+      ]
+    },
+    {
+      "id": "atask",
+      "description": "Life cycle for documents that can be configured as task document type",
+      "states": [
+        "opened",
+        "ended",
+        "cancelled"
+      ],
+      "transitions": [
+        "end",
+        "cancel",
+        "delete"
+      ]
+    }
+  ]
+}

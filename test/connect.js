@@ -66,8 +66,8 @@ describe('Against a live Connect', function () {
     });
 
     it('generates same Studio registries twice', function () {
-      // Sort is covered by content_template#'gets ordered Registries'
-      // But this test is important in case a new registry is exposed, as each one has to be manually ordered
+      // Sort is covered in constant_template#'gets ordered Registries' test
+      // But this test is important as well in case a new registry is exposed, as each one has to be manually ordered
       // in studio#_sortRegistries
       const res1 = connect._getWorkspaceRegistries(PROJECT);
       const res2 = connect._getWorkspaceRegistries(PROJECT);
