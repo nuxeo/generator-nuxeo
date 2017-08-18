@@ -7,12 +7,6 @@ const delegate = {
     this.conflicter = new Conflicter(this.env.adapter, (filename) => {
       return this.options.force || filename.match(/pom\.xml$/);
     });
-
-    const d = this.destinationRoot();
-    if (!this._containsPom(d)) {
-      this.log.error(`Folder ${chalk.blue(d)} has to be initialized as a Maven project`);
-      process.exit(1);
-    }
   },
 
   welcome: function() {
@@ -61,7 +55,10 @@ const delegate = {
       type: 'confirm',
       name: 'settings',
       message: 'Do you want to update your Maven settings.xml file accordingly?',
-      default: true
+      default: true,
+      when: function() {
+        return that._containsPom();
+      }
     }])
       .then((answers) => {
         that._setSymbolicName(answers.project);
@@ -76,6 +73,10 @@ const delegate = {
   },
 
   writing: function () {
+    if (!this._containsPom()) {
+      return;
+    }
+
     // Get full GAV from Studio API
     const gav = spinner(() => {
       return this._getProjectMavenCoordonates();

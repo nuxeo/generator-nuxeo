@@ -30,8 +30,10 @@ const delegate = {
         this._revokeToken();
       });
 
-      this._removeDependency();
-      this._setMavenGav(undefined);
+      if (this._containsPom()) {
+        this._removeDependency();
+        this._setMavenGav(undefined);
+      }
     }
   },
 
