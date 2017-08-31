@@ -1,16 +1,17 @@
 const ora = require('ora');
 
+const oo = ora({
+  text: ' Waiting...',
+});
+
 module.exports = function (func) {
 
-  const s = ora({
-    text: ' Waiting...',
-    spinner: {
-      frames: ['\u2026']
-    }
-  }).start();
+  const s = oo.start();
   try {
     return func();
   } finally {
     s.stop();
   }
 };
+
+module.exports.async = oo;

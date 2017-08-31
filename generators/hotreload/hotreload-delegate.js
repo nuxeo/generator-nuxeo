@@ -22,7 +22,7 @@ const delegate = {
         this.log.error('Your nuxeo.conf file is not properly configured.');
       }
 
-      this.log.error(`You must run \`${this.usage.prototype.resolvebinary(this.options)} configure\` first.`);
+      this.log.error(`Run \`${this.usage.prototype.resolvebinary(this.options)} configure\` first.`);
 
       process.exit(1);
     }

@@ -23,7 +23,9 @@ module.exports = {
   _isNewConnectUrl: function(value) {
     return value !== this._getConnectUrl();
   },
-
+  _getToken: function() {
+    return this.config.get(CONNECT_TOKEN);
+  },
   _hasToken: function () {
     return !!this.config.get(CONNECT_TOKEN);
   },
@@ -71,7 +73,7 @@ module.exports = {
   _request: function (method, url, opts) {
     const _opts = opts || {};
     _opts.headers = Object.assign(_opts.headers || {}, {
-      'X-Authentication-Token': this.config.get(CONNECT_TOKEN)
+      'X-Authentication-Token': this._getToken()
     });
 
     return request(method, url, _opts);

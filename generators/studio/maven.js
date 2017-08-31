@@ -1,3 +1,4 @@
+const debug = require('debug')('nuxeo:generator:maven');
 const maven = require('../../utils/maven');
 const settings = require('../../utils/maven-settings');
 const path = require('path');
@@ -104,5 +105,52 @@ module.exports = {
 
   _getSettingsPath: function () {
     return path.normalize(settings.locateFile());
+  },
+
+  _spawnMaven: function () {
+    let args = Array.prototype.slice.call(arguments);
+    if (args.length === 1) {
+      args = args[0].split(' ');
+    }
+
+    const bin = 'mvn';
+    debug('Spawn: %o', `${bin} ${args.join(' ')}`);
+    const done = this.async();
+
+    const mvn = require('child_process').spawn(bin, args, {
+      cwd: this.destinationRoot(),
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'pipe']
+    });
+
+    const ora = require('../../utils/spinner').async;
+    ora.start();
+
+    mvn.stdout.on('data', (data) => {
+      const line = String(data).trim();
+      if (line.startsWith('[ERROR]')) {
+        this.log(line);
+      } else {
+        debug(line);
+      }
+    });
+
+    mvn.stderr.on('data', (data) => {
+      if (!debug.enabled) {
+        return;
+      }
+
+      debug(`${String(data).trim()}`);
+    });
+
+    mvn.on('close', (code) => {
+      debug(`Process exited with code ${code}`);
+      ora.stop();
+
+      if (code !== 0) {
+        this.log.error('Something went wrong during export.');
+      }
+      done();
+    });
   }
 };

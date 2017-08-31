@@ -29,6 +29,7 @@ App = Object.assign(App, require('../../lib/delegated-generator.js').withDefault
 App._registerDelegate('link', require('./link-delegate'));
 App._registerDelegate('unlink', require('./unlink-delegate'));
 App._registerDelegate('import', require('./import-delegate'));
+App._registerDelegate('export', require('./export-delegate'));
 
 App = Object.assign(App, require('./connect.js'));
 App = Object.assign(App, require('./maven.js'));
