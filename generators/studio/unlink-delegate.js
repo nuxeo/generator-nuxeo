@@ -44,6 +44,4 @@ const delegate = {
   }
 };
 
-module.exports = {
-  _unlinkDelegate: delegate
-};
+module.exports = delegate;

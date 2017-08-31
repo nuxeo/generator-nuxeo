@@ -62,6 +62,4 @@ const delegate = {
   }
 };
 
-module.exports = {
-  _hotreloadDelegate: delegate
-};
+module.exports = delegate;

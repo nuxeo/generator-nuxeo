@@ -91,11 +91,4 @@ const delegate = {
   }
 };
 
-let Synchronize = {
-  _syncDelegate: delegate
-};
-
-Synchronize = Object.assign(Synchronize, require('../app/nuxeo-folder'));
-Synchronize = Object.assign(Synchronize, require('../app/nuxeo-helper'));
-
-module.exports = Synchronize;
+module.exports = delegate;

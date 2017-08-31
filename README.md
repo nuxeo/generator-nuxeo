@@ -99,10 +99,10 @@ Unlink your project:
 yo nuxeo:studio unlink
 ```
 
-Generate a Java Constant class with everything that is contributed from Studio
+Generate a Java Constant class with Studio's freatures
 
 ```bash
-yo nuxeo:studio sync
+yo nuxeo:studio import
 ```
 
 ## Bootstrap an Empty Nuxeo Project with Multi Modules Support

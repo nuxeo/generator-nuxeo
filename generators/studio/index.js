@@ -26,11 +26,15 @@ var App = {
 };
 App = Object.assign(App, require('../../lib/delegated-generator.js').withDefault('link'));
 
-App = Object.assign(App, require('./link-delegate.js'));
-App = Object.assign(App, require('./unlink-delegate.js'));
-App = Object.assign(App, require('./sync-delegate.js'));
+App._registerDelegate('link', require('./link-delegate'));
+App._registerDelegate('unlink', require('./unlink-delegate'));
+App._registerDelegate('import', require('./import-delegate'));
 
 App = Object.assign(App, require('./connect.js'));
 App = Object.assign(App, require('./maven.js'));
 App = Object.assign(App, require('./studio.js'));
+
+App = Object.assign(App, require('../app/nuxeo-folder'));
+App = Object.assign(App, require('../app/nuxeo-helper'));
+
 module.exports = yeoman.extend(App);

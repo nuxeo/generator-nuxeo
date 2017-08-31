@@ -63,6 +63,4 @@ const delegate = {
   }
 };
 
-module.exports = {
-  _configureDelegate: delegate
-};
+module.exports = delegate;

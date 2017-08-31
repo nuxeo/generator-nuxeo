@@ -15,8 +15,11 @@ var App = {
 };
 
 App = _.extend(App, require('../../lib/delegated-generator.js').withDefault('hotreload'));
+
+App._registerDelegate('configure', require('./configure-delegate'));
+App._registerDelegate('hotreload', require('./hotreload-delegate'));
+
 App = _.extend(App, require('./configure.js'));
-App = _.extend(App, require('./configure-delegate.js'));
 App = _.extend(App, require('./hotreload.js'));
-App = _.extend(App, require('./hotreload-delegate.js'));
+
 module.exports = yeoman.extend(App);

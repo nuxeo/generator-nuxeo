@@ -102,6 +102,4 @@ const delegate = {
   }
 };
 
-module.exports = {
-  _linkDelegate: delegate
-};
+module.exports = delegate;
