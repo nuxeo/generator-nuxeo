@@ -33,12 +33,13 @@ module.exports = {
     if (!pom.containsModule(dir) && this.currentProps) {
       // If not module, assuming we are handling a template that contains
       // parent_package and parent_version properties.
+
       pom.addModule(dir);
 
       // Add new module to dependency management
       // Following the template rules in case of a multi-module
       var p = this.currentProps;
-      pom.addDependency(p.parent_package + ':' + p.artifact + ':' + p.parent_version);
+      pom.addDependency(`${p.parent_package}:${p.artifact}:\${project.version}`);
       pom.save(this.fs, 'pom.xml');
     }
 
