@@ -47,6 +47,7 @@
     "path": "^0.12.7",
     "path-exists": "^3.0.0",
     "promise": "^8.0.1",
+    "sprintf-js": "^1.1.1",
     "sync-request": "^4.1.0",
     "underscore.string": "^3.2.2",
     "xml": "^1.0.1",

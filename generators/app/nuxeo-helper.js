@@ -3,7 +3,7 @@
 
 var _ = require('lodash');
 var chalk = require('chalk');
-var nuxeowelcome = require('../../utils/welcome.js');
+var nuxeowelcome = require('../../lib/welcome.js')('Generator');
 var recursiveSync = require('../../utils/recursive-readdirSync.js');
 var fs = require('fs');
 var s = require('../../utils/nuxeo.string.js');
