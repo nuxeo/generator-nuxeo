@@ -115,7 +115,6 @@ module.exports = {
 
     const bin = 'mvn';
     debug('Spawn: %o', `${bin} ${args.join(' ')}`);
-    const done = this.async();
 
     const mvn = require('child_process').spawn(bin, args, {
       cwd: this.destinationRoot(),
@@ -123,34 +122,39 @@ module.exports = {
       stdio: ['ignore', 'pipe', 'pipe']
     });
 
-    const ora = require('../../utils/spinner').async;
-    ora.start();
-
-    mvn.stdout.on('data', (data) => {
-      const line = String(data).trim();
-      if (line.startsWith('[ERROR]')) {
-        this.log(line);
-      } else {
-        debug(line);
-      }
-    });
-
-    mvn.stderr.on('data', (data) => {
+    return new Promise((resolve, reject) => {
+      const ora = require('../../utils/spinner').async;
       if (!debug.enabled) {
-        return;
+        ora.start();
       }
 
-      debug(`${String(data).trim()}`);
-    });
+      mvn.stdout.on('data', (data) => {
+        const line = String(data).trim();
+        if (line.startsWith('[ERROR]')) {
+          this.log(line);
+        } else {
+          debug(line);
+        }
+      });
 
-    mvn.on('close', (code) => {
-      debug(`Process exited with code ${code}`);
-      ora.stop();
+      mvn.stderr.on('data', (data) => {
+        if (!debug.enabled) {
+          return;
+        }
 
-      if (code !== 0) {
-        this.log.error('Something went wrong during export.');
-      }
-      done();
+        debug(`${String(data).trim()}`);
+      });
+
+      mvn.on('close', (code) => {
+        debug(`Process exited with code ${code}`);
+        ora.stop();
+
+        if (code !== 0) {
+          reject(code);
+        } else {
+          resolve();
+        }
+      });
     });
   }
 };
