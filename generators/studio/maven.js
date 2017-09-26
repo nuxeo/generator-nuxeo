@@ -125,6 +125,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const ora = require('../../utils/spinner').async;
       if (!debug.enabled) {
+        ora.text = 'Working... It can take some time, please be patient.';
         ora.start();
       }
 

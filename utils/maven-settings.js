@@ -51,7 +51,9 @@ function settings(filename) {
     },
 
     addServer: function (server, force = false) {
-      const [id, username, password] = server.split(':');
+      const [id, username, ...rest] = server.split(':');
+      const password = rest.join(':');
+
       if (this.containsServer(id)) {
         // Do not override credentials on an existing server, except with force
         if (!force) {
@@ -94,6 +96,7 @@ function settings(filename) {
         preserve_newlines: 1
       });
     },
+
     save: function (_fs, file) {
       _fs.write(file || filename, this._xml());
     }
