@@ -11,7 +11,7 @@ const delegate = {
   writing: function () {
     this.log.info(`Building and exporting your contributions to '${this._getSymbolicName()}' Studio project.`);
 
-    const pluginGAV = 'org.nuxeo.tools:nuxeo-studio-maven-plugin';
+    const pluginGAV = `org.nuxeo.tools:nuxeo-studio-maven-plugin:${this.options.studioMavenPluginVersion}`;
 
     const plugAvailableArgs = [];
     plugAvailableArgs.push('-ff');
@@ -21,14 +21,15 @@ const delegate = {
     plugAvailableArgs.push(`-Dplugin=${pluginGAV}`);
     plugAvailableArgs.push('help:describe');
 
-    // Add `package` to be sure the project is built... if we are not using a standalone POM
-    const extractArgs = this._containsPom() ? ['package'] : [];
+    // Add `compile` to be sure the project is built... if we are not using a standalone POM
+    const extractArgs = this._containsPom() ? ['compile'] : [];
     extractArgs.push('-DskipTests=true');
     extractArgs.push('-DskipITs=true');
     extractArgs.push('-ff');
     extractArgs.push('-e');
     extractArgs.push('-B');
     extractArgs.push(`${pluginGAV}:extract`);
+    extractArgs.push('-Dnsmp.failOnEmpty=true');
     extractArgs.push(`-Dnsmp.symbolicName=${this._getSymbolicName()}`);
     extractArgs.push(`-Dnsmp.token=${this._getToken()}`);
     extractArgs.push(`-Dnsmp.connectUrl=${this._getConnectUrl()}`);

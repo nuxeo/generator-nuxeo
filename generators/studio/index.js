@@ -14,6 +14,13 @@ var App = {
       type: String,
       default: 'tp'
     });
+
+    this.option('studioMavenPluginVersion', {
+      alias: ['m'],
+      desc: 'Force specific Studio Maven Plugin Version',
+      type: String,
+      default: ''
+    });
   },
 
   _beforeInitializing: function () {
