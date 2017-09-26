@@ -12,10 +12,9 @@ describe('Maven Settings module can', function () {
     this.settings = openSettingsFile('settings.xml');
   });
 
-  it('contains server and returns username if any', function () {
+  it('contains server and returns true if any', function () {
     const x = this.settings.containsServer('existing');
     assert.ok(x);
-    assert.equal('johndoe', x);
     assert.ok(!this.settings.containsServer('missing'));
   });
 
@@ -35,13 +34,13 @@ describe('Maven Settings module can', function () {
     assert.ok(node.is('server'), 'New server node has not been added');
 
     // Adding a server with a username
-    assert.ok(this.settings.addServer('server2:johnny'));
+    assert.ok(this.settings.addServer('server2', 'johnny'));
     node = this.settings._findServerNode('server2');
     assert.ok(node.is('server'));
     assert.equal('johnny', node.find('username').text());
 
     // Adding a server with a username and a password
-    assert.ok(this.settings.addServer('server3:bobby:secret'));
+    assert.ok(this.settings.addServer('server3', 'bobby', 'secret'));
     node = this.settings._findServerNode('server3');
     assert.ok(node.is('server'));
     assert.equal('bobby', node.find('username').text());
@@ -54,9 +53,9 @@ describe('Maven Settings module can', function () {
     assert.notEqual('johnny', node.find('username').text());
 
     // First try without forcing
-    assert.ok(!this.settings.addServer('existing:johnny:secret'));
+    assert.ok(!this.settings.addServer('existing', 'johnny', 'secret'));
 
-    assert.ok(this.settings.addServer('existing:johnny:secret', true));
+    assert.ok(this.settings.addServer('existing', 'johnny', 'secret', true));
     node = this.settings._findServerNode('existing');
     assert.equal('johnny', node.find('username').text());
   });
@@ -64,7 +63,7 @@ describe('Maven Settings module can', function () {
   it('can ensure a servers node exists', function () {
     const empty = openSettingsFile('settings-empty.xml');
     assert.ok(!empty.containsServer('newone'));
-    assert.ok(empty.addServer('newone:bobby:secret'));
+    assert.ok(empty.addServer('newone', 'bobby', 'secret'));
     assert.ok(empty.containsServer('newone'));
   });
 });
