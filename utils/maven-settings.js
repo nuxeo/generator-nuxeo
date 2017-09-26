@@ -44,24 +44,25 @@ function settings(filename) {
   return {
     containsServer: function (id) {
       const node = this._findServerNode(id);
-      if (node.is('server')) {
-        return node.find('username').text();
-      }
-      return false;
+      return node.is('server');
     },
 
-    addServer: function (server, force = false) {
-      const [id, username, ...rest] = server.split(':');
-      const password = rest.join(':');
-
+    addServer: function (id, username, password, override = false) {
       if (this.containsServer(id)) {
         // Do not override credentials on an existing server, except with force
-        if (!force) {
+        if (!override) {
+          return false;
+        }
+
+        // Do not force to write file if server already sets
+        const node = this._findServerNode(id);
+        const [sUsername, sPassword] = [node.find('username').text(), node.find('password').text()];
+        if (sUsername === username && (password === sPassword || sPassword.match(/^{.+}$/))) {
           return false;
         }
 
         // Clean existing server node before adding new values
-        this._findServerNode(id).remove();
+        node.remove();
       }
 
       this._ensureServersNode();

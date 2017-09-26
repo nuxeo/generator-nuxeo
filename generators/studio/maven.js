@@ -89,11 +89,13 @@ module.exports = {
   _addConnectCredentials: function (username, password) {
     const ms = settings.open();
 
-    ms.addServer([HF_SNAPSHOTS, username, password].join(':'));
-    ms.addServer([HF_RELEASES, username, password].join(':'));
-    ms.addServer([STUDIO_SERVER, username, password].join(':'), this._mvnSettings.force);
+    let save = ms.addServer(HF_SNAPSHOTS, username, password);
+    save |= ms.addServer(HF_RELEASES, username, password);
+    save |= ms.addServer(STUDIO_SERVER, username, password, this._mvnSettings.force);
 
-    ms.save(this.fs);
+    if (save) {
+      ms.save(this.fs);
+    }
   },
 
   _containsPom: function (folder) {
