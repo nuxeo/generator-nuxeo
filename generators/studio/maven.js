@@ -1,3 +1,4 @@
+/*eslint no-undef:0*/
 const debug = require('debug')('nuxeo:generator:maven');
 const maven = require('../../utils/maven');
 const settings = require('../../utils/maven-settings');
