@@ -46,11 +46,6 @@ describe('Against a live Connect', function () {
       assert.ok(connect._hasToken());
     });
 
-    it('can do requests authenticated now', function () {
-      const res = connect._request('GET', connect._getConnectUrl() + '/api/v1/path/default-domain');
-      assert.equal(res.statusCode, 200);
-    });
-
     it('can check project availability', function () {
       assert.ok(!connect._isProjectAccessible('XxX-nuxeo-DsdsdS-XxxxD-uxeo'));
       assert.ok(connect._isProjectAccessible(PROJECT));
