@@ -5,10 +5,10 @@ var _compareVersions = require('compare-versions');
 
 // 8.3-SNAPSHOT is not a valid semver
 // Transform x.y-MODIFIER to x.y.0-MODIFIER to valid it
-const SEMVER_FIX = /^(\d+\.\d+)-([A-Z]+)$/i;
+const SEMVER_FIX = /^(\d+\.\d+)-([A-Z10-9-]+)$/i;
 
 function semverFix(version) {
-  let i = version.match(SEMVER_FIX);
+  const i = version.match(SEMVER_FIX);
   return i ? `${i[1]}.0-${i[2]}` : version;
 }
 
@@ -35,7 +35,7 @@ module.exports = {
     return compareVersions(v1, v2) === 0;
   },
   fromVersion: function(v1) {
-    v1 = v1 || '0.0.0';
+    v1 = v1 || '0.0.0-SNAPSHOT';
     return {
       isAfter: function(v2) {
         return compareVersions(v1, v2) > 0;

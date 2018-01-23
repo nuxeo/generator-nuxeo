@@ -1,5 +1,5 @@
 const KEY = '_nuxeo_version';
-const VERSION = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*))?(?:-[\dA-Z]+)?$/i;
+const VERSION = /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:\.(?:0|[1-9]\d*))?(?:-[\dA-Z-]+)?$/i;
 const PACKAGE = /^org\.nuxeo\./i;
 
 function validate(version) {
