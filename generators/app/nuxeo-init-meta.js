@@ -3,6 +3,7 @@
 
 var _ = require('lodash');
 var chalk = require('chalk');
+const http = require('http');
 var clone = require('yeoman-remote');
 var isDirectory = require('is-directory').sync;
 var path = require('path');
@@ -12,29 +13,49 @@ function fetchRemote(callback) {
   // Silent logs while remote fetching
   var writeOld = process.stderr.write;
 
+  /**
+   * Try to fallback on local clone when network is not available
+   * @param {*} errco
+   */
+  const handleLocalClone = (errco) => {
+    this.log.info('Unable to fetch metamodel remotely... Trying locally.');
+    debug('%O', errco);
+    let remote = this.config.get('lastRemote');
+    if (!(remote && isDirectory(remote))) {
+      this.log.error('You must initialize metamodel online once.');
+      process.exit(1);
+    }
+
+    callback(undefined, remote);
+  };
+
+  /**
+   * Clone generator-nuxeo-meta repository
+   */
+  const handleRemoteClone = () => {
+    process.stderr.write = function () {};
+    // Fetch remote repository containing module metadata
+    clone('nuxeo', 'generator-nuxeo-meta', this.options.meta, (err, remote) => {
+      process.stderr.write = writeOld;
+      callback(err, remote);
+    }, true);
+  };
+
   // Ensure connection is up and cat reach github
   // In that case; update the metamodel from the repository
   // Otherwise try to find the latest fetch
-  require('dns').resolve('www.github.com', (errco) => {
-    if (errco) {
-      this.log.info('Unable to fetch metamodel remotely... Trying locally.');
-      debug('%O', errco);
-      let remote = this.config.get('lastRemote');
-      if (!(remote && isDirectory(remote))) {
-        this.log.error('You must initialize metamodel online once.');
-        process.exit(1);
-      }
-
-      callback(undefined, remote);
+  http.request({
+    method: 'HEAD',
+    host: 'www.github.com'
+  }, (res) => {
+    if (res.statusCode >= 500) {
+      handleLocalClone(res);
     } else {
-      process.stderr.write = function() {};
-      // Fetch remote repository containing module metadata
-      clone('nuxeo', 'generator-nuxeo-meta', this.options.meta, (err, remote) => {
-        process.stderr.write = writeOld;
-        callback(err, remote);
-      }, true);
+      handleRemoteClone();
     }
-  });
+  }).on('error', (err) => {
+    handleLocalClone(err);
+  }).end();
 }
 
 function fetchLocal(callback) {
@@ -64,12 +85,12 @@ function filterModules(modules, type) {
 }
 
 module.exports = {
-  _init: function(_opts) {
+  _init: function (_opts) {
     var opts = _opts || {};
     return {
       fetch: opts.localPath ? fetchLocal : fetchRemote,
 
-      saveRemote: function(remote, callback) {
+      saveRemote: function (remote, callback) {
         this.nuxeo = {
           modules: {},
           samples: {},
@@ -80,25 +101,25 @@ module.exports = {
         callback(undefined, this.nuxeo);
       },
 
-      readDescriptor: function(remote, callback) {
+      readDescriptor: function (remote, callback) {
         // XXX Should be removed from init object
         this._moduleReadDescriptor(remote);
         callback();
       },
 
-      readSamples: function(remote, callback) {
+      readSamples: function (remote, callback) {
         callback(undefined, require(path.join(remote.cachePath, 'samples', 'samples.js')));
       },
 
-      resolveModule: function(callback) {
+      resolveModule: function (callback) {
         // XXX Should be removed from init object
         var args = [];
         var that = this;
-        this.args.forEach(function(arg) {
+        this.args.forEach(function (arg) {
           if (!that._moduleExists(arg)) {
             that.log('Unknown module: ' + arg);
             that.log('Available modules:');
-            that._moduleList().forEach(function(module) {
+            that._moduleList().forEach(function (module) {
               that.log('\t- ' + module);
             });
             process.exit(1);
@@ -123,7 +144,7 @@ module.exports = {
 
       _filterModules: filterModules,
 
-      filterModulesPerType: function(types, callback) {
+      filterModulesPerType: function (types, callback) {
         // XXX Should be removed from init object
         var filtered = {};
         // this.log.invoke('Requirements: ' + chalk.blue(modules.join(', ')));
