@@ -1,25 +1,49 @@
 const _ = require('lodash');
-const request = require('sync-request');
+const http = require('https');
 const version = require('./version-helper');
-const log = require('yeoman-environment/lib/util/log')();
+const sleep = require('system-sleep');
 
-const CONNECT_TP = 'https://connect.nuxeo.com/nuxeo/restAPI/target-platforms';
+const CONNECT_TP = 'https://connect.nuxeo.com/nuxeo/api/v1/target-platforms/public';
 
+const requestConnect = new Promise((resolve, reject) => {
+  let res = '';
+  http.request(CONNECT_TP, (resp) => {
+    resp.setEncoding('UTF-8');
+    resp.on('data', (chunk) => {
+      res += chunk;
+    });
+    resp.on('end', () => {
+      resolve(res);
+    });
+  }).on('error', (e) => {
+    reject(e);
+  }).end();
+});
+
+let done = false;
 let res;
-try {
-  res = JSON.parse(request('GET', CONNECT_TP).getBody('UTF-8'));
-} catch (err) {
-  log.error('Unable to fetch current Nuxeo Versions; fallback on LTS only mode.');
-  // In case of error on Connect
-  // do not break anything, restreint to LTS Versions
+Promise.resolve(requestConnect).then((data) => {
+  res = JSON.parse(data);
+  done = true;
+}).catch(() => {
+  done = true;
+});
+
+while (!done) {
+  sleep(100);
+}
+
+// wait
+if (!res) {
   res = [{
-    label: 'Nuxeo Platform LTS 2015',
-    version: '7.10',
-    enabled: true
-  }, {
     label: 'Nuxeo Platform LTS 2016',
     default: true,
     version: '8.10',
+    enabled: true
+  }, {
+    label: 'Nuxeo Platform LTS 2017',
+    default: true,
+    version: '9.10',
     enabled: true
   }];
 }
@@ -62,5 +86,6 @@ if (dtp === undefined) {
 
 module.exports = {
   choices: choices,
-  default: `${dtp.version} (${dtp.label})`
+  default: `${dtp.version} (${dtp.label})`,
+  latest: dtp.version
 };

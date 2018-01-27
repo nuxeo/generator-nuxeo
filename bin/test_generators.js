@@ -1,17 +1,10 @@
 #!/usr/bin/env node
 
 /*eslint camelcase:0*/
-const _ = require('lodash');
-const request = require('sync-request');
 const rimraf = require('rimraf');
 
 // Fetch Target Plaforms from Connect
-const response = request('GET', 'https://connect.nuxeo.com/nuxeo/restAPI/target-platforms').getBody('UTF-8');
-
-// Get the default one.
-const NUXEO_VERSION = _(JSON.parse(response)).find((targetPlatform) => {
-  return targetPlatform.default && targetPlatform.name !== 'cmf';
-}).version;
+const NUXEO_VERSION = require('../utils/nuxeo-version-available').latest;
 
 var branch = process.argv.length > 3 ? process.argv[3] : 'master';
 var version = process.argv.length > 2 ? process.argv[2] : NUXEO_VERSION;
