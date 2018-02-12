@@ -33,6 +33,12 @@ describe('Against a live Connect', function () {
   this.timeout(30 * 1000);
 
   describe('It', function () {
+    before(function() {
+      if (PASSWD === 'FIXME') {
+        this.skip('Connect password not configured');
+      }
+    });
+
     it('is correctly plugged to nos-test', function () {
       assert.equal(connect._getConnectUrl(), TEST_ENV);
     });
