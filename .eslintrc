@@ -5,6 +5,9 @@
     "node": true,
     "mocha": true
   },
+  "globals": {
+    "Promise": true
+  },
   "rules": {
     "array-bracket-spacing": [
       2,
