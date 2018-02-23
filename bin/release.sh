@@ -43,7 +43,7 @@ rm -f package.json.bak
 git add package.json
 
 # build, test and publish
-gulp prepublish
+npm run gulp -- prepublish
 npm publish
 
 git commit -m "Release $VERSION - meta: $BRANCH"

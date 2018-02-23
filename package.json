@@ -83,6 +83,7 @@
     "lint": "gulp lint",
     "mocha": "mocha -b",
     "watch": "npm-watch",
+    "gulp": "gulp",
     "watch-test": "mocha -i -g '/connect/i' $npm_config_test"
   },
   "watch": {
