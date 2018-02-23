@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const request = require('sync-request');
+const debug = require('debug')('nuxeo:connect');
 
 const CONNECT_URL = 'connect:url';
 const CONNECT_TOKEN = 'connect:token';
@@ -24,7 +25,9 @@ module.exports = {
     return value !== this._getConnectUrl();
   },
   _getToken: function() {
-    return this.config.get(CONNECT_TOKEN);
+    const tk = this.config.get(CONNECT_TOKEN);
+    debug('Current Token: %O', tk);
+    return tk;
   },
   _hasToken: function () {
     return !!this.config.get(CONNECT_TOKEN);
@@ -50,6 +53,7 @@ module.exports = {
       this.config.set(CONNECT_TOKEN, tok);
       return tok;
     } else {
+      debug(res);
       return undefined;
     }
   },
@@ -68,6 +72,7 @@ module.exports = {
       return true;
     }
 
+    debug(res);
     return false;
   },
   _request: function (method, url, opts) {
