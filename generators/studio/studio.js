@@ -2,6 +2,7 @@ const qs = require('querystring');
 const _ = require('lodash');
 const objectPath = require('object-path');
 const STUDIO_SYMNAME = 'studio:symbolicname';
+const spinner = require('../../utils/spinner');
 let projectCache = {};
 
 module.exports = {
@@ -124,5 +125,10 @@ module.exports = {
   },
   _setSymbolicName: function (value) {
     return this.config.set(STUDIO_SYMNAME, value);
-  }
+  },
+  _releaseStudioProject: function (params) {
+    return spinner(function () {
+      return this._request('POST', `${this._getConnectUrl()}/site/studio/v2/project/${this._getSymbolicName()}/releases`, params);
+    }.bind(this));
+  },
 };

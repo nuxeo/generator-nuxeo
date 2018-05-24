@@ -22,10 +22,10 @@ var App = {
       default: ''
     });
 
-    this.option('skipDeps', {
+    this.option('skipPomUpdate', {
       type: Boolean,
       defaults: false,
-      desc: 'Skip the Studio deps manipulation',
+      desc: 'Skip the pom(s) updates',
     });
   },
 
@@ -43,6 +43,7 @@ App._registerDelegate('link', require('./link-delegate'));
 App._registerDelegate('unlink', require('./unlink-delegate'));
 App._registerDelegate('import', require('./import-delegate'));
 App._registerDelegate('export', require('./export-delegate'));
+App._registerDelegate('release', require('./release-delegate'));
 
 App = Object.assign(App, require('./connect.js'));
 App = Object.assign(App, require('./maven.js'));

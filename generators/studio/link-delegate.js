@@ -77,7 +77,7 @@ const delegate = {
       return;
     }
 
-    if(!this.options.skipDeps) {
+    if(!this.options.skipPomUpdate) {
       // Get full GAV from Studio API
       const gav = spinner(() => {
         return this._getProjectMavenCoordonates();

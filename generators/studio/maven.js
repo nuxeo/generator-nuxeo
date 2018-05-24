@@ -54,6 +54,17 @@ module.exports = {
     });
   },
 
+  /**
+   * Update Studio dependency version in pom parent.
+   * @param version
+   */
+  _updateVersion: function(gav, version) {
+    const targetPom = path.join(this.destinationRoot(), 'pom.xml');
+    const pom = maven.open(this.fs.read(targetPom));
+    pom.updateDependencyVersion(gav, version);
+    pom.save(this.fs, targetPom);
+  },
+
   _removeDependency: function (g) {
     const gav = g || this._getMavenGav();
     if (!gav) {
