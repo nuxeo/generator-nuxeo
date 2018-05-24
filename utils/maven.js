@@ -116,6 +116,30 @@ function maven(content, fsl) {
       }).length > 0;
     },
 
+    updateDependencyVersion: function(gav, version) {
+      const [groupId] = gav.split(':');
+      const node = this._dependenciesNode().find('groupId').filter((i, elt) => {
+        return $(elt).text() === groupId;
+      }).parent();
+      if(this._isProperty(node.find('version'))) {
+        this._updateProperty(node.find('version'), version);
+      } else {
+        if (node.length !== 1) {
+          throw new Error(`Cleanup first your Studio dep (duplicated or not existing) - version released is ${version}`);
+        }
+        node.find('version').text(version);
+      }
+    },
+
+    _isProperty: function (node) {
+      return node.text().startsWith('${');
+    },
+
+    _updateProperty: function (node, value) {
+      const property = node.text().substring(2, node.text().length-1).split('.').join('\\.');
+      $('properties').find(property).text(value);
+    },
+
     removeDependency: function (dep) {
       const [groupId, artifactId, version, extension = 'jar', classifier] = dep.split(':');
       this._dependenciesNode().find('artifactId').filter((i, elt) => {
