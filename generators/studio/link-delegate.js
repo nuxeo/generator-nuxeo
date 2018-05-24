@@ -77,16 +77,18 @@ const delegate = {
       return;
     }
 
-    // Get full GAV from Studio API
-    const gav = spinner(() => {
-      return this._getProjectMavenCoordonates();
-    });
+    if(!this.options.skipDeps) {
+      // Get full GAV from Studio API
+      const gav = spinner(() => {
+        return this._getProjectMavenCoordonates();
+      });
 
-    // Remove previous Studio project
-    this._removeDependency();
+      // Remove previous Studio project
+      this._removeDependency();
 
-    // Add dependency to the root module and submodules
-    this._addDependency(gav);
+      // Add dependency to the root module and submodules
+      this._addDependency(gav);
+    }
 
     if (this._canAddCredentials()) {
       this._addConnectCredentials(this._answers.username, this._answers.password);

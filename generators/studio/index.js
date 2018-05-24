@@ -21,6 +21,12 @@ var App = {
       type: String,
       default: ''
     });
+
+    this.option('skipDeps', {
+      type: Boolean,
+      defaults: false,
+      desc: 'Skip the Studio deps manipulation',
+    });
   },
 
   _beforeInitializing: function () {
