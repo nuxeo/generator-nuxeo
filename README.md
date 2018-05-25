@@ -105,6 +105,12 @@ Generate a Java Constant class with Studio's freatures
 yo nuxeo:studio import
 ```
 
+Release your studio project
+
+```bash
+yo nuxeo:studio release
+```
+
 ## Bootstrap an Empty Nuxeo Project with Multi Modules Support
 
 To bootstrap an empty Nuxeo Project (based on a Maven multi-module project), execute the following lines:
@@ -137,6 +143,7 @@ yo nuxeo [options] [<generator>..]
   -s,   --skipInstall   # Skip external commands installation                    Default: false
   -f,   --force         # Force conflict when generate an existing file          Default: false
   -d,   --dirname       # Set parent folder prefix name                          Default: <PWD>
+        --skipPomUpdate # Skip the pom(s) updates when attaching Studio project  Default: false
 ```
 
 # Available Generators
