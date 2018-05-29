@@ -136,7 +136,7 @@ function maven(content, fsl) {
     },
 
     _updateProperty: function (node, value) {
-      const property = node.text().substring(2, node.text().length-1).split('.').join('\\.');
+      const property = node.text().substring(2, node.text().length - 1).split('.').join('\\.');
       $('properties').find(property).text(value);
     },
 

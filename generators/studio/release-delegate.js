@@ -1,4 +1,3 @@
-'use strict';
 const spinner = require('../../utils/spinner');
 const chalk = require('chalk');
 
@@ -51,7 +50,7 @@ const delegate = {
     const res = this._releaseStudioProject(params);
     if (res.statusCode === 409) {
       this.log.error(chalk.red('FAILURE'));
-      this.log.error(`The version already exists: you should update the MAJOR version this time.`);
+      this.log.error('The version already exists: you should update the MAJOR version this time.');
       this.error = true;
       return;
     }
