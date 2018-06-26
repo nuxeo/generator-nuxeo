@@ -63,8 +63,7 @@ gulp.task('test', ['pre-test'], function() {
     .pipe(debug())
     .pipe(plumber())
     .pipe(mocha({
-      reporter: 'spec',
-      bail: true
+      reporter: 'spec'
     }))
     .once('error', () => {
       process.exit(1);
