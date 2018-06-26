@@ -58,24 +58,20 @@ gulp.task('pre-test', function() {
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['pre-test'], function(cb) {
-  gulp.src('test/**/*.js')
+gulp.task('test', ['pre-test'], function() {
+  return gulp.src('test/**/*.js')
     .pipe(debug())
     .pipe(plumber())
     .pipe(mocha({
-      reporter: 'spec'
+      reporter: 'spec',
+      bail: true
     }))
-    .on('error', function(err) {
-      if (err) {
-        throw err;
-      }
+    .once('error', () => {
+      process.exit(1);
     })
     .pipe(istanbul.writeReports({
       reporters: ['lcov', 'json', 'text', 'text-summary', 'cobertura']
-    }))
-    .on('end', function() {
-      cb();
-    });
+    }));
 });
 
 gulp.task('prepublish', ['lint', 'test', 'nsp']);
