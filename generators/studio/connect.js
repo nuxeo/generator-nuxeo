@@ -34,6 +34,7 @@ module.exports = {
   },
   _generateToken: function (username, password) {
     if (this._hasToken()) {
+      debug('Token already exists');
       this._revokeToken();
     }
 
@@ -48,6 +49,7 @@ module.exports = {
       }
     });
 
+    debug(res);
     if (res.statusCode === 201) {
       const tok = _.trim(res.getBody('UTF-8'));
       this.config.set(CONNECT_TOKEN, tok);
@@ -81,6 +83,7 @@ module.exports = {
       'X-Authentication-Token': this._getToken()
     });
 
+    debug('%o %o %O', method, url, _opts);
     return request(method, url, _opts);
   }
 };

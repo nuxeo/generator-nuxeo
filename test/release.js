@@ -2,7 +2,7 @@ const Connect = require('../generators/studio/connect');
 const Studio = require('../generators/studio/studio');
 const assert = require('yeoman-assert');
 
-const ENV = 'https://connect.nuxeo.com/nuxeo';
+const TEST_ENV = 'https://nos-test-connect.nos.nuxeo.com/nuxeo';
 
 const USERNAME = 'zpsfktef@eelmail.com';
 const PASSWD = process.env.CPWD || 'FIXME';
@@ -15,7 +15,7 @@ connect = Object.assign(connect, Studio);
 connect = Object.assign(connect, {
   config: (function () {
     let values = {
-      'connect:url': ENV,
+      'connect:url': TEST_ENV,
     };
 
     return {
@@ -40,11 +40,13 @@ describe('Release Studio Project', function () {
     });
 
     it('is correctly plugged to connect', function () {
-      assert.equal(connect._getConnectUrl(), ENV);
+      assert.equal(connect._getConnectUrl(), TEST_ENV);
     });
 
     it(`can release the studio project ${PROJECT}`, function () {
-      connect._generateToken(USERNAME, PASSWD);
+      assert.ok(connect._generateToken(USERNAME, PASSWD));
+      assert.ok(connect._hasToken());
+
       const params = {
         json: {
           revision: 'master',
