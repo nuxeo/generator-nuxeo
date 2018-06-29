@@ -85,4 +85,33 @@ describe('Against a live Connect', function () {
       assert.ok(!connect._revokeToken());
     });
   });
+
+  describe('Release Studio Project', function () {
+    before(function() {
+      if (PASSWD === 'FIXME') {
+        this.skip('Connect password not configured');
+      }
+    });
+
+    it('is correctly plugged to connect', function () {
+      assert.equal(connect._getConnectUrl(), TEST_ENV);
+    });
+
+    it(`can release the studio project ${PROJECT}`, function () {
+      assert.ok(connect._generateToken(USERNAME, PASSWD));
+      assert.ok(connect._hasToken());
+
+      const params = {
+        json: {
+          revision: 'master',
+          versionName: 'MAJOR',
+        },
+      };
+      connect._setSymbolicName(PROJECT);
+      const res = connect._releaseStudioProject(params);
+      assert.equal(res.statusCode, 200);
+      const response = JSON.parse(res.getBody('utf8'));
+      assert.ok(response.version.endsWith('.0.0'));
+    });
+  });
 });
