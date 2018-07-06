@@ -1,5 +1,3 @@
-const mvn = require('../../utils/maven');
-
 const delegate = {
   initializing: function() {
     if (!this._containsPom()) {
