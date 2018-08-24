@@ -2,7 +2,7 @@ const Connect = require('../generators/studio/connect');
 const Studio = require('../generators/studio/studio');
 const assert = require('yeoman-assert');
 
-const TEST_ENV = 'https://nos-test-connect.nos.nuxeo.com/nuxeo';
+const TEST_ENV = 'https://nos-preprod-connect.nuxeocloud.com/nuxeo';
 
 const USERNAME = 'zpsfktef@eelmail.com';
 const PASSWD = process.env.CPWD || 'FIXME';
@@ -11,7 +11,7 @@ const PROJECT = 'tests-studio4';
 let connect = Object.assign({}, Connect);
 connect = Object.assign(connect, Studio);
 
-// Add a Custom Config Manager with NOS-TEST as default connect
+// Add a Custom Config Manager with nos-preprod as default connect
 connect = Object.assign(connect, {
   config: (function () {
     let values = {
@@ -39,7 +39,7 @@ describe('Against a live Connect', function () {
       }
     });
 
-    it('is correctly plugged to nos-test', function () {
+    it('is correctly plugged to nos-preprod', function () {
       assert.equal(connect._getConnectUrl(), TEST_ENV);
     });
 
