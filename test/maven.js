@@ -25,6 +25,26 @@ describe('Maven module can', function () {
     assert.equal(1, this.pom.dependencies().length);
   });
 
+  it('add property', function () {
+    assert.equal(0, this.pom.properties().length);
+    this.pom.addProperty('myPropertyValue', 'myProperty');
+    assert.equal(1, this.pom.properties().length);
+    assert.equal('myPropertyValue', this.pom.properties()[0].myProperty);
+  });
+
+  it('add plugin', function () {
+    assert.equal(0, this.pom.plugins().length);
+    this.pom.addPlugin({
+      groupId: 'com.funny.plugin',
+      artifactId: 'my-funny-plugin',
+      configuration: {
+        prop: 'funny'
+      }
+    });
+    assert.equal(1, this.pom.plugins().length);
+    assert.equal('my-funny-plugin', this.pom.plugins()[0].artifactId);
+  });
+
   it('can read name and group id', function () {
     assert.equal('myartifact', this.pom.artifactId());
     // Inherited groupId
@@ -116,9 +136,43 @@ describe('Maven module can', function () {
     assert.equal(4, this.pom.dependencies().length);
   });
 
+  it('not add a property twice', function () {
+    assert.equal(0, this.pom.properties().length);
+    this.pom.addProperty('myPropertyValue', 'myProperty');
+    assert.equal(1, this.pom.properties().length);
+    this.pom.addProperty('myOtherPropertyValue', 'myOtherProperty');
+    assert.equal(2, this.pom.properties().length);
+    this.pom.addProperty('myPropertyValue', 'myProperty'); // same key, same value
+    assert.equal(2, this.pom.properties().length);
+    this.pom.addProperty('dummyValue', 'myProperty'); // same key, different value
+    assert.equal(2, this.pom.properties().length);
+  });
+
+  it('not add a plugin twice', function () {
+    assert.equal(0, this.pom.plugins().length);
+    this.pom.addPlugin({
+      groupId: 'com.funny.plugin',
+      artifactId: 'my-funny-plugin',
+      configuration: {
+        prop: 'funny'
+      }
+    });
+    assert.equal(1, this.pom.plugins().length);
+    this.pom.addPlugin({
+      groupId: 'com.other.plugin',
+      artifactId: 'my-other-plugin'
+    });
+    assert.equal(2, this.pom.plugins().length);
+    this.pom.addPlugin({
+      groupId: 'com.funny.plugin',
+      artifactId: 'my-funny-plugin'
+    });
+    assert.equal(2, this.pom.plugins().length);
+  });
+
   it('convert dependency to XML node', function () {
     var dep = this.pom.addDependency('org.nuxeo.addon:mynewadon-jar:1.1-SNAPSHOT:jar:test');
-    var xml = this.pom.convertToXml(dep);
+    var xml = this.pom.convertDepToXml(dep);
     assert.equal(1, xml.find('groupId').length);
     assert.equal(1, xml.find('artifactId').length);
     assert.equal(1, xml.find('version').length);
@@ -133,7 +187,7 @@ describe('Maven module can', function () {
     assert.equal('test', xml.find('scope').text());
 
     dep = this.pom.addDependency('org.nuxeo.addon:mynewadon-jar::jar');
-    xml = this.pom.convertToXml(dep);
+    xml = this.pom.convertDepToXml(dep);
     assert.equal(1, xml.find('artifactId').length);
     assert.equal(0, xml.find('version').length);
   });
