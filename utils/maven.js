@@ -10,7 +10,11 @@ Usage:
      var pom = maven.open('pom.xml');
      pom.addDependency(gav)
      pom.addDependency(groupId, artifactId, version, type, scope)
+     pom.addProperty(value, key)
+     pom.addPlugin(groupId, artifactId, configuration)
      pom.containsDependency(dependency)
+     pom.containsProperty(value, key)
+     pom.containsPlugin(plugin)
 
      pom.save(this.fs, filename);
 */
@@ -37,7 +41,7 @@ function maven(content, fsl) {
   });
 
   return {
-    convertToXml: function (dep) {
+    convertDepToXml: function (dep) {
       var $dep = $('<dependency />');
       $dep.append('<groupId>' + dep.groupId + '</groupId>');
       $dep.append('<artifactId>' + dep.artifactId + '</artifactId');
@@ -53,7 +57,21 @@ function maven(content, fsl) {
       return $dep;
     },
 
-    convertToObject: function (elt) {
+    convertPluginToXml: function (plugin) {
+      var $plugin = $('<plugin />');
+      $plugin.append('<groupId>' + plugin.groupId + '</groupId>');
+      $plugin.append('<artifactId>' + plugin.artifactId + '</artifactId>');
+      if (plugin.configuration) {
+        var $pluginConfig = $('<configuration />');
+        _.forEach(plugin.configuration, function (value, key) {
+          $pluginConfig.append('<' + key + '>' + value + '</' + key + '>');
+        });
+        $plugin.append($pluginConfig);
+      }
+      return $plugin;
+    },
+
+    convertDepToObject: function (elt) {
       var n = $(elt);
       return {
         groupId: n.find('groupId').text() || undefined,
@@ -61,6 +79,14 @@ function maven(content, fsl) {
         version: n.find('version').text() || undefined,
         extension: n.find('type').text() || undefined,
         classifier: n.find('scope').text() || undefined
+      };
+    },
+
+    convertPluginToObject: function (elt) {
+      var n = $(elt);
+      return {
+        groupId: n.find('groupId').text() || undefined,
+        artifactId: n.find('artifactId').text() || undefined
       };
     },
 
@@ -85,8 +111,47 @@ function maven(content, fsl) {
       if (this.containsDependency(dep)) {
         return dep;
       }
-      this._dependenciesNode().append(this.convertToXml(dep));
+      this._dependenciesNode().append(this.convertDepToXml(dep));
       return dep;
+    },
+
+    addProperty: function (value, key) {
+      if (!key) {
+        return;
+      }
+
+      var property = {};
+      property[key] = value;
+
+      // Format: <key>:<value>
+      if (this.containsProperty(value, key)) {
+        return property;
+      }
+      this._propertiesNode().append('<' + key + '>' + value + '</' + key + '>');
+      return property;
+    },
+
+    addPlugin: function () {
+      var args = Array.prototype.slice.call(arguments, 0);
+      if (args.length === 1) {
+        args = args[0];
+      }
+      if (args.length < 2) {
+        return;
+      }
+
+      var plugin = {
+        groupId: args.groupId,
+        artifactId: args.artifactId,
+        configuration: args.configuration,
+      };
+
+      // Format: <groupId>:<artifactId>:<configuration>
+      if (this.containsPlugin(plugin)) {
+        return plugin;
+      }
+      this._pluginManagementNode().append(this.convertPluginToXml(plugin));
+      return plugin;
     },
 
     containsDependency: function (dep) {
@@ -97,7 +162,7 @@ function maven(content, fsl) {
         return $(elt).text() === dep.artifactId;
       }).parent().filter(function (i, elt) {
         // Ensure each string keyed properties are setted to something
-        var od = _.defaults(that.convertToObject(elt), {
+        var od = _.defaults(that.convertDepToObject(elt), {
           groupId: '',
           artifactId: '',
           version: '',
@@ -112,6 +177,28 @@ function maven(content, fsl) {
           classifier: ''
         });
 
+        return _.isEqual(od, dd);
+      }).length > 0;
+    },
+
+    containsProperty: function (value, key) {
+      return this._propertiesNode().find(key).length > 0;
+    },
+
+    containsPlugin: function (plugin) {
+      var that = this;
+      return this._pluginManagementNode().find('artifactId').filter(function (i, elt) {
+        return $(elt).text() === plugin.artifactId;
+      }).parent().filter(function (i, elt) {
+        // Ensure each string keyed properties are setted to something
+        var od = _.defaults(that.convertPluginToObject(elt), {
+          groupId: '',
+          artifactId: ''
+        });
+        var dd = {
+          groupId: plugin.groupId,
+          artifactId: plugin.artifactId
+        };
         return _.isEqual(od, dd);
       }).length > 0;
     },
@@ -167,6 +254,25 @@ function maven(content, fsl) {
         });
       });
       return dependencies;
+    },
+
+    properties: function () {
+      var properties = [];
+      this._propertiesNode().children().each(function(i, child) {
+        var property = {};
+        property[child.name] = $(child).text();
+        properties.push(property);
+      });
+      return properties;
+    },
+
+    plugins: function () {
+      var that = this;
+      var plugins = [];
+      this._pluginManagementNode().find('plugin').each(function (i, elt) {
+        plugins.push(that.convertPluginToObject(elt));
+      });
+      return plugins;
     },
 
     addModule: function (module) {
@@ -230,6 +336,38 @@ function maven(content, fsl) {
         $root.append($('<dependencies />'));
       }
       return $root.children('dependencies');
+    },
+
+    _propertiesNode: function () {
+      if (!$('properties')) {
+        $('project').append($('<properties>'));
+      }
+      if ($('project').children('properties').length === 0) {
+        $('project').append($('<properties />'));
+      }
+      return $('project').children('properties');
+    },
+
+    _pluginManagementNode: function () {
+      if (!$('build')) {
+        $('project').append($('<build>'));
+      }
+      if (!$('build>pluginManagement')) {
+        $('build').append($('<pluginManagement>'));
+      }
+      if (!$('build>pluginManagement>plugins')) {
+        $('build>pluginManagement').append($('<plugins>'));
+      }
+      if ($('build').length === 0) {
+        $('project').append($('<build />'));
+      }
+      if ($('build>pluginManagement').length === 0) {
+        $('build').append($('<pluginManagement />'));
+      }
+      if ($('build>pluginManagement').children('plugins').length === 0) {
+        $('build>pluginManagement').append($('<plugins />'));
+      }
+      return $('build>pluginManagement').children('plugins');
     },
 
     _xml: function () {

@@ -308,6 +308,29 @@ module.exports = nuxeo.extend({
       pom.save(that.fs, pomPath);
     }
 
+    var pomParentPath = path.join('.', 'pom.xml');
+    var pomParent = maven.open(that.fs.read(pomParentPath));
+
+    // handling parent properties
+    if (!_.isEmpty(generator.properties)) {
+      _.forEach(generator.properties, function (value, key) {
+        that.log.info('Pom property: ' + key + ': ' + value);
+        pomParent.addProperty(value, key);
+      });
+
+      pomParent.save(that.fs, pomParentPath);
+    }
+
+    // handling parent plugins
+    if (!_.isEmpty(generator.plugins)) {
+      _.forEach(generator.plugins, function (plugin) {
+        that.log.info('Maven plugin: ' + plugin.artifactId);
+        pomParent.addPlugin(plugin);
+      });
+
+      pomParent.save(that.fs, pomParentPath);
+    }
+
     // handling contributions
     _(generator.contributions).forEach(function (contribution) {
       if (!mf) {
