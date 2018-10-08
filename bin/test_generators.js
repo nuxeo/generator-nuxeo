@@ -265,4 +265,14 @@ async.waterfall([function (callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true package`, callback);
+}, function (callback) {
+  // Add it a Ftest
+  adapter.responses({
+    artifact: 'my-test-ftest',
+    version: '1.0-SNAPSHOT',
+    name: 'my-test-ftest',
+    description: 'My test functional tests'
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true ftest`, callback);
 }]);
