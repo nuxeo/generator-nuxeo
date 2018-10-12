@@ -18,7 +18,8 @@ var plumber = require('gulp-plumber');
 gulp.task('nsp', function(cb) {
   nsp({
     shrinkwrap: __dirname + '/npm-shrinkwrap.json',
-    package: path.resolve('package.json')
+    package: path.resolve('package.json'),
+    stopOnError: false
   }, cb);
 });
 
