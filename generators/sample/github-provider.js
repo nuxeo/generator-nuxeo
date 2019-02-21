@@ -1,5 +1,5 @@
 /*eslint camelcase:0*/
-const GitHubApi = require('github');
+const GitHubApi = require('@octokit/rest');
 const clone = require('yeoman-remote');
 const _ = require('lodash');
 
@@ -7,7 +7,7 @@ const gh = new GitHubApi();
 
 module.exports._git = {
   fetchReleases: function(repository) {
-    return gh.repos.getTags({
+    return gh.repos.listTags({
       owner: repository.user,
       repo: repository.repo,
       per_page: 100
