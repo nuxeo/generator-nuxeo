@@ -45,7 +45,7 @@ module.exports = {
         permission: 'AMIREAD'
       },
       headers: {
-        authorization: 'Basic ' + new Buffer(username + ':' + password, 'ascii').toString('base64')
+        authorization: 'Basic ' + Buffer.from(username + ':' + password, 'ascii').toString('base64')
       }
     });
 

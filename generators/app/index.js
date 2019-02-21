@@ -14,7 +14,7 @@ var maven = require('../../utils/maven.js');
 var manifestmf = require('../../utils/manifestmf.js');
 var propHolder = require('../../utils/property-holder.js');
 var Conflicter = require('../../utils/conflicter.js');
-var isBinaryFile = require('isbinaryfile').sync;
+var isBinaryFile = require('isbinaryfile').isBinaryFileSync;
 var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 const debug = require('debug')('nuxeo:app');
 

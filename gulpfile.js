@@ -1,35 +1,30 @@
 /*eslint strict:0*/
 'use strict';
 
-var path = require('path');
-var gulp = require('gulp');
-var fs = require('fs');
-var rimraf = require('rimraf');
-var watch = require('gulp-watch');
+const path = require('path');
+const gulp = require('gulp');
+const {
+  series
+} = gulp;
+const fs = require('fs');
+const rimraf = require('rimraf');
+const watch = require('gulp-watch');
 const debug = require('gulp-debug');
-var batch = require('gulp-batch');
-var eslint = require('gulp-eslint');
-var excludeGitignore = require('gulp-exclude-gitignore');
-var mocha = require('gulp-mocha');
-var istanbul = require('gulp-istanbul');
-var nsp = require('gulp-nsp');
-var plumber = require('gulp-plumber');
+const batch = require('gulp-batch');
+const eslint = require('gulp-eslint');
+const excludeGitignore = require('gulp-exclude-gitignore');
+const mocha = require('gulp-mocha');
+const istanbul = require('gulp-istanbul');
+const plumber = require('gulp-plumber');
 
-gulp.task('nsp', function(cb) {
-  nsp({
-    shrinkwrap: __dirname + '/npm-shrinkwrap.json',
-    package: path.resolve('package.json')
-  }, cb);
-});
-
-gulp.task('watch-test', function() {
-  watch(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'], batch(function(events, done) {
+const taskWatchTest = function () {
+  watch(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'], batch(function (events, done) {
     gulp.start('test', done);
   }));
-});
+};
 
-gulp.task('checkstyle', function() {
-  var targetFolder = 'target';
+const taskCheckstyle = function () {
+  const targetFolder = 'target';
   if (fs.existsSync(targetFolder)) {
     rimraf.sync(targetFolder);
   }
@@ -39,26 +34,28 @@ gulp.task('checkstyle', function() {
     .pipe(excludeGitignore())
     .pipe(eslint())
     .pipe(eslint.format('checkstyle', fs.createWriteStream(path.join(targetFolder, '/checkstyle-result.xml'))));
-});
+};
 
-gulp.task('lint', ['checkstyle'], function() {
+//requires checkstyle
+const taskLint = function () {
   return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'])
     .pipe(excludeGitignore())
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
-});
+};
 
-gulp.task('pre-test', function() {
+const taskPreTest = function () {
   return gulp.src(['generators/**/*.js', 'utils/*.js'])
     .pipe(debug())
     .pipe(istanbul({
       includeUntested: false
     }))
     .pipe(istanbul.hookRequire());
-});
+};
 
-gulp.task('test', ['pre-test'], function() {
+// requires pre-test
+const taskTest = function () {
   return gulp.src('test/**/*.js')
     .pipe(debug())
     .pipe(plumber())
@@ -71,7 +68,14 @@ gulp.task('test', ['pre-test'], function() {
     .pipe(istanbul.writeReports({
       reporters: ['lcov', 'json', 'text', 'text-summary', 'cobertura']
     }));
-});
+};
 
-gulp.task('prepublish', ['lint', 'test', 'nsp']);
-gulp.task('default', ['lint', 'test']);
+module.exports = {
+  'watch-test': taskWatchTest,
+  checkstyle: taskCheckstyle,
+  lint: series(taskCheckstyle, taskLint),
+  'pre-test': taskPreTest,
+  test: series(taskPreTest, taskTest),
+  prepublish: series(taskCheckstyle, taskLint, taskPreTest, taskTest),
+  default: series(taskCheckstyle, taskLint, taskPreTest, taskTest),
+};

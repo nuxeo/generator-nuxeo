@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const http = require('https');
 const version = require('./version-helper');
-const sleep = require('system-sleep');
+const deasync = require('deasync');
 
 const CONNECT_TP = 'https://connect.nuxeo.com/nuxeo/api/v1/target-platforms/public';
 
@@ -22,16 +22,17 @@ const requestConnect = new Promise((resolve, reject) => {
 
 let done = false;
 let res;
-Promise.resolve(requestConnect).then((data) => {
+requestConnect.then((data) => {
   res = JSON.parse(data);
+}).then(() => {
   done = true;
 }).catch(() => {
   done = true;
 });
 
-while (!done) {
-  sleep(100);
-}
+deasync.loopWhile(() => {
+  return !done;
+});
 
 // wait
 if (!res) {

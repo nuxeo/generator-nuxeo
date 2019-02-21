@@ -39,7 +39,7 @@ const delegate = {
         if (group === 'nuxeo-studio') {
           return 'com.nuxeo.studio';
         }
-        return group.replace(/\s+/g, '.').replace(/[^\w.]+/g, '_');
+        return group.replace(/[\s-]+/g, '.').replace(/[^\w.]+/g, '_');
       },
       store: true
     }, {
