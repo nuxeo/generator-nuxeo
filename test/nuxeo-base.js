@@ -1,17 +1,16 @@
 var assert = require('yeoman-assert');
 var _ = require('lodash');
 var helpers = require('yeoman-test');
+const path = require('path');
 
 describe('nuxeo-base', function() {
   this.timeout(5000);
 
   before(function(done) {
-    var cwd = process.cwd();
     // Hack as Jenkins clone git repo in arbitrary folder names
-    var namespace = cwd.substr(cwd.lastIndexOf('generator-') + 'generator-'.length);
-
-    var generatorPath = './generators/app';
-    this.gene = helpers.createGenerator(namespace + ':app', [generatorPath]);
+    const basePath = path.join(__dirname, '..');
+    const namespace = basePath.lastIndexOf('generator-') >= 0 ? basePath.substr(basePath.lastIndexOf('generator-') + 'generator-'.length) : basePath.substr(1).replace(new RegExp(path.sep, 'g'), ':');
+    this.gene = helpers.createGenerator(namespace + ':app', ['./generators/app']);
 
     this.init = this.gene._init();
     this.init.fetch.call(this.gene, function(err, remote) {
