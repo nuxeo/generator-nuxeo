@@ -1,6 +1,8 @@
 package <%- pkg %>;
 
 public class <%- s.classify(name) %> {
+    private <%- s.classify(name) %>() {}
+
     public static final String BUNDLE_NAME = "studio.extensions.<%- symbolicName %>";
 
 <% _.forEach(res.documentTypes, function(docType) { -%>
