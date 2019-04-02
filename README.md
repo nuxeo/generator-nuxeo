@@ -183,20 +183,6 @@ yo nuxeo single-module
 ### Important Notes
 This option should not be called directly to bootstrap a new project; use the multi-module option instead so that you can generate a Nuxeo Package later on.
 
-## Bootstrap a Kotlin based Nuxeo Bundle
-Sets up an empty Nuxeo bundle using [Kotlin](https://kotlinlang.org/) instead of Java.
-
-```bash
-yo nuxeo kotlin-module
-```
-
-### Parameters:
-- **Parent Group / Artifact**: Like in `multi-module`, having a parent artifact make project inheritance. If you are in a `multi-module`, you must set your parent module. If not, you can use `org.nuxeo.ecm.distribution:nuxeo-distribution` or `org.nuxeo:nuxeo-addons-parent`
-- **Nuxeo Version**: _Asked only if needed_, it specify which Nuxeo version of the dependency management will be imported.
-
-### Important Notes
-This option should not be called directly to bootstrap a new project; you **must** use the multi-module with a Nuxeo Package as well to deploy this bundle as it requires additional runtime libraries to run.
-
 ## Create an Empty Unit Test
 Add an empty [Unit Test](https://doc.nuxeo.com/corg/unit-testing/)
 
@@ -216,13 +202,6 @@ Adds an empty Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ) along with 
 
 ```bash
 yo nuxeo operation
-```
-
-## Create Your Own Business Rules or Logic written in Kotlin - Automation Operation
-Adds an empty Automation [Operation](https://doc.nuxeo.com/x/Go0ZAQ) written in [Kotlin](https://kotlinlang.org/).
-
-```bash
-yo nuxeo kotlin-operation
 ```
 
 ## Create an Event Bus Listener
