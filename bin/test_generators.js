@@ -246,6 +246,15 @@ async.waterfall([function (callback) {
     point: 'listener'
   });
 
+  env.run(`nuxeo:test --meta=${branch} --nologo=true contribution`, callback);
+}, function(callback) {
+  // Add it a Package
+  adapter.responses({
+    artifact: 'my-test-package',
+    name: 'My test package',
+    company: 'Nuxeo',
+  });
+
   env.run(`nuxeo:test --meta=${branch} --nologo=true package`, callback);
 }, function (callback) {
   // Add it a Ftest
