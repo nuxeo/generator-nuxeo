@@ -1,7 +1,7 @@
 /*eslint strict:0*/
 'use strict';
 
-var _compareVersions = require('compare-versions');
+const _compareVersions = require('compare-versions');
 
 // 8.3-SNAPSHOT is not a valid semver
 // Transform x.y-MODIFIER to x.y.0-MODIFIER to valid it
@@ -13,44 +13,48 @@ function semverFix(version) {
 }
 
 // hack to handl x.y-MODIFIER
-function compareVersions(v1, v2) {
-  return _compareVersions(semverFix(v1), semverFix(v2));
+function compareVersions(v1, v2, operator) {
+  return _compareVersions.compare(semverFix(v1), semverFix(v2), operator);
 }
 
 module.exports = {
   compare: compareVersions,
-  isAfter: function(v1, v2) {
-    return compareVersions(v1, v2) > 0;
+  fromStr: function (str) {
+    const [v1, operator, v2] = str.split(/\s+/);
+    return compareVersions(v1, v2, operator);
   },
-  isAfterOrEquals: function(v1, v2) {
-    return compareVersions(v1, v2) >= 0;
+  isAfter: function (v1, v2) {
+    return compareVersions(v1, v2, '>');
   },
-  isBefore: function(v1, v2) {
-    return compareVersions(v1, v2) < 0;
+  isAfterOrEquals: function (v1, v2) {
+    return compareVersions(v1, v2, '>=');
   },
-  isBeforeOrEquals: function(v1, v2) {
-    return compareVersions(v1, v2) <= 0;
+  isBefore: function (v1, v2) {
+    return compareVersions(v1, v2, '<');
   },
-  isEquals: function(v1, v2) {
-    return compareVersions(v1, v2) === 0;
+  isBeforeOrEquals: function (v1, v2) {
+    return compareVersions(v1, v2, '<=');
   },
-  fromVersion: function(v1) {
+  isEquals: function (v1, v2) {
+    return compareVersions(v1, v2, '=');
+  },
+  fromVersion: function (v1) {
     v1 = v1 || '0.0.0-SNAPSHOT';
     return {
-      isAfter: function(v2) {
-        return compareVersions(v1, v2) > 0;
+      isAfter: function (v2) {
+        return compareVersions(v1, v2, '>');
       },
-      isAfterOrEquals: function(v2) {
-        return compareVersions(v1, v2) >= 0;
+      isAfterOrEquals: function (v2) {
+        return compareVersions(v1, v2, '>=');
       },
-      isBefore: function(v2) {
-        return compareVersions(v1, v2) < 0;
+      isBefore: function (v2) {
+        return compareVersions(v1, v2, '<');
       },
-      isBeforeOrEquals: function(v2) {
-        return compareVersions(v1, v2) <= 0;
+      isBeforeOrEquals: function (v2) {
+        return compareVersions(v1, v2, '<=');
       },
-      isEquals: function(v2) {
-        return compareVersions(v1, v2) === 0;
+      isEquals: function (v2) {
+        return compareVersions(v1, v2, '=');
       }
     };
   }

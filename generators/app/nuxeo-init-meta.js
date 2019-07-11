@@ -113,14 +113,15 @@ module.exports = {
 
       resolveModule: function (callback) {
         // XXX Should be removed from init object
-        var args = [];
-        var that = this;
-        this.args.forEach(function (arg) {
+        const args = [];
+        const that = this;
+        this.args.forEach((arg) => {
           if (!that._moduleExists(arg)) {
             that.log('Unknown module: ' + arg);
             that.log('Available modules:');
             that._moduleList().forEach(function (module) {
-              that.log('\t- ' + module);
+              const versionRequirement = that._readModuleVersionRequirements(module);
+              that.log(`\t- ${module} ${versionRequirement ? `- (Nuxeo version ${versionRequirement})` : ''}`.trim());
             });
             process.exit(1);
           }
