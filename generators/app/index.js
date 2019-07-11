@@ -143,7 +143,7 @@ module.exports = nuxeo.extend({
     if (this._createMultiModuleIsNeeded(types)) {
       // Disable log for this.
       var t = this.log.info;
-      this.log.info = () => {};
+      this.log.info = () => { };
       var module = this._init()._filterModules.call(this, ['multi-module']);
       this.log.info = t;
 
@@ -166,7 +166,7 @@ module.exports = nuxeo.extend({
       }
 
       async.eachSeries(items, (item, callback) => {
-        var params = that.nuxeo.modules[item].params || [];
+        let params = that.nuxeo.modules[item].params || [];
 
         // Showing what will be prompted
         if (!_.isEmpty(params)) {
@@ -203,29 +203,22 @@ module.exports = nuxeo.extend({
   },
 
   writing: function () {
-    var done = this.async();
-    var types = this._moduleSortedKeys();
-
-    async.eachSeries(types, (type, parentCb) => {
-      var items = this.nuxeo.selectedModules[type];
-
-      async.eachSeries(items, (item, callback) => {
-        this._doWrite(type, item, callback);
-      }, () => {
-        parentCb();
-      });
-    }, function () {
-      done();
+    this._eachGenerator({
+      title: 'Writing',
+      func: (type, name, generator, cb) => {
+        this._doWrite(type, name, generator, cb);
+      },
     });
   },
 
-  _doWrite: function (generatorType, item, callback) {
-    var that = this;
-    var generator = that.currentGenerator = that.nuxeo.modules[item];
-    var props = that.currentProps = that.props[generatorType + item] || {};
+  _doWrite: function (generatorType, item, generator, callback) {
+    const that = this;
+    const props = that.currentProps = that.props[generatorType + item] || {};
 
     debug(`Generating: ${item}`);
     debug('%O', props);
+
+    that.currentGenerator = generator;
 
     // XXX Should be handled differently
     props.s = s; // String utils
@@ -359,44 +352,48 @@ module.exports = nuxeo.extend({
   },
 
   end: function () {
+    this.log.create(chalk.green('Your project is ready!'));
     this.log.info(`You can start editing code or you can continue with calling another generator (${this.usage.prototype.resolvebinary(this.options)})`);
   },
 
   install: function () {
     var skip = this.options.skipInstall;
-    this._eachGenerator((type, name, generator, cb) => {
-      if (generator.install === undefined) {
+    this._eachGenerator({
+      title: 'Installing',
+      ignore: (generator) => {
+        // Filter generator without an install to do
+        return generator.install === undefined;
+      },
+      func: (type, name, generator, cb) => {
+        if (skip) {
+          this.log.info('Post install commands are disabled; you have to run them manually:');
+        }
+
+        var installs = generator.install;
+        if (!_.isArray(installs)) {
+          installs = [installs];
+        }
+
+        var cwd = process.cwd();
+        _(installs).each(install => {
+          process.chdir(cwd);
+
+          var args = install.args || [];
+          var opts = install.opts || {};
+
+          args = args.concat(dargs(opts));
+          var cmd = install.cmd + ' ' + args.join(' ');
+          if (skip) {
+            this.log.info('- ' + cmd);
+          } else {
+            this.log.info(install.cmd + ' ' + args.join(' '));
+            process.chdir(path.join(cwd, this._getBaseFolderName(type)));
+            this.spawnCommand(install.cmd, args);
+          }
+        });
+
         return cb();
       }
-
-      if (skip) {
-        this.log.info('Post install commands are disabled; you have to run them manually:');
-      }
-
-      var installs = generator.install;
-      if (!_.isArray(installs)) {
-        installs = [installs];
-      }
-
-      var cwd = process.cwd();
-      _(installs).each(install => {
-        process.chdir(cwd);
-
-        var args = install.args || [];
-        var opts = install.opts || {};
-
-        args = args.concat(dargs(opts));
-        var cmd = install.cmd + ' ' + args.join(' ');
-        if (skip) {
-          this.log.info('- ' + cmd);
-        } else {
-          this.log.info(install.cmd + ' ' + args.join(' '));
-          process.chdir(path.join(cwd, this._getBaseFolderName(type)));
-          this.spawnCommand(install.cmd, args);
-        }
-      });
-
-      return cb();
     });
   }
 });

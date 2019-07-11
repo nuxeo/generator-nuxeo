@@ -1,5 +1,5 @@
-var assert = require('yeoman-assert');
-var v = require('../utils/version-helper.js');
+const assert = require('yeoman-assert');
+const v = require('../utils/version-helper.js');
 
 describe('Version helper should', function() {
   it('still compare version', function() {
@@ -15,6 +15,23 @@ describe('Version helper should', function() {
     assert.ok(v.isBefore('8.1', '8.3'));
     assert.ok(v.isAfter('8.3', '8.3-SNAPSHOT'));
     assert.ok(v.isAfter('9.10-HF01-SNAPSHOT', '8.3-SNAPSHOT'));
+  });
+
+  describe('from string', function() {
+    it('can resolve basic versions', () => {
+      assert.ok(v.fromStr('1 > 0'));
+      assert.ok(v.fromStr('2 < 100'));
+      assert.ok(v.fromStr('1 = 1'));
+      assert.ok(!v.fromStr('1 > 1'));
+      assert.ok(v.fromStr('1 >= 1'));
+      assert.ok(v.fromStr('1.1.1 > 1.1.0'));
+      assert.ok(!v.fromStr('1.1.1 < 1.1.0'));
+    });
+    it('can resolve with snapshot', () => {
+      assert.ok(v.fromStr('10.10-SNAPSHOT < 10.10'));
+      assert.ok(v.fromStr('11.11 > 11.11-SNAPSHOT'));
+      assert.ok(v.fromStr('10.1 >= 10.1-SNAPSHOT'));
+    });
   });
 
   describe('embedded a value', function() {
