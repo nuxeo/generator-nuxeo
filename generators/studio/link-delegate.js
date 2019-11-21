@@ -28,14 +28,14 @@ const delegate = {
     }, {
       type: 'password',
       name: 'password',
-      message: 'NOS Password:',
+      message: 'NOS Token:',
       validate: (input, answers) => {
         if (!(input && input.length > 0)) {
-          return 'Password is empty';
+          return 'Token is empty';
         }
         return spinner(() => {
           return !!that._generateToken(answers.username, input);
-        }) || 'Unable to authenticate to NOS Services';
+        }) || 'Unable to authenticate to NOS Services. Please make sure you use a token created at https://connect.nuxeo.com/nuxeo/site/connect/tokens';
       }
     }, {
       type: 'input',
