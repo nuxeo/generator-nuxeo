@@ -35,7 +35,7 @@ const delegate = {
         }
         return spinner(() => {
           return !!that._generateToken(answers.username, input);
-        }) || 'Unable to authenticate to NOS Services. Please make sure you use a token created at https://connect.nuxeo.com/nuxeo/site/connect/tokens';
+        }) || 'Unable to authenticate to NOS Server. Please make sure you use a token created at https://connect.nuxeo.com/nuxeo/site/connect/tokens';
       }
     }, {
       type: 'input',
