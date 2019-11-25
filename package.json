@@ -1,6 +1,6 @@
 {
   "name": "generator-nuxeo",
-  "version": "2.9.1",
+  "version": "2.9.2-0",
   "nuxeo": {
     "branch": "stable"
   },
