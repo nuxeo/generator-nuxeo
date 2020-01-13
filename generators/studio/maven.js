@@ -127,7 +127,7 @@ module.exports = {
       args = args[0].split(' ');
     }
 
-    const bin = process.platform === "win32" ? 'mvn.cmd' : 'mvn';
+    const bin = process.platform === 'win32' ? 'mvn.cmd' : 'mvn';
     debug('Spawn: %o', `${bin} ${args.join(' ')}`);
 
     const mvn = require('child_process').spawn(bin, args, {
