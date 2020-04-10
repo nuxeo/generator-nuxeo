@@ -2,11 +2,10 @@ const Connect = require('../generators/studio/connect');
 const Studio = require('../generators/studio/studio');
 const assert = require('yeoman-assert');
 
-const TEST_ENV = 'https://nos-preprod-connect.nuxeocloud.com/nuxeo';
-
-const USERNAME = 'zpsfktef@eelmail.com';
-const PASSWD = process.env.CPWD || 'FIXME';
-const PROJECT = 'tests-studio4';
+const TEST_ENV = process.env.CLI_CONNECT_URL || 'https://nos-preprod-connect.nuxeocloud.com/nuxeo';
+const USERNAME = process.env.CLI_CONNECT_USR || 'zpsfktef@eelmail.com';
+const TOKEN = process.env.CLI_CONNECT_TKN || 'FIXME';
+const PROJECT = process.env.CLI_CONNECT_PRJ || 'tests-studio4';
 
 let connect = Object.assign({}, Connect);
 connect = Object.assign(connect, Studio);
@@ -34,7 +33,7 @@ describe('Against a live Connect', function () {
 
   describe('It', function () {
     before(function() {
-      if (PASSWD === 'FIXME') {
+      if (TOKEN === 'FIXME') {
         this.skip('Connect password not configured');
       }
     });
@@ -48,7 +47,7 @@ describe('Against a live Connect', function () {
       assert.equal(connect._generateToken(USERNAME, ''), undefined);
 
       // ok if token is returned
-      assert.ok(connect._generateToken(USERNAME, PASSWD));
+      assert.ok(connect._generateToken(USERNAME, TOKEN));
       assert.ok(connect._hasToken());
     });
 
@@ -88,7 +87,7 @@ describe('Against a live Connect', function () {
 
   describe('Release Studio Project', function () {
     before(function() {
-      if (PASSWD === 'FIXME') {
+      if (TOKEN === 'FIXME') {
         this.skip('Connect password not configured');
       }
     });
@@ -98,7 +97,7 @@ describe('Against a live Connect', function () {
     });
 
     it(`can release the studio project ${PROJECT}`, function () {
-      assert.ok(connect._generateToken(USERNAME, PASSWD));
+      assert.ok(connect._generateToken(USERNAME, TOKEN));
       assert.ok(connect._hasToken());
 
       const params = {
