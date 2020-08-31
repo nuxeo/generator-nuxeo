@@ -27,6 +27,14 @@ var App = {
       defaults: false,
       desc: 'Skip the pom(s) updates',
     });
+
+
+    this.option('port', {
+      alias: ['p'],
+      desc: 'IDE Expose port',
+      type: Number,
+      default: 8080
+    });
   },
 
   _beforeInitializing: function () {
@@ -44,6 +52,9 @@ App._registerDelegate('unlink', require('./unlink-delegate'));
 App._registerDelegate('import', require('./import-delegate'));
 App._registerDelegate('export', require('./export-delegate'));
 App._registerDelegate('release', require('./release-delegate'));
+App._registerDelegate('open', require('./open-delegate'));
+App._registerDelegate('codeserver', require('./codeserver-delegate'));
+App._registerDelegate('theia', require('./theia-delegate'));
 
 App = Object.assign(App, require('./connect.js'));
 App = Object.assign(App, require('./maven.js'));

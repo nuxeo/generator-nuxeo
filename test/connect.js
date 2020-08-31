@@ -49,6 +49,9 @@ describe('Against a live Connect', function () {
       // ok if token is returned
       assert.ok(connect._generateToken(USERNAME, TOKEN));
       assert.ok(connect._hasToken());
+
+      // ok if credentials have been saved too
+      assert.ok(connect._hasConnectCredentials());
     });
 
     it('can check project availability', function () {

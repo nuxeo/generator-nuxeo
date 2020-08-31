@@ -87,28 +87,34 @@ yo nuxeo:hotreload
 
 Connect your Java project let you have your Studio Project exposed as a dependency and be able to tests anything declared in it, like your Automation Scripting, listeners, Document Types, ...
 
-Link your project to Studio:
+Link your Java project to your Studio project:
 
 ```bash
 yo nuxeo:studio [link]
 ```
 
-Unlink your project:
+Unlink your Studio project:
 
 ```bash
 yo nuxeo:studio unlink
 ```
 
-Generate a Java Constant class with Studio's freatures
+Generate a Java Constant class with Studio project's freatures
 
 ```bash
 yo nuxeo:studio import
 ```
 
-Release your studio project
+Release your Studio project
 
 ```bash
 yo nuxeo:studio release
+```
+
+Open your Studio project in your browser
+
+```bash
+yo nuxeo:studio open
 ```
 
 ## Bootstrap an Empty Nuxeo Project with Multi Modules Support

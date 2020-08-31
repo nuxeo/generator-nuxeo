@@ -12,10 +12,7 @@ const delegate = {
       process.exit(2);
     }
 
-    if (!this._hasToken()) {
-      this.log.error('Your project is not yet linked to any Studio\'s project');
-      process.exit(3);
-    }
+    this._ensureStudioIsLinked();
   },
 
   welcome: function () {

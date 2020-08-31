@@ -9,4 +9,6 @@
       <password>my-clear-password</password>
     </server>
   </servers>
+
+  <localRepository>/tmp/test/my-repo</localRepository>
 </settings>

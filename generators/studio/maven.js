@@ -3,6 +3,7 @@ const debug = require('debug')('nuxeo:generator:maven');
 const maven = require('../../utils/maven');
 const settings = require('../../utils/maven-settings');
 const path = require('path');
+const rl = require('readline');
 const fs = require('fs-extra');
 
 const STUDIO_SERVER = 'nuxeo-studio';
@@ -58,7 +59,7 @@ module.exports = {
    * Update Studio dependency version in pom parent.
    * @param version
    */
-  _updateVersion: function(gav, version) {
+  _updateVersion: function (gav, version) {
     const targetPom = path.join(this.destinationRoot(), 'pom.xml');
     const pom = maven.open(this.fs.read(targetPom));
     pom.updateDependencyVersion(gav, version);
@@ -143,7 +144,7 @@ module.exports = {
         ora.start();
       }
 
-      mvn.stdout.on('data', (data) => {
+      rl.createInterface(mvn.stdout).on('line', (data) => {
         const line = String(data).trim();
         if (line.startsWith('[ERROR]')) {
           this.log(line);
@@ -152,7 +153,7 @@ module.exports = {
         }
       });
 
-      mvn.stderr.on('data', (data) => {
+      rl.createInterface(mvn.stderr).on('line', (data) => {
         if (!debug.enabled) {
           return;
         }

@@ -42,6 +42,19 @@ describe('Version helper should', function() {
       assert.ok(s.isAfter('7.10'));
       assert.ok(s.isAfterOrEquals('7.10'));
       assert.ok(s.isEquals('8.3-SNAPSHOT'));
+      assert.ok(s.isSame('8.3'));
+    });
+
+    it('from 10.10', () => {
+      const s = v.fromVersion('10.10');
+      assert.ok(s.isSame('10.10.0'));
+      assert.ok(s.isSame('10.10-SNAPSHOT'));
+      assert.ok(s.isBefore('11.1'));
+      assert.ok(s.isSame('10.10'));
+      assert.ok(s.isSame('10.10-HF42'));
+
+      assert.ok(!s.isSame('10.10.1-SNAPSHOT'));
+      assert.ok(!s.isSame('10.10.1-HF32'));
     });
 
     it('from 9.10-HF01-SNAPSHOT', () => {

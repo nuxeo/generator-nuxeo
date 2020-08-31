@@ -1,11 +1,6 @@
 const delegate = {
   initializing: function () {
-    if (!(this._getSymbolicName() && this._getToken())) {
-      this.log.error('No Studio Project linked.');
-      this.log(`Run: \`${this.usage.prototype.resolvebinary(this.options)}\` first.`);
-
-      process.exit(1);
-    }
+    this._ensureStudioIsLinked();
   },
 
   writing: function () {
@@ -28,6 +23,7 @@ const delegate = {
     extractArgs.push('-ff');
     extractArgs.push('-e');
     extractArgs.push('-B');
+    extractArgs.push('-ntp');
     extractArgs.push(`${pluginGAV}:extract`);
     extractArgs.push('-Dnsmp.failOnEmpty=true');
     extractArgs.push(`-Dnsmp.symbolicName=${this._getSymbolicName()}`);

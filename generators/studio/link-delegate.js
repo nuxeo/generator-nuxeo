@@ -21,13 +21,12 @@ const delegate = {
       type: 'input',
       name: 'username',
       message: 'NOS Username:',
-      store: true,
       validate: (input) => {
         return input && input.length > 0 || 'Username is empty';
       }
     }, {
       type: 'password',
-      name: 'password',
+      name: 'token',
       message: 'NOS Token:',
       validate: (input, answers) => {
         if (!(input && input.length > 0)) {
@@ -91,14 +90,14 @@ const delegate = {
     }
 
     if (this._canAddCredentials()) {
-      this._addConnectCredentials(this._answers.username, this._answers.password);
+      this._addConnectCredentials(this._answers.username, this._answers.token);
     }
   },
 
   end: function() {
     if (this._answers.settings) {
       this.log.info(chalk.yellow('WARNING:'));
-      this.log.info(`We modified '${chalk.blue(this._getSettingsPath())}' file and wrote your password in plain text inside.`);
+      this.log.info(`We modified '${chalk.blue(this._getSettingsPath())}' file and wrote your token in plain text inside.`);
       this.log.info(`You must read ${chalk.blue('https://maven.apache.org/guides/mini/guide-encryption.html')} and use an encrypted one.`);
     }
   }

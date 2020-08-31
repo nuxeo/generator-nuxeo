@@ -3,6 +3,7 @@ const _ = require('lodash');
 const objectPath = require('object-path');
 const STUDIO_SYMNAME = 'studio:symbolicname';
 const spinner = require('../../utils/spinner');
+const chalk = require('chalk');
 let projectCache = {};
 
 module.exports = {
@@ -52,6 +53,18 @@ module.exports = {
     }
 
     return this._sortRegistries(JSON.parse(res.getBody('UTF-8')));
+  },
+
+  _ensureStudioIsLinked: function () {
+    if (!(this._getSymbolicName() && this._getToken())) {
+      this.log.error('No Studio Project linked.');
+      this.log.error(`Run: ${this.usage.prototype.resolvebinary(this.options)} first.`);
+      process.exit(1);
+    }
+
+    if (!this._hasConnectCredentials()) {
+      this.log.info(`${chalk.yellow('WARNING:')} Consider to re-run ${chalk.blue(this.usage.prototype.resolvebinary(this.options) + ' link')} for updating your token.`);
+    }
   },
 
   /**

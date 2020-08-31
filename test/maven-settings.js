@@ -1,12 +1,15 @@
-var path = require('path');
-var assert = require('yeoman-assert');
-var settings = require('../utils/maven-settings.js');
+const path = require('path');
+const assert = require('yeoman-assert');
+const settings = require('../utils/maven-settings.js');
 
 describe('Maven Settings module can', function () {
+
   function openSettingsFile(filename) {
-    var filepath = path.join(__dirname, 'templates', filename);
+    const filepath = path.join(__dirname, 'templates', filename);
     return settings.open(filepath);
   }
+
+  this.timeout(30 * 1000);
 
   beforeEach(function () {
     this.settings = openSettingsFile('settings.xml');
@@ -16,6 +19,11 @@ describe('Maven Settings module can', function () {
     const x = this.settings.containsServer('existing');
     assert.ok(x);
     assert.ok(!this.settings.containsServer('missing'));
+  });
+
+  it('can resolve local repository path', function () {
+    assert.ok(settings.locateLocalRepository());
+    assert.equal(settings.locateLocalRepository(path.join(__dirname, 'templates', 'settings.xml')), '/tmp/test/my-repo');
   });
 
   it('can find a server by id', function () {

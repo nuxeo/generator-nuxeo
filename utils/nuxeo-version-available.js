@@ -2,6 +2,7 @@ const _ = require('lodash');
 const http = require('https');
 const version = require('./version-helper');
 const deasync = require('deasync');
+const debug = require('debug')('nuxeo:utils:versions');
 
 const CONNECT_TP = 'https://connect.nuxeo.com/nuxeo/api/v1/target-platforms/public';
 
@@ -16,6 +17,7 @@ const requestConnect = new Promise((resolve, reject) => {
       resolve(res);
     });
   }).on('error', (e) => {
+    debug(e);
     reject(e);
   }).end();
 });
@@ -36,10 +38,11 @@ deasync.loopWhile(() => {
 
 // wait
 if (!res) {
+  debug('Fallback with default available versions...');
   res = [{
-    label: 'Nuxeo Platform LTS 2016',
+    label: 'Nuxeo Platform LTS 2019',
     default: true,
-    version: '8.10',
+    version: '10.10',
     enabled: true
   }, {
     label: 'Nuxeo Platform LTS 2017',
@@ -79,9 +82,9 @@ let dtp = _(targetPlatforms).find((tp) => {
 
 if (dtp === undefined) {
   dtp = {
-    label: 'Nuxeo Platform LTS 2016',
+    label: 'Nuxeo Platform LTS 2019',
     default: true,
-    version: '8.10'
+    version: '10.10'
   };
 }
 

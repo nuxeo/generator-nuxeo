@@ -23,6 +23,24 @@ function locateSetting() {
   return filename;
 }
 
+function locateLocalRepository(settingsFile = locateSetting()) {
+  const fromSettings = settings(settingsFile).localRepositoryPath();
+  if (fromSettings) {
+    return fromSettings;
+  }
+
+  const fromHome = path.join(require('os').homedir(), '.m2', 'repository');
+  if (fs.existsSync(fromHome)) {
+    return fromHome;
+  }
+
+  // XXX Should either rely on `mvn -N help:effective-settings -q -DforceStdout` and parse settings.xml output
+  // either `mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout` to get the value directly.
+  // But both solution aren't working so far.
+
+  return undefined;
+}
+
 function settings(filename) {
   if (!filename) {
     filename = locateSetting();
@@ -45,6 +63,10 @@ function settings(filename) {
     containsServer: function (id) {
       const node = this._findServerNode(id);
       return node.is('server');
+    },
+
+    localRepositoryPath: function() {
+      return $('settings>localRepository').text();
     },
 
     addServer: function (id, username, password, override = false) {
@@ -106,5 +128,6 @@ function settings(filename) {
 
 module.exports = {
   open: settings,
-  locateFile: locateSetting
+  locateFile: locateSetting,
+  locateLocalRepository: locateLocalRepository
 };

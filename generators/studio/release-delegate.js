@@ -4,11 +4,7 @@ const chalk = require('chalk');
 const delegate = {
 
   initializing() {
-    if (!(this._getSymbolicName() && this._getToken())) {
-      this.log.error('No Studio Project linked.');
-      this.log.error(`Run: ${this.usage.prototype.resolvebinary(this.options)} first.`);
-      process.exit(1);
-    }
+    this._ensureStudioIsLinked();
   },
 
   welcome() {
