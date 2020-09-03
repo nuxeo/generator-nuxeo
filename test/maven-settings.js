@@ -66,4 +66,11 @@ describe('Maven Settings module can', function () {
     assert.ok(empty.addServer('newone', 'bobby', 'secret'));
     assert.ok(empty.containsServer('newone'));
   });
+
+  it('can create a new file, if totally empty', function() {
+    const empty = openSettingsFile('empty-file');
+    assert.ok(!empty.containsServer('newone'));
+    assert.ok(empty.addServer('newone', 'bobby', 'secret'));
+    assert.ok(empty.containsServer('newone'));
+  });
 });
