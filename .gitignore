@@ -1,4 +1,5 @@
 node_modules
+_cacache
 coverage
 tmp*
 npm-shrinkwrap.json

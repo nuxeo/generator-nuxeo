@@ -86,6 +86,15 @@ function settings(filename) {
     },
 
     _ensureServersNode: function () {
+      if($('settings').length === 0) {
+        if ($.root().firstChild !== undefined) {
+          // root node is not empty; file doesn't fit settings.xml schema.
+          throw new Error('XML content does not look like to be a settings.xml schema.');
+        }
+
+        $.root().append($('<settings>'))
+      }
+
       if ($('settings>servers').length === 0) {
         $('settings').append($('<servers />'));
       }
