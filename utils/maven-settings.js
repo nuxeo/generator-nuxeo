@@ -92,7 +92,7 @@ function settings(filename) {
           throw new Error('XML content does not look like to be a settings.xml schema.');
         }
 
-        $.root().append($('<settings>'))
+        $.root().append($('<settings>'));
       }
 
       if ($('settings>servers').length === 0) {
