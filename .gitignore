@@ -121,3 +121,6 @@ _npx
 
 # Voluntary other
 package-lock.json
+
+# Target directory
+target
