@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const yeoman = require('yeoman-generator');
 
-var App = {
+let App = {
   _beforeConstructor: function () {
     this.option('connectUrl', {
       desc: 'Use and save as default base Connect URL',

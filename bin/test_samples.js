@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-var helpers = require('yeoman-test');
-var assert = require('yeoman-assert');
-var path = require('path');
-var log = require('yeoman-environment/lib/util/log')();
+const helpers = require('yeoman-test');
+const assert = require('yeoman-assert');
+const path = require('path');
+const log = require('yeoman-environment/lib/util/log')();
 
 helpers.run(path.join(__dirname, '../generators/sample'))
   .withPrompts({

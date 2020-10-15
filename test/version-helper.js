@@ -51,7 +51,7 @@ describe('Version helper should', function() {
 
     it('from undefined version', () => {
       // handled like 0.0.0-SNAPSHOT
-      var s = v.fromVersion(undefined);
+      const s = v.fromVersion(undefined);
       assert.ok(s.isBefore('8.10'));
       assert.ok(s.isBefore('7.10'));
       assert.ok(s.isBefore('0.0.0'));

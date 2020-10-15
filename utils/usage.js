@@ -1,5 +1,5 @@
 function formatArg(argItem) {
-  var arg = '<' + argItem.name + '>';
+  let arg = '<' + argItem.name + '>';
 
   if (!argItem.required) {
     arg = '[' + arg + ']';
@@ -12,11 +12,11 @@ function formatArg(argItem) {
  * Code Originally from yeoman-generator/lib/actions/help mixin
  * But overriden to allow to change cmd line name
  */
-var usage = module.exports = function () {
-  var options = Object.keys(this._options).length ? '[options]' : '';
-  var args = this._arguments.length ? this._arguments.map(formatArg).join(' ') : '';
-  var binary = usage.prototype.resolvebinary(this.options);
-  var out = binary + ' ' + options + ' ' + args;
+const usage = module.exports = function () {
+  const options = Object.keys(this._options).length ? '[options]' : '';
+  const args = this._arguments.length ? this._arguments.map(formatArg).join(' ') : '';
+  const binary = usage.prototype.resolvebinary(this.options);
+  let out = binary + ' ' + options + ' ' + args;
 
   if (this.description) {
     out += '\n\n' + this.description;

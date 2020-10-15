@@ -7,8 +7,8 @@ const xml = require('xml');
 
 /**
 Usage:
-     var settings = require('utils/maven-settings.js')
-     var f = settings.open();
+     const settings = require('utils/maven-settings.js')
+     const f = settings.open();
      f.servers()
      f.addServer(id:username:password, force)
      f.containsServer(id)

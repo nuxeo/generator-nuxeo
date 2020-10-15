@@ -1,14 +1,14 @@
 /*eslint strict:0*/
 'use strict';
 
-var async = require('async');
-var yeoman = require('yeoman-generator');
-var fs = require('fs');
-var _ = require('lodash');
-var path = require('path');
-var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
+const async = require('async');
+const yeoman = require('yeoman-generator');
+const fs = require('fs');
+const _ = require('lodash');
+const path = require('path');
+const pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
-var App = {
+const App = {
   constructor: function() {
     this.usage = require('../../utils/usage');
     yeoman.apply(this, arguments);
@@ -49,9 +49,9 @@ var App = {
       this._showHello();
     }
 
-    var init = this._init(this.options);
-    var done = this.async();
-    var seq = async.seq(init.fetch, init.saveRemote, init.readSamples, init.saveSamples).bind(this);
+    const init = this._init(this.options);
+    const done = this.async();
+    const seq = async.seq(init.fetch, init.saveRemote, init.readSamples, init.saveSamples).bind(this);
     seq(function() {
       done();
     });
@@ -66,7 +66,7 @@ var App = {
       message: 'Which sample do you want?',
       choices: this.nuxeo.samples,
       filter: function(value) {
-        var repo = value.split(/\//);
+        const repo = value.split(/\//);
         return {
           user: repo[0],
           repo: repo[1]
@@ -91,7 +91,7 @@ var App = {
   },
 
   writing: function() {
-    var done = this.async();
+    const done = this.async();
     this._git.clone(this.answers, (err, cachePath) => {
       if (err) {
         throw err;

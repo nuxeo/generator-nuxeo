@@ -1,5 +1,5 @@
-var assert = require('yeoman-assert');
-var _ = require('lodash');
+const assert = require('yeoman-assert');
+const _ = require('lodash');
 
 describe('propery-holder', function() {
 
@@ -46,7 +46,7 @@ describe('propery-holder', function() {
   });
 
   it('can save only stored params', function() {
-    var params = {
+    const params = {
       name: 'mytest',
       package: 'org.nuxeo.test',
       version: '1.0-SNAPSHOT'
@@ -58,11 +58,11 @@ describe('propery-holder', function() {
 
   it('can filter already stored params', function() {
     // Ensure nothing is filtered the first time
-    var props = this.ph.filter(this.propsNd);
+    let props = this.ph.filter(this.propsNd);
     assert.equal(2, _.size(props));
 
     // Then add some answers which 'propsNd' is expecting the sames
-    var params = {
+    const params = {
       name: 'mytest',
       package: 'org.nuxeo.test',
       version: '1.0-SNAPSHOT'
@@ -78,7 +78,7 @@ describe('propery-holder', function() {
   });
 
   it('can restore previously saved values', function() {
-    var params = {
+    let params = {
       name: 'mytest',
       package: 'org.nuxeo.test',
       version: '1.0-SNAPSHOT'
@@ -95,7 +95,7 @@ describe('propery-holder', function() {
   });
 
   it('can be called several times', function() {
-    var params = {
+    let params = {
       name: 'mytest',
       package: 'org.nuxeo.test',
       version: '1.0-SNAPSHOT'

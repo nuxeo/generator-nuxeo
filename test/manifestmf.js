@@ -1,8 +1,8 @@
-var path = require('path');
-var assert = require('yeoman-assert');
-var memFs = require('mem-fs');
-var editor = require('mem-fs-editor');
-var manifest = require('../utils/manifestmf.js');
+const path = require('path');
+const assert = require('yeoman-assert');
+const memFs = require('mem-fs');
+const editor = require('mem-fs-editor');
+const manifest = require('../utils/manifestmf.js');
 
 describe('MANIFEST.MF parser can', function() {
   beforeEach(function() {

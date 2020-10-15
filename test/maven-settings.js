@@ -1,10 +1,10 @@
-var path = require('path');
-var assert = require('yeoman-assert');
-var settings = require('../utils/maven-settings.js');
+const path = require('path');
+const assert = require('yeoman-assert');
+const settings = require('../utils/maven-settings.js');
 
 describe('Maven Settings module can', function () {
   function openSettingsFile(filename) {
-    var filepath = path.join(__dirname, 'templates', filename);
+    const filepath = path.join(__dirname, 'templates', filename);
     return settings.open(filepath);
   }
 

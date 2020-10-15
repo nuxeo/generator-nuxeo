@@ -6,21 +6,21 @@ const rimraf = require('rimraf');
 // Fetch Target Plaforms from Connect
 const NUXEO_VERSION = require('../utils/nuxeo-version-available').latest;
 
-var branch = process.argv.length > 3 ? process.argv[3] : 'master';
-var version = process.argv.length > 2 ? process.argv[2] : NUXEO_VERSION;
+const branch = process.argv.length > 3 ? process.argv[3] : 'master';
+let version = process.argv.length > 2 ? process.argv[2] : NUXEO_VERSION;
 if (version === 'latest') {
   version = NUXEO_VERSION;
 }
 
-var yo = require('yeoman-environment');
-var path = require('path');
-var mkdirp = require('mkdirp');
-var fs = require('fs');
-var log = require('yeoman-environment/lib/util/log')();
-var async = require('async');
+const yo = require('yeoman-environment');
+const path = require('path');
+const mkdirp = require('mkdirp');
+const fs = require('fs');
+const log = require('yeoman-environment/lib/util/log')();
+const async = require('async');
 
 // Prepare a ./tmp folder to generate everything
-var tmp = path.join(path.dirname(__filename), '..', '/tmp');
+const tmp = path.join(path.dirname(__filename), '..', '/tmp');
 if (fs.existsSync(tmp)) {
   log.info('Cleaning an existing folder.');
   rimraf.sync(tmp);
@@ -36,7 +36,7 @@ log.info('Nuxeo version: ' + version);
 const Adapter = function () {};
 Adapter.prototype.prompt = function (questions, callback) {
   // Handling diff prompt
-  var res = {};
+  const res = {};
   questions.forEach(function (question) {
     if (!this._responses[question.name] && !question.default) {
       this.log.error('No response found for: ' + question.name);
@@ -61,8 +61,8 @@ Adapter.prototype.responses = function (responses) {
 };
 /***************/
 
-var adapter = new Adapter();
-var env = yo.createEnv(undefined, undefined, adapter);
+const adapter = new Adapter();
+const env = yo.createEnv(undefined, undefined, adapter);
 
 env.register(require.resolve(path.join(__dirname, '../generators/app/index.js')), 'nuxeo:test');
 

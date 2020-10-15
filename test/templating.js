@@ -1,9 +1,9 @@
-var assert = require('yeoman-assert');
-var recursiveSync = require('../utils/recursive-readdirSync.js');
-var path = require('path');
-var tplPath = require('../generators/app/nuxeo-base.js').prototype._tplPath;
-var s = require('../utils/nuxeo.string.js');
-var _ = require('lodash');
+const assert = require('yeoman-assert');
+const recursiveSync = require('../utils/recursive-readdirSync.js');
+const path = require('path');
+const tplPath = require('../generators/app/nuxeo-base.js').prototype._tplPath;
+const s = require('../utils/nuxeo.string.js');
+const _ = require('lodash');
 
 describe('Templating', function() {
   before(function() {
@@ -33,18 +33,18 @@ describe('Templating', function() {
   });
 
   it('can resolve a templates path path', function() {
-    var expect = path.join('src', 'org', 'nuxeo', 'dummy', 'test', 'test-my-name.txt');
-    var ctx = {
+    const expect = path.join('src', 'org', 'nuxeo', 'dummy', 'test', 'test-my-name.txt');
+    const ctx = {
       package: 'org.nuxeo.dummy',
       name: 'TestMyName'
     };
 
-    var files = recursiveSync(path.join(__dirname, './paths'), ['.DS_Store']);
+    const files = recursiveSync(path.join(__dirname, './paths'), ['.DS_Store']);
 
     _.forEach(files, function(file) {
-      var dest = tplPath(file, ctx);
+      const dest = tplPath(file, ctx);
 
-      var filename = path.basename(dest);
+      const filename = path.basename(dest);
       if (!s.startsWith(filename, '.')) {
 
         assert.ok(s.endsWith(dest, expect));

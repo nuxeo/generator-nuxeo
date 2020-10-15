@@ -1,13 +1,13 @@
 /*eslint camelcase:0*/
-var cheerio = require('cheerio');
-var fse = require('fs-extra');
-var _ = require('lodash');
-var beautify = require('js-beautify').html;
+const cheerio = require('cheerio');
+const fse = require('fs-extra');
+const _ = require('lodash');
+const beautify = require('js-beautify').html;
 
 /**
 Usage:
-     var maven = require('utils/maven.js')
-     var pom = maven.open('pom.xml');
+     const  maven = require('utils/maven.js')
+     const  pom = maven.open('pom.xml');
      pom.addDependency(gav)
      pom.addDependency(groupId, artifactId, version, type, scope)
      pom.addProperty(value, key)
@@ -35,14 +35,14 @@ function maven(content, fsl) {
     content = readFile(content);
   }
 
-  var $ = cheerio.load(content, {
+  const $ = cheerio.load(content, {
     xmlMode: true,
     lowerCaseTags: false
   });
 
   return {
     convertDepToXml: function (dep) {
-      var $dep = $('<dependency />');
+      const $dep = $('<dependency />');
       $dep.append('<groupId>' + dep.groupId + '</groupId>');
       $dep.append('<artifactId>' + dep.artifactId + '</artifactId');
       if (dep.version) {
@@ -58,11 +58,11 @@ function maven(content, fsl) {
     },
 
     convertPluginToXml: function (plugin) {
-      var $plugin = $('<plugin />');
+      const $plugin = $('<plugin />');
       $plugin.append('<groupId>' + plugin.groupId + '</groupId>');
       $plugin.append('<artifactId>' + plugin.artifactId + '</artifactId>');
       if (plugin.configuration) {
-        var $pluginConfig = $('<configuration />');
+        const $pluginConfig = $('<configuration />');
         _.forEach(plugin.configuration, function (value, key) {
           $pluginConfig.append('<' + key + '>' + value + '</' + key + '>');
         });
@@ -72,7 +72,7 @@ function maven(content, fsl) {
     },
 
     convertDepToObject: function (elt) {
-      var n = $(elt);
+      const n = $(elt);
       return {
         groupId: n.find('groupId').text() || undefined,
         artifactId: n.find('artifactId').text() || undefined,
@@ -83,7 +83,7 @@ function maven(content, fsl) {
     },
 
     convertPluginToObject: function (elt) {
-      var n = $(elt);
+      const n = $(elt);
       return {
         groupId: n.find('groupId').text() || undefined,
         artifactId: n.find('artifactId').text() || undefined
@@ -91,7 +91,7 @@ function maven(content, fsl) {
     },
 
     addDependency: function () {
-      var args = Array.prototype.slice.call(arguments, 0);
+      let args = Array.prototype.slice.call(arguments, 0);
       if (args.length === 1) {
         args = args[0].split(':');
       }
@@ -99,7 +99,7 @@ function maven(content, fsl) {
         return;
       }
 
-      var dep = {
+      const dep = {
         groupId: args[0],
         artifactId: args[1],
         version: args[2],
@@ -120,7 +120,7 @@ function maven(content, fsl) {
         return;
       }
 
-      var property = {};
+      const property = {};
       property[key] = value;
 
       // Format: <key>:<value>
@@ -132,7 +132,7 @@ function maven(content, fsl) {
     },
 
     addPlugin: function () {
-      var args = Array.prototype.slice.call(arguments, 0);
+      let args = Array.prototype.slice.call(arguments, 0);
       if (args.length === 1) {
         args = args[0];
       }
@@ -140,7 +140,7 @@ function maven(content, fsl) {
         return;
       }
 
-      var plugin = {
+      const plugin = {
         groupId: args.groupId,
         artifactId: args.artifactId,
         configuration: args.configuration,
@@ -157,19 +157,19 @@ function maven(content, fsl) {
     containsDependency: function (dep) {
       // XXX Should handle the case of adding a "compile" dependency after a "test" dependency.
       // Test dependency should be removed to be cleaner.
-      var that = this;
+      const that = this;
       return this._dependenciesNode().find('artifactId').filter(function (i, elt) {
         return $(elt).text() === dep.artifactId;
       }).parent().filter(function (i, elt) {
         // Ensure each string keyed properties are setted to something
-        var od = _.defaults(that.convertDepToObject(elt), {
+        const od = _.defaults(that.convertDepToObject(elt), {
           groupId: '',
           artifactId: '',
           version: '',
           extension: '',
           classifier: ''
         });
-        var dd = _.defaults(dep, {
+        const dd = _.defaults(dep, {
           groupId: '',
           artifactId: '',
           version: '',
@@ -186,16 +186,16 @@ function maven(content, fsl) {
     },
 
     containsPlugin: function (plugin) {
-      var that = this;
+      const that = this;
       return this._pluginManagementNode().find('artifactId').filter(function (i, elt) {
         return $(elt).text() === plugin.artifactId;
       }).parent().filter(function (i, elt) {
         // Ensure each string keyed properties are setted to something
-        var od = _.defaults(that.convertPluginToObject(elt), {
+        const od = _.defaults(that.convertPluginToObject(elt), {
           groupId: '',
           artifactId: ''
         });
-        var dd = {
+        const dd = {
           groupId: plugin.groupId,
           artifactId: plugin.artifactId
         };
@@ -245,9 +245,9 @@ function maven(content, fsl) {
     },
 
     dependencies: function () {
-      var dependencies = [];
+      const dependencies = [];
       this._dependenciesNode().find('dependency').each(function (i, elt) {
-        var el = $(elt);
+        const el = $(elt);
         dependencies.push({
           artifactId: el.first('artifactId').text(),
           groupId: el.first('groupId').text()
@@ -257,9 +257,9 @@ function maven(content, fsl) {
     },
 
     properties: function () {
-      var properties = [];
+      const properties = [];
       this._propertiesNode().children().each(function(i, child) {
-        var property = {};
+        const property = {};
         property[child.name] = $(child).text();
         properties.push(property);
       });
@@ -267,8 +267,8 @@ function maven(content, fsl) {
     },
 
     plugins: function () {
-      var that = this;
-      var plugins = [];
+      const that = this;
+      const plugins = [];
       this._pluginManagementNode().find('plugin').each(function (i, elt) {
         plugins.push(that.convertPluginToObject(elt));
       });
@@ -281,7 +281,7 @@ function maven(content, fsl) {
           $('project').append($('<modules />'));
         }
 
-        var $mod = $('<module>' + module + '</module>');
+        const $mod = $('<module>' + module + '</module>');
         $('modules').append($mod);
       }
       return module;
@@ -298,7 +298,7 @@ function maven(content, fsl) {
     },
 
     modules: function () {
-      var modules = [];
+      const modules = [];
       $('modules module').each(function (i, elt) {
         modules.push($(elt).text());
       });
@@ -310,7 +310,7 @@ function maven(content, fsl) {
     },
 
     groupId: function () {
-      var $groupId = $('project>groupId');
+      let $groupId = $('project>groupId');
       if ($groupId.length === 0) {
         $groupId = $('parent>groupId');
       }
@@ -326,12 +326,12 @@ function maven(content, fsl) {
     },
 
     _dependenciesNode: function () {
-      var isBom = this.isBom();
+      const isBom = this.isBom();
       if (isBom && $('dependencyManagement').length === 0) {
         $('project').append($('<dependencyManagement />'));
       }
 
-      var $root = isBom ? $('dependencyManagement') : $('project');
+      const $root = isBom ? $('dependencyManagement') : $('project');
       if ($root.children('dependencies').length === 0) {
         $root.append($('<dependencies />'));
       }

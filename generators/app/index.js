@@ -1,21 +1,21 @@
-var yeoman = require('yeoman-generator');
-var promptSuggestion = require('yeoman-generator/lib/util/prompt-suggestion');
-var chalk = require('chalk');
-var async = require('async');
-var path = require('path');
-var dargs = require('dargs');
-var _ = require('lodash');
-var fs = require('fs');
-var mkdirp = require('mkdirp');
-var nuxeo = require('./nuxeo-base.js');
-var s = require('../../utils/nuxeo.string.js');
-var v = require('../../utils/version-helper.js');
-var maven = require('../../utils/maven.js');
-var manifestmf = require('../../utils/manifestmf.js');
-var propHolder = require('../../utils/property-holder.js');
-var Conflicter = require('../../utils/conflicter.js');
-var isBinaryFile = require('isbinaryfile').isBinaryFileSync;
-var pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
+const yeoman = require('yeoman-generator');
+const promptSuggestion = require('yeoman-generator/lib/util/prompt-suggestion');
+const chalk = require('chalk');
+const async = require('async');
+const path = require('path');
+const dargs = require('dargs');
+const _ = require('lodash');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
+const nuxeo = require('./nuxeo-base.js');
+const s = require('../../utils/nuxeo.string.js');
+const v = require('../../utils/version-helper.js');
+const maven = require('../../utils/maven.js');
+const manifestmf = require('../../utils/manifestmf.js');
+const propHolder = require('../../utils/property-holder.js');
+const Conflicter = require('../../utils/conflicter.js');
+const isBinaryFile = require('isbinaryfile').isBinaryFileSync;
+const pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 const debug = require('debug')('nuxeo:app');
 
 global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
@@ -31,7 +31,7 @@ module.exports = nuxeo.extend({
       return this;
     }
 
-    var computedDefaultIndices = [];
+    const computedDefaultIndices = [];
     _.each(questions, function (question, index) {
       // Yeoman prompt do not store value if it's the same as the default one
       // As a workaround, if the default value is a function; we undefine it to make the store ok
@@ -106,8 +106,8 @@ module.exports = nuxeo.extend({
   },
 
   initializing: function () {
-    var done = this.async();
-    var init = this._init(this.options);
+    const done = this.async();
+    const init = this._init(this.options);
 
     this.conflicter = new Conflicter(this.env.adapter, (filename) => {
       return this.options.force || filename.match(/pom\.xml$/) || filename.match(/MANIFEST\.MF$/);
@@ -121,7 +121,7 @@ module.exports = nuxeo.extend({
     global._options = this.options;
     debug('%O', this.options);
 
-    var seq = async.seq(init.fetch, init.saveRemote, init.readDescriptor, init.resolveModule, init.filterModulesPerType, init.saveModules).bind(this);
+    const seq = async.seq(init.fetch, init.saveRemote, init.readDescriptor, init.resolveModule, init.filterModulesPerType, init.saveModules).bind(this);
     seq(function (err) {
       if (err) {
         this.log.error(`Unable to get generators: ${err.message}`);
@@ -133,18 +133,18 @@ module.exports = nuxeo.extend({
   },
 
   prompting: function () {
-    var done = this.async();
-    var that = this;
-    var types = this._moduleSortedKeys();
+    const done = this.async();
+    const that = this;
+    const types = this._moduleSortedKeys();
 
     this._showWelcome();
     that.props = {};
 
     if (this._createMultiModuleIsNeeded(types)) {
       // Disable log for this.
-      var t = this.log.info;
+      const t = this.log.info;
       this.log.info = () => { };
-      var module = this._init()._filterModules.call(this, ['multi-module']);
+      const module = this._init()._filterModules.call(this, ['multi-module']);
       this.log.info = t;
 
       if (!_.isEmpty(module)) {
@@ -154,7 +154,7 @@ module.exports = nuxeo.extend({
     }
 
     async.eachSeries(types, (type, parentCb) => {
-      var items = this.nuxeo.selectedModules[type];
+      const items = this.nuxeo.selectedModules[type];
       // Add type to a global value to be referenced in the metamodele
       global._scope = {
         type
@@ -173,13 +173,13 @@ module.exports = nuxeo.extend({
           params = propHolder.filter(params);
 
           that.log('');
-          var txt = chalk.green('Generating ' + s.humanize(item));
+          let txt = chalk.green('Generating ' + s.humanize(item));
           if (typeof that.nuxeo.modules[item].description === 'string') {
             txt += ' (' + that.nuxeo.modules[item].description + ')';
           }
           that.log.create(txt);
           // Show asked parameters
-          var trimParams = [];
+          const trimParams = [];
           _.forEach(params, function (p) {
             trimParams.push(s.humanize(s.trim(p.message.replace(/\(.+\)/, ''), '?\\s+:_-')));
           });
@@ -237,20 +237,20 @@ module.exports = nuxeo.extend({
     });
 
     // XXX Might be handle a different way
-    var manifestPath = path.join(that._getBaseFolderName(generatorType), 'src', 'main', 'resources', 'META-INF', 'MANIFEST.MF');
-    var mf = manifestmf.open(manifestPath, that.fs);
+    const manifestPath = path.join(that._getBaseFolderName(generatorType), 'src', 'main', 'resources', 'META-INF', 'MANIFEST.MF');
+    let mf = manifestmf.open(manifestPath, that.fs);
     if (mf) {
       props.symbolicName = mf.symbolicName();
     }
 
     // handling templates
-    var templateFolderName = typeof generator.getTemplatesFolder !== 'undefined' ? generator.getTemplatesFolder(props) : 'templates';
-    var tmplPath = path.resolve(that.nuxeo.cachePath, 'generators', item, templateFolderName);
-    var destPath = that._getBaseFolderName(generatorType);
-    var ignorePatterns = generator['templates-ignore'] || [];
+    const templateFolderName = typeof generator.getTemplatesFolder !== 'undefined' ? generator.getTemplatesFolder(props) : 'templates';
+    const tmplPath = path.resolve(that.nuxeo.cachePath, 'generators', item, templateFolderName);
+    const destPath = that._getBaseFolderName(generatorType);
+    const ignorePatterns = generator['templates-ignore'] || [];
     if (fs.existsSync(tmplPath)) {
       _.forEach(that._recursivePath(tmplPath), function (template) {
-        var dest = that._tplPath(template, props).replace(tmplPath, destPath);
+        const dest = that._tplPath(template, props).replace(tmplPath, destPath);
         if (s.startsWith(path.basename(dest), '.empty')) {
           mkdirp(path.dirname(dest));
         } else if (isBinaryFile(template) || _(ignorePatterns).find(r => template.match(r))) {
@@ -265,11 +265,11 @@ module.exports = nuxeo.extend({
       return typeof source.when !== 'function' || source.when(props);
     }).forEach(function (source) {
       // XXX To be refactored
-      var args = [that._getBaseFolderName(generatorType), 'src/main/java'];
+      const args = [that._getBaseFolderName(generatorType), 'src/main/java'];
       args.push(props.package.split('.'));
       args.push(that._tplPath(source.dest, props));
-      var dest = path.join.apply(that, _.flatten(args));
-      var src = path.join(that.nuxeo.cachePath, 'generators', item, 'classes', source.src);
+      const dest = path.join.apply(that, _.flatten(args));
+      const src = path.join(that.nuxeo.cachePath, 'generators', item, 'classes', source.src);
       that.fs.copyTpl(src, dest, props);
     });
 
@@ -277,18 +277,18 @@ module.exports = nuxeo.extend({
       return typeof source.when !== 'function' || source.when(props);
     }).forEach(function (source) {
       // XXX To be refactored
-      var args = [that._getBaseFolderName(generatorType), 'src/test/java'];
+      const args = [that._getBaseFolderName(generatorType), 'src/test/java'];
       args.push(props.package.split('.'));
       args.push(that._tplPath(source.dest, props));
-      var dest = path.join.apply(that, _.flatten(args));
-      var src = path.join(that.nuxeo.cachePath, 'generators', item, 'classes', source.src);
+      const dest = path.join.apply(that, _.flatten(args));
+      const src = path.join(that.nuxeo.cachePath, 'generators', item, 'classes', source.src);
       that.fs.copyTpl(src, dest, props);
     });
 
     // handling dependencies
     if (!_.isEmpty(generator.dependencies)) {
-      var pomPath = path.join(that._getBaseFolderName(generatorType), 'pom.xml');
-      var pom = maven.open(that.fs.read(pomPath));
+      const pomPath = path.join(that._getBaseFolderName(generatorType), 'pom.xml');
+      const pom = maven.open(that.fs.read(pomPath));
 
       if (generator.dependencies === 'inherited') {
         that._addModulesDependencies(pom);
@@ -302,8 +302,8 @@ module.exports = nuxeo.extend({
       pom.save(that.fs, pomPath);
     }
 
-    var pomParentPath = path.join('.', 'pom.xml');
-    var pomParent = maven.open(that.fs.read(pomParentPath));
+    const pomParentPath = path.join('.', 'pom.xml');
+    const pomParent = maven.open(that.fs.read(pomParentPath));
 
     // handling parent properties
     if (!_.isEmpty(generator.properties)) {
@@ -334,15 +334,15 @@ module.exports = nuxeo.extend({
         }
       }
 
-      var src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
+      let src = typeof contribution.src === 'function' ? contribution.src.call(that, props) : contribution.src;
       src = path.resolve(that.nuxeo.cachePath, 'generators', item, 'contributions', that._tplPath(src, props));
-      var contribName = typeof contribution.dest === 'function' ? contribution.dest.call(that, props) : contribution.dest;
-      var dest = path.join(that._getBaseFolderName(generatorType), 'src', 'main', 'resources', 'OSGI-INF', that._tplPath(contribName, props));
+      const contribName = typeof contribution.dest === 'function' ? contribution.dest.call(that, props) : contribution.dest;
+      const dest = path.join(that._getBaseFolderName(generatorType), 'src', 'main', 'resources', 'OSGI-INF', that._tplPath(contribName, props));
 
       that.fs.copyTpl(src, dest, props);
 
       // Add contribution to the Manifest file
-      var contribPath = 'OSGI-INF/' + that._tplPath(contribName, props);
+      const contribPath = 'OSGI-INF/' + that._tplPath(contribName, props);
       mf.addComponent(contribPath);
       mf.save();
     });
@@ -358,7 +358,7 @@ module.exports = nuxeo.extend({
   },
 
   install: function () {
-    var skip = this.options.skipInstall;
+    const skip = this.options.skipInstall;
     this._eachGenerator({
       title: 'Installing',
       ignore: (generator) => {
@@ -370,20 +370,20 @@ module.exports = nuxeo.extend({
           this.log.info('Post install commands are disabled; you have to run them manually:');
         }
 
-        var installs = generator.install;
+        let installs = generator.install;
         if (!_.isArray(installs)) {
           installs = [installs];
         }
 
-        var cwd = process.cwd();
+        const cwd = process.cwd();
         _(installs).each(install => {
           process.chdir(cwd);
 
-          var args = install.args || [];
-          var opts = install.opts || {};
+          let args = install.args || [];
+          const opts = install.opts || {};
 
           args = args.concat(dargs(opts));
-          var cmd = install.cmd + ' ' + args.join(' ');
+          const cmd = install.cmd + ' ' + args.join(' ');
           if (skip) {
             this.log.info('- ' + cmd);
           } else {

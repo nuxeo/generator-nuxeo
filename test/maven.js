@@ -1,12 +1,12 @@
-var path = require('path');
-var assert = require('yeoman-assert');
-var maven = require('../utils/maven.js');
-var memFs = require('mem-fs');
-var editor = require('mem-fs-editor');
+const path = require('path');
+const assert = require('yeoman-assert');
+const maven = require('../utils/maven.js');
+const memFs = require('mem-fs');
+const editor = require('mem-fs-editor');
 
 describe('Maven module can', function () {
   function openPomFile(fs, filename) {
-    var pomPath = path.join(__dirname, 'templates', filename);
+    const pomPath = path.join(__dirname, 'templates', filename);
     return maven.open(fs.read(pomPath));
   }
 
@@ -50,7 +50,7 @@ describe('Maven module can', function () {
     // Inherited groupId
     assert.equal('org.nuxeo.sandbox', this.pom.groupId());
 
-    var bom = openPomFile(this.fs, 'bom.xml');
+    const bom = openPomFile(this.fs, 'bom.xml');
     assert.equal('myartifact-parent', bom.artifactId());
     assert.equal('org.nuxeo.sandbox', bom.groupId());
   });
@@ -59,7 +59,7 @@ describe('Maven module can', function () {
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon');
     this.pom.save(this.fs, this.pomPath);
 
-    var content = this.fs.read(this.pomPath);
+    const content = this.fs.read(this.pomPath);
     assert.notEqual(null, content.match('mynewadon'));
     assert.notEqual(null, content.match('<dependency>'));
     assert.notEqual(null, content.match('<artifactId>'));
@@ -74,7 +74,7 @@ describe('Maven module can', function () {
   it('find existing dependency', function () {
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-core');
     this.pom.addDependency('org.nuxeo.addon', 'mynewadon-api');
-    var dep = {
+    const dep = {
       artifactId: 'mynewaddon',
       groupId: 'org.nuxeo.addon'
     };
@@ -88,7 +88,7 @@ describe('Maven module can', function () {
   });
 
   it('add dependency independantly of the GAV', function () {
-    var dep = this.pom.addDependency('org.nuxeo.addon:mynewadon-core');
+    let dep = this.pom.addDependency('org.nuxeo.addon:mynewadon-core');
     assert.equal('org.nuxeo.addon', dep.groupId);
     assert.equal('mynewadon-core', dep.artifactId);
 
@@ -171,8 +171,8 @@ describe('Maven module can', function () {
   });
 
   it('convert dependency to XML node', function () {
-    var dep = this.pom.addDependency('org.nuxeo.addon:mynewadon-jar:1.1-SNAPSHOT:jar:test');
-    var xml = this.pom.convertDepToXml(dep);
+    let dep = this.pom.addDependency('org.nuxeo.addon:mynewadon-jar:1.1-SNAPSHOT:jar:test');
+    let xml = this.pom.convertDepToXml(dep);
     assert.equal(1, xml.find('groupId').length);
     assert.equal(1, xml.find('artifactId').length);
     assert.equal(1, xml.find('version').length);
@@ -203,7 +203,7 @@ describe('Maven module can', function () {
   });
 
   it('add dependency to the dependencyManagement', function () {
-    var bom = openPomFile(this.fs, 'bom.xml');
+    const bom = openPomFile(this.fs, 'bom.xml');
     assert.equal(0, bom.dependencies().length);
     bom.addDependency('org.nuxeo.addon:mynewadon-jar:1.0');
     assert.equal(1, bom.dependencies().length);
@@ -212,7 +212,7 @@ describe('Maven module can', function () {
   });
 
   it('handle pom without expected nodes', function () {
-    var pom = openPomFile(this.fs, 'pom-without-deps.xml');
+    const pom = openPomFile(this.fs, 'pom-without-deps.xml');
 
     // Ensure there is any nodes
     assert.ok(!pom._xml().match('<dependencies'));

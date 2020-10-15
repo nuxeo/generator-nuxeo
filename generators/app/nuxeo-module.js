@@ -17,15 +17,15 @@ module.exports = {
   },
 
   _moduleFindParents: function (args) {
-    var res = [];
-    var autonomous = false;
+    let res = [];
+    let autonomous = false;
 
     _.each(args, (arg) => {
       res.push(this._moduleResolveParent(arg));
     });
 
     // Filter default empty generator
-    var modules = _.reject(_.uniq(_.flatten(_.union(args, res))), (o) => {
+    let modules = _.reject(_.uniq(_.flatten(_.union(args, res))), (o) => {
       return o === 'default' || o === 'multi-module';
     });
 
@@ -49,8 +49,8 @@ module.exports = {
   },
 
   _moduleResolveParent: function (module, depends) {
-    var ret = depends || [];
-    var d = this.nuxeo.modules[module] && this.nuxeo.modules[module].depends || 'default';
+    const ret = depends || [];
+    const d = this.nuxeo.modules[module] && this.nuxeo.modules[module].depends || 'default';
 
     ret.push(d);
     if (d === 'single-module') {
@@ -62,9 +62,9 @@ module.exports = {
   _moduleReadDescriptor: function (remote) {
     this.nuxeo.modules = this.nuxeo.modules || {};
 
-    var generatorsPath = path.join(remote.cachePath, 'generators');
+    const generatorsPath = path.join(remote.cachePath, 'generators');
     fs.readdirSync(generatorsPath).forEach((file) => {
-      var descPath = path.join(generatorsPath, file, 'descriptor.js');
+      const descPath = path.join(generatorsPath, file, 'descriptor.js');
       if (fs.existsSync(descPath)) {
         this.nuxeo.modules[file] = require(descPath);
       }
@@ -73,26 +73,26 @@ module.exports = {
   },
 
   _addModulesDependencies: function (pomParent) {
-    var that = this;
-    var dirs = _.filter(fs.readdirSync('.'), function (file) {
+    const that = this;
+    const dirs = _.filter(fs.readdirSync('.'), function (file) {
       return fs.lstatSync(file).isDirectory() && file.match(/-\w+$/) && !file.match('-' + that.currentGenerator.type + '$');
     });
     _.forEach(dirs, function (dir) {
-      var pomPath = path.join(dir, 'pom.xml');
+      const pomPath = path.join(dir, 'pom.xml');
       if (that.fs.exists(pomPath)) {
-        var pom = maven.open(that.fs.read(pomPath));
+        const pom = maven.open(that.fs.read(pomPath));
         pomParent.addDependency(pom.groupId() + ':' + pom.artifactId());
       }
     });
   },
 
   _moduleSkipped: function (module, modules) {
-    var skipFunc = this.nuxeo.modules[module].skip;
+    const skipFunc = this.nuxeo.modules[module].skip;
     return typeof skipFunc === 'function' ? skipFunc.apply(this, [modules]) : false;
   },
 
   _parentSkipped: function (module) {
-    var parent = this.nuxeo.modules[module].depends || 'default';
+    const parent = this.nuxeo.modules[module].depends || 'default';
     return this._moduleSkipped(parent);
   },
 
@@ -107,15 +107,15 @@ module.exports = {
   },
 
   _modulesPerTypes: function (modules) {
-    var types = {};
+    const types = {};
     _(modules).forEach((module) => {
-      var type = this._moduleResolveType(module);
+      const type = this._moduleResolveType(module);
       // root is multi-module base, skip it.
       if (type === 'root') {
         return;
       }
 
-      var array = types[type] || [];
+      const array = types[type] || [];
       array.push(module);
       types[type] = array;
     });
@@ -124,7 +124,7 @@ module.exports = {
 
   _moduleSortedKeys: function () {
     return _.sortBy(_.keys(this.nuxeo.selectedModules), (key) => {
-      var modules = this.nuxeo.selectedModules[key];
+      const modules = this.nuxeo.selectedModules[key];
       return _(modules).map((module) => {
         return this.nuxeo.modules[module].order || 0;
       }).min();

@@ -1,7 +1,7 @@
-var yeoman = require('yeoman-generator');
-var _ = require('lodash');
+const yeoman = require('yeoman-generator');
+const _ = require('lodash');
 
-var app = {};
+let app = {};
 app = _.extend(app, require('./nuxeo-module.js'));
 app = _.extend(app, require('./nuxeo-folder.js'));
 app = _.extend(app, require('./nuxeo-helper.js'));
