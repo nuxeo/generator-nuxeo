@@ -38,13 +38,18 @@ deasync.loopWhile(() => {
 if (!res) {
   res = [{
     label: 'Nuxeo Platform LTS 2016',
-    default: true,
+    default: false,
     version: '8.10',
     enabled: true
   }, {
     label: 'Nuxeo Platform LTS 2017',
-    default: true,
+    default: false,
     version: '9.10',
+    enabled: true
+  }, {
+    label: 'Nuxeo Platform LTS 2019',
+    default: true,
+    version: '10.10',
     enabled: true
   }];
 }
