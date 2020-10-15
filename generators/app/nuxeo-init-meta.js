@@ -1,17 +1,17 @@
 /*eslint strict:0*/
 'use strict';
 
-var _ = require('lodash');
-var chalk = require('chalk');
+const _ = require('lodash');
+const chalk = require('chalk');
 const http = require('http');
-var clone = require('yeoman-remote');
-var isDirectory = require('is-directory').sync;
-var path = require('path');
+const clone = require('yeoman-remote');
+const isDirectory = require('is-directory').sync;
+const path = require('path');
 const debug = require('debug')('nuxeo:app:init');
 
 function fetchRemote(callback) {
   // Silent logs while remote fetching
-  var writeOld = process.stderr.write;
+  const writeOld = process.stderr.write;
 
   /**
    * Try to fallback on local clone when network is not available
@@ -72,7 +72,7 @@ function filterModules(modules, type) {
       skip = true;
       return;
     } else {
-      var ensureFunc = this.nuxeo.modules[module].ensure;
+      const ensureFunc = this.nuxeo.modules[module].ensure;
       if (typeof ensureFunc === 'function' && !ensureFunc.apply(this) && this._parentSkipped(module)) {
         this.log.info('Can\'t install module ' + module + '.');
         process.exit(1);
@@ -86,7 +86,7 @@ function filterModules(modules, type) {
 
 module.exports = {
   _init: function (_opts) {
-    var opts = _opts || {};
+    const opts = _opts || {};
     return {
       fetch: opts.localPath ? fetchLocal : fetchRemote,
 
@@ -135,7 +135,7 @@ module.exports = {
           args.push('single-module');
         }
 
-        var types = this._modulesPerTypes(args);
+        const types = this._modulesPerTypes(args);
         _.keys(types).forEach((type) => {
           types[type] = this._moduleFindParents(types[type]);
         });
@@ -147,7 +147,7 @@ module.exports = {
 
       filterModulesPerType: function (types, callback) {
         // XXX Should be removed from init object
-        var filtered = {};
+        const filtered = {};
         // this.log.invoke('Requirements: ' + chalk.blue(modules.join(', ')));
         _.keys(types).forEach((type) => {
           let modules = types[type];

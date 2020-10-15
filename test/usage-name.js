@@ -1,5 +1,5 @@
-var assert = require('yeoman-assert');
-var r = require('../utils/usage.js').prototype.resolvebinary;
+const assert = require('yeoman-assert');
+const r = require('../utils/usage.js').prototype.resolvebinary;
 
 describe('Usage resolvebinary method', function() {
   it('display generator wrapper name', function() {

@@ -1,6 +1,6 @@
-var assert = require('yeoman-assert');
-var _ = require('lodash');
-var helpers = require('yeoman-test');
+const assert = require('yeoman-assert');
+const _ = require('lodash');
+const helpers = require('yeoman-test');
 const path = require('path');
 
 describe('nuxeo-base', function() {
@@ -34,7 +34,7 @@ describe('nuxeo-base', function() {
 
   it('resolve module heritance', function() {
     // Single module
-    var deps = this.gene._moduleFindParents(['single-module']);
+    let deps = this.gene._moduleFindParents(['single-module']);
     assert.deepEqual(['single-module'], deps);
 
     // Operation

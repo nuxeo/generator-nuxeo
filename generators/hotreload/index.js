@@ -4,7 +4,7 @@
 const _ = require('lodash');
 const yeoman = require('yeoman-generator');
 
-var App = {
+let App = {
   _afterConstructor: function () {
     this.option('classesFolder', {
       desc: 'Define where is the classes folder under the module\'s one',

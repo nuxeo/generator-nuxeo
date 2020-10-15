@@ -1,4 +1,4 @@
-var _ = require('lodash');
+const _ = require('lodash');
 
 /**
   Simple module to ease to filter already answered parameters
@@ -9,7 +9,7 @@ var _ = require('lodash');
    - clean the cache
 **/
 module.exports = (function() {
-  var stored = {};
+  let stored = {};
 
   return {
     store: function(params, answers) {

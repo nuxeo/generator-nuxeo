@@ -31,12 +31,12 @@ describe('Conflicter override should', function() {
 
   it('still be able to force a diff', function(done) {
     let file = path.join(this.folder, 'test.json');
-    var content = {
+    const content = {
       test: 'ok'
     };
     createFile(file, content);
 
-    var c = new Conflicter(adapter, true);
+    const c = new Conflicter(adapter, true);
     c.collision({
       path: file,
       contents: JSON.stringify(content)
@@ -48,12 +48,12 @@ describe('Conflicter override should', function() {
 
   it('be able to prompt a conflict', function(done) {
     let file = path.join(this.folder, 'test.json');
-    var content = {
+    const content = {
       test: 'ok'
     };
     createFile(file, content);
 
-    var c = new Conflicter(adapter, false);
+    const c = new Conflicter(adapter, false);
     c.collision({
       path: file,
       contents: JSON.stringify(content)
@@ -65,12 +65,12 @@ describe('Conflicter override should', function() {
 
   it('be able to change force mode with a handler - conflict', function(done) {
     let file = path.join(this.folder, 'test.json');
-    var content = {
+    const content = {
       test: 'ok'
     };
     createFile(file, content);
 
-    var c = new Conflicter(adapter, (filename) => {
+    const c = new Conflicter(adapter, (filename) => {
       return filename.match(/pom\.xml$/);
     });
 
@@ -85,12 +85,12 @@ describe('Conflicter override should', function() {
 
   it('be able to change force mode with a handler - force', function(done) {
     let file = path.join(this.folder, 'pom.xml');
-    var content = {
+    const content = {
       test: 'ok'
     };
     createFile(file, content);
 
-    var c = new Conflicter(adapter, (filename) => {
+    const c = new Conflicter(adapter, (filename) => {
       return filename.match(/pom\.xml$/);
     });
 

@@ -1,17 +1,17 @@
 /*eslint strict:0*/
 'use strict';
 
-var _ = require('lodash');
-var chalk = require('chalk');
-var nuxeowelcome = require('../../lib/welcome.js')('Generator');
-var recursiveSync = require('../../utils/recursive-readdirSync.js');
-var fs = require('fs');
-var s = require('../../utils/nuxeo.string.js');
-var maven = require('../../utils/maven.js');
+const _ = require('lodash');
+const chalk = require('chalk');
+const nuxeowelcome = require('../../lib/welcome.js')('Generator');
+const recursiveSync = require('../../utils/recursive-readdirSync.js');
+const fs = require('fs');
+const s = require('../../utils/nuxeo.string.js');
+const maven = require('../../utils/maven.js');
 
 module.exports = {
   _tplPath: function(str, ctx) {
-    var regex = /{{([\s\S]+?)}}/g;
+    const regex = /{{([\s\S]+?)}}/g;
     return _.template(str, {
       interpolate: regex,
       imports: {

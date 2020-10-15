@@ -1,10 +1,10 @@
-var fse = require('fs-extra');
-var _ = require('lodash');
+const fse = require('fs-extra');
+const _ = require('lodash');
 
 function manifest(filep, fsp) {
-  var fs = fsp || fse;
-  var file = filep || 'src/main/resources/META-INF/MANIFEST.MF';
-  var content;
+  const fs = fsp || fse;
+  const file = filep || 'src/main/resources/META-INF/MANIFEST.MF';
+  let content;
   try {
     content = [];
     _(fs.read(file).split('\n')).forEach(l => {
@@ -25,17 +25,17 @@ function manifest(filep, fsp) {
 
   return {
     _content: function() {
-      var index = _.findIndex(content, function(line) {
+      const index = _.findIndex(content, function(line) {
         return line.match(/^Nuxeo-Component:/);
       });
 
-      var res = _.union([], content);
-      var contribs = content[index].replace(/,/g, ',\n ').split('\n');
+      const res = _.union([], content);
+      const contribs = content[index].replace(/,/g, ',\n ').split('\n');
       Array.prototype.splice.apply(res, _.union([index, 1], contribs));
       return res.join('\n');
     },
     symbolicName: function() {
-      var index = _.findIndex(content, function(line) {
+      const index = _.findIndex(content, function(line) {
         return line.match(/^Bundle-SymbolicName:/i);
       });
 
@@ -46,7 +46,7 @@ function manifest(filep, fsp) {
       }
     },
     addComponent: function(componentPath) {
-      var index = _.findIndex(content, function(line) {
+      const index = _.findIndex(content, function(line) {
         return line.match(/^Nuxeo-Component:/);
       });
 
@@ -60,14 +60,14 @@ function manifest(filep, fsp) {
       content[index] = content[index] + ',' + componentPath;
     },
     components: function() {
-      var index = _.findIndex(content, function(line) {
+      let index = _.findIndex(content, function(line) {
         return line.match(/^Nuxeo-Component:/);
       });
       if (index < 0) {
         return [];
       }
 
-      var comps = content[index].match(/^Nuxeo-Component:\s*([\w.\-/,]+)/)[1];
+      let comps = content[index].match(/^Nuxeo-Component:\s*([\w.\-/,]+)/)[1];
       while (content[index + 1].match('^ ')) {
         index += 1;
         comps += content[index].match(/^\s+([\w.\-/,]+)/)[1];

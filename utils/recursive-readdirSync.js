@@ -1,13 +1,13 @@
 // Originally https://github.com/jergason/recursive-readdir
 // Using synchronous version of fs module methods.
 
-var fs = require('fs');
-var p = require('path');
-var minimatch = require('minimatch');
+const fs = require('fs');
+const p = require('path');
+const minimatch = require('minimatch');
 
 function patternMatcher(pattern) {
   return function(path, stats) {
-    var minimatcher = new minimatch.Minimatch(pattern, {
+    const minimatcher = new minimatch.Minimatch(pattern, {
       matchBase: true
     });
     return (!minimatcher.negate || stats.isFile()) && minimatcher.match(path);
@@ -29,20 +29,20 @@ function readdir(path, ignores, callback) {
   }
   ignores = ignores.map(toMatcherFunction);
 
-  var list = [];
-  var files = fs.readdirSync(path);
+  let list = [];
+  let files = fs.readdirSync(path);
 
-  var pending = files.length;
+  let pending = files.length;
   if (!pending) {
     // we are done, woop woop
     return callback(null, list);
   }
 
   files.forEach(function(file) {
-    var stats = fs.lstatSync(p.join(path, file));
+    const stats = fs.lstatSync(p.join(path, file));
 
     file = p.join(path, file);
-    var ignoreMatcher = function(matcher) {
+    const ignoreMatcher = function(matcher) {
       return matcher(file, stats);
     };
     if (ignores.some(ignoreMatcher)) {
@@ -76,7 +76,7 @@ function readdir(path, ignores, callback) {
 }
 
 function wrapper(path, ignores) {
-  var res = [];
+  let res = [];
   readdir(path, ignores, function(err, files) {
     res = files;
   });

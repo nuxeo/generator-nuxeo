@@ -1,17 +1,17 @@
 /*eslint strict:0,camelcase:0*/
 'use strict';
 
-var assert = require('yeoman-assert');
-var NuxeoVersion = require('../generators/app/nuxeo-version');
+const assert = require('yeoman-assert');
+const NuxeoVersion = require('../generators/app/nuxeo-version');
 
 // Mock some mehtods
 NuxeoVersion.log = {
   info: function() {
-    var c = console;
+    const c = console;
     c.log(`I: ${Array.prototype.join.apply(arguments, [' '])}`);
   },
   error: function() {
-    var c = console;
+    const c = console;
     c.log(`E: ${Array.prototype.join.apply(arguments, [' '])}`);
   }
 };

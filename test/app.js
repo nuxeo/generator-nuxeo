@@ -1,5 +1,5 @@
-var path = require('path');
-var helpers = require('yeoman-test');
+const path = require('path');
+const helpers = require('yeoman-test');
 
 describe('generator-nuxeo', function() {
   before(function(done) {

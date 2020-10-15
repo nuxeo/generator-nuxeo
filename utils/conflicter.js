@@ -6,10 +6,10 @@
  *
  * In the case of the nuxeo-generator; it is usefull to skip collision in `pom.xml` as it is updated ofter.
  */
-var Conflicter = require('yeoman-generator/lib/util/conflicter');
-var pathExists = require('path-exists');
-var detectConflict = require('detect-conflict');
-var path = require('path');
+const Conflicter = require('yeoman-generator/lib/util/conflicter');
+const pathExists = require('path-exists');
+const detectConflict = require('detect-conflict');
+const path = require('path');
 
 /**
  * Check if a file conflict with the current version on the user disk.
@@ -27,7 +27,7 @@ var path = require('path');
  * @return {null} nothing
  */
 Conflicter.prototype.collision = function(file, cb) {
-  var rfilepath = path.relative(process.cwd(), file.path);
+  const rfilepath = path.relative(process.cwd(), file.path);
 
   if (!pathExists.sync(file.path)) {
     this.adapter.log.create(rfilepath);
@@ -51,10 +51,10 @@ Conflicter.prototype.collision = function(file, cb) {
 };
 
 module.exports = function(adapter, force) {
-  var pForce = typeof force === 'boolean' ? force : false;
-  var fForce = typeof force === 'function' ? force : undefined;
+  const pForce = typeof force === 'boolean' ? force : false;
+  const fForce = typeof force === 'function' ? force : undefined;
 
-  var that = new Conflicter(adapter, pForce);
+  const that = new Conflicter(adapter, pForce);
   that.isForce = fForce;
   return that;
 };

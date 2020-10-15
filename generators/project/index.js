@@ -4,7 +4,7 @@
 const _ = require('lodash');
 const yeoman = require('yeoman-generator');
 
-var App = {};
+let App = {};
 
 App = _.extend(App, require('../../lib/delegated-generator.js').withDefault('status'));
 
