@@ -8,7 +8,7 @@ const _ = require('lodash');
 const path = require('path');
 const pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
-const App = {
+let App = {
   constructor: function() {
     this.usage = require('../../utils/usage');
     yeoman.apply(this, arguments);
