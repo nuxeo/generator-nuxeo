@@ -119,6 +119,7 @@ module.exports = nuxeo.extend({
 
     // Expose options in the global scope for accessing them in generator's decriptors.
     global._options = this.options;
+    global._config = this.config;
     debug('%O', this.options);
 
     const seq = async.seq(init.fetch, init.saveRemote, init.readDescriptor, init.resolveModule, init.filterModulesPerType, init.saveModules).bind(this);
@@ -216,7 +217,6 @@ module.exports = nuxeo.extend({
     const props = that.currentProps = that.props[generatorType + item] || {};
 
     debug(`Generating: ${item}`);
-    debug('%O', props);
 
     that.currentGenerator = generator;
 
@@ -224,6 +224,7 @@ module.exports = nuxeo.extend({
     props.s = s; // String utils
     props.v = v.fromVersion(this._getNuxeoVersion()); // Version utils
     props.multi = that._isMultiModule();
+    props.global = global;
 
     // handling configuration
     _.forEach(generator.config, function (value, key) {
@@ -242,6 +243,8 @@ module.exports = nuxeo.extend({
     if (mf) {
       props.symbolicName = mf.symbolicName();
     }
+
+    debug('Template Properties: %O', props);
 
     // handling templates
     const templateFolderName = typeof generator.getTemplatesFolder !== 'undefined' ? generator.getTemplatesFolder(props) : 'templates';
@@ -308,6 +311,10 @@ module.exports = nuxeo.extend({
     // handling parent properties
     if (!_.isEmpty(generator.properties)) {
       _.forEach(generator.properties, function (value, key) {
+        if (_.isFunction(value)) {
+          value = value.apply(this, [props]);
+        }
+
         that.log.info('Pom property: ' + key + ': ' + value);
         pomParent.addProperty(value, key);
       });
@@ -355,6 +362,16 @@ module.exports = nuxeo.extend({
   end: function () {
     this.log.create(chalk.green('Your project is ready!'));
     this.log.info(`You can start editing code or you can continue with calling another generator (${this.usage.prototype.resolvebinary(this.options)})`);
+    this._eachGenerator({
+      title: 'Messages from',
+      ignore: (generator) => {
+        // Filter generator without an install to do
+        return !_.isFunction(generator.end);
+      },
+      func: (type, name, generator, cb) => {
+        generator.end.apply(this, [cb]);
+      },
+    });
   },
 
   install: function () {

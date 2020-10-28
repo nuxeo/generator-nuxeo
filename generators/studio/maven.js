@@ -1,6 +1,7 @@
 /*eslint no-undef:0*/
 const debug = require('debug')('nuxeo:generator:maven');
 const maven = require('../../utils/maven');
+const nxPkg = require('../../utils/nuxeo-package');
 const settings = require('../../utils/maven-settings');
 const path = require('path');
 const fs = require('fs-extra');
@@ -9,6 +10,8 @@ const STUDIO_SERVER = 'nuxeo-studio';
 const HF_RELEASES = 'hotfix-releases';
 const HF_SNAPSHOTS = 'hotfix-snapshots';
 const MAVEN_GAV = 'maven:gav';
+const MVN_PROP = 'studio.project.version';
+const ANT_PROP = 'STUDIO_PROJECT_VERSION';
 
 module.exports = {
   _saveSettingsAnswers: function (updateSettings = false, force = true) {
@@ -26,32 +29,54 @@ module.exports = {
   },
 
   _addDependency: function (gav) {
+    const [groupId, artifactId, version, type, scope] = gav.split(':');
+
     // add GAV to the root pom.xml
     const targetPom = path.join(this.destinationRoot(), 'pom.xml');
     const pom = maven.open(this.fs.read(targetPom));
-    pom.addDependency(gav);
+    pom.addProperty(version, MVN_PROP);
+    // Override version to rely on property instead
+    pom.addDependency([groupId, artifactId, `\${${MVN_PROP}}`, type, scope].join(':'));
     pom.save(this.fs, targetPom);
 
     // Add the dependecy to each jar modules; and without the version as
     // it is hanlded by the dependency management
-    const [groupId, artifactId] = gav.split(':');
-    const cgav = `${groupId}:${artifactId}`;
+    const cgav = `${groupId}:${artifactId}:::${scope}`;
     this._setMavenGav(cgav);
 
-    // add dependency for each modules - only if it's a bom
+    // add dependency for each jar modules - only if it's a bom
     pom.modules().map((elt) => {
       const fp = path.join(this.destinationRoot(), elt, 'pom.xml');
       return {
+        root: path.join(this.destinationRoot(), elt),
         fp,
         pom: maven.open(this.fs.read(fp))
       };
-    }).filter((m) => {
-      // Skip Modules that do not produces a jar
-      return m.pom.packaging() === 'jar';
     }).forEach((m) => {
-      m.pom.addDependency(cgav);
-      m.pom.save(this.fs, m.fp);
+      switch (m.pom.packaging()) {
+        case 'zip':
+          this._addNuxeoPackageDependency(m.root);
+          break;
+        case 'jar':
+        m.pom.addDependency(cgav);
+        m.pom.save(this.fs, m.fp);
+          break;
+        default:
+        // Nothing to do
+      }
     });
+  },
+
+  _addNuxeoPackageDependency: function (moduleRoot) {
+    const pkgPath = path.join(moduleRoot, 'src', 'main', 'resources', 'package.xml');
+    if (!fs.existsSync(pkgPath)) {
+      return;
+    }
+    const pkg = nxPkg.open(pkgPath);
+
+    const dep = `${this._getSymbolicName()}:@${ANT_PROP}@:@${ANT_PROP}@`;
+    pkg.addDependency(dep);
+    pkg.save(this.fs, pkgPath);
   },
 
   /**

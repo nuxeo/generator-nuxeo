@@ -86,8 +86,10 @@ const delegate = {
       // Remove previous Studio project
       this._removeDependency();
 
-      // Add dependency to the root module and submodules
-      this._addDependency(gav);
+      // Add test dependency to the root module and submodules
+      this._addDependency(gav + '::test');
+
+      // Ensure package.xml file contains Studio reference
     }
 
     if (this._canAddCredentials()) {

@@ -40,7 +40,9 @@ const taskCheckstyle = function () {
 const taskLint = function () {
   return gulp.src(['generators/**/*.js', 'utils/*.js', 'test/**/*.js'])
     .pipe(excludeGitignore())
-    .pipe(eslint())
+    .pipe(eslint({
+        fix: true
+    }))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
 };
