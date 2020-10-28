@@ -71,6 +71,7 @@
     "mem-fs-editor": "^5.1.0",
     "npm-watch": "^0.6.0",
     "rimraf": "^2.5.2",
+    "tmp": "0.0.33",
     "yeoman-assert": "^3.0.0",
     "yeoman-environment": "^1.1.0",
     "yeoman-test": "^1.7.0"

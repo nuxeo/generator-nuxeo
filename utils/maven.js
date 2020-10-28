@@ -61,6 +61,9 @@ function maven(content, fsl) {
       const $plugin = $('<plugin />');
       $plugin.append('<groupId>' + plugin.groupId + '</groupId>');
       $plugin.append('<artifactId>' + plugin.artifactId + '</artifactId>');
+      if (plugin.version) {
+        $plugin.append('<version>' + plugin.version + '</version>');
+      }
       if (plugin.configuration) {
         const $pluginConfig = $('<configuration />');
         _.forEach(plugin.configuration, function (value, key) {
@@ -99,12 +102,13 @@ function maven(content, fsl) {
         return;
       }
 
+      const [groupId, artifactId, version, extension, classifier] = args;
       const dep = {
-        groupId: args[0],
-        artifactId: args[1],
-        version: args[2],
-        extension: args[3],
-        classifier: args[4]
+        groupId,
+        artifactId,
+        version,
+        extension,
+        classifier
       };
 
       // Format: <groupId>:<artifactId>[:<version>[:<extension>[:<classifier>]]]
@@ -127,7 +131,7 @@ function maven(content, fsl) {
       if (this.containsProperty(value, key)) {
         return property;
       }
-      this._propertiesNode().append('<' + key + '>' + value + '</' + key + '>');
+      this._propertiesNode().append(`<${key}>${value}</${key}>`);
       return property;
     },
 
@@ -143,6 +147,7 @@ function maven(content, fsl) {
       const plugin = {
         groupId: args.groupId,
         artifactId: args.artifactId,
+        version: args.version,
         configuration: args.configuration,
       };
 
@@ -182,7 +187,8 @@ function maven(content, fsl) {
     },
 
     containsProperty: function (value, key) {
-      return this._propertiesNode().find(key).length > 0;
+      // Properties usually contains dots; and selector parsing interpret them as css children
+      return this._propertiesNode().children(key.split('.').join('\\.')).length > 0;
     },
 
     containsPlugin: function (plugin) {

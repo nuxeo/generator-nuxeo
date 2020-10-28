@@ -135,6 +135,14 @@ module.exports = {
           args.push('single-module');
         }
 
+        // Add missing types
+        args.forEach((arg) => {
+          const missings = this._listMissingRequiredModuleType(arg);
+          if (missings.length > 0) {
+            args.push.apply(args, missings);
+          }
+        });
+
         const types = this._modulesPerTypes(args);
         _.keys(types).forEach((type) => {
           types[type] = this._moduleFindParents(types[type]);

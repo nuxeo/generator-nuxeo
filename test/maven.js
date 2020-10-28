@@ -137,15 +137,20 @@ describe('Maven module can', function () {
   });
 
   it('not add a property twice', function () {
-    assert.equal(0, this.pom.properties().length);
+    assert.strictEqual(0, this.pom.properties().length);
     this.pom.addProperty('myPropertyValue', 'myProperty');
-    assert.equal(1, this.pom.properties().length);
+    assert.strictEqual(1, this.pom.properties().length);
     this.pom.addProperty('myOtherPropertyValue', 'myOtherProperty');
-    assert.equal(2, this.pom.properties().length);
+    assert.strictEqual(2, this.pom.properties().length);
     this.pom.addProperty('myPropertyValue', 'myProperty'); // same key, same value
-    assert.equal(2, this.pom.properties().length);
+    assert.strictEqual(2, this.pom.properties().length);
     this.pom.addProperty('dummyValue', 'myProperty'); // same key, different value
-    assert.equal(2, this.pom.properties().length);
+    assert.strictEqual(2, this.pom.properties().length);
+
+    this.pom.addProperty('value', 'my.property.dotted');
+    assert.strictEqual(3, this.pom.properties().length);
+    this.pom.addProperty('other', 'my.property.dotted');
+    assert.strictEqual(3, this.pom.properties().length);
   });
 
   it('not add a plugin twice', function () {

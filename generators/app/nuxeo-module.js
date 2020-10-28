@@ -81,7 +81,10 @@ module.exports = {
       const pomPath = path.join(dir, 'pom.xml');
       if (that.fs.exists(pomPath)) {
         const pom = maven.open(that.fs.read(pomPath));
-        pomParent.addDependency(pom.groupId() + ':' + pom.artifactId());
+
+        if (pom.packaging() === 'jar') {
+          pomParent.addDependency(pom.groupId() + ':' + pom.artifactId());
+        }
       }
     });
   },
@@ -94,6 +97,27 @@ module.exports = {
   _parentSkipped: function (module) {
     const parent = this.nuxeo.modules[module].depends || 'default';
     return this._moduleSkipped(parent);
+  },
+
+  _listMissingRequiredModuleType: function (module) {
+    const ret = [];
+
+    let req = this.nuxeo.modules[module].requiredModuleType;
+    if (!req) {
+      return ret;
+    }
+
+    if (!_.isArray(req)) {
+      req = [req];
+    }
+
+    req.forEach((m) => {
+      if (!fs.existsSync(this._resolveTypeFolderName(m))) {
+        ret.push(m);
+      }
+    });
+
+    return ret;
   },
 
   _createMultiModuleIsNeeded: function (types) {
