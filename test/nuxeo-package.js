@@ -16,15 +16,15 @@ describe('Nuxeo Package module', function () {
       this.pkg.addDependency('mydep:33');
 
       const xml = this.pkg._xml();
-      assert.match(xml, /<dependency>mydep:33<\/dependency>/);
+      assert.match(xml, /<package>mydep:33<\/package>/);
     });
 
     it('cannot add dependency twice', function () {
       const dependencyRegex = (version) => {
-        return new RegExp(`<dependency>mydep:${version}</dependency>`);
+        return new RegExp(`<package>mydep:${version}</package>`);
       };
       assert.doesNotMatch(this.pkg._xml(), dependencyRegex(33));
-      assert.strictEqual(0, this.pkg.dependencies().children('dependency').length);
+      assert.strictEqual(0, this.pkg.dependencies().children('package').length);
 
       this.pkg.addDependency('mydep:33');
       assert.match(this.pkg._xml(), dependencyRegex(33));
@@ -32,7 +32,7 @@ describe('Nuxeo Package module', function () {
       this.pkg.addDependency('mydep:34');
       assert.doesNotMatch(this.pkg._xml(), dependencyRegex(34));
 
-      assert.strictEqual(1, this.pkg.dependencies().children('dependency').length);
+      assert.strictEqual(1, this.pkg.dependencies().children('package').length);
     });
   });
 
@@ -54,7 +54,20 @@ describe('Nuxeo Package module', function () {
       this.pkg.save(this.fs, this.pomPath.name);
 
       const content = this.fs.read(this.pomPath.name);
-      assert.strictEqual(3, nxPkg.open(content).dependencies().children('dependency').length);
+      assert.strictEqual(3, nxPkg.open(content).dependencies().children('package').length);
+    });
+  });
+
+  describe('with several package node', function () {
+    beforeEach(function () {
+      this.pkg = nxPkg.open('<package><title>Hello-world</title><dependencies><package>helloworld:1.0</package></dependencies></package>');
+    });
+
+    it('can properly parse the file', function () {
+      assert.strictEqual(1, this.pkg.dependencies().children('package').length);
+
+      this.pkg.addDependency('mydep:33');
+      assert.strictEqual(2, this.pkg.dependencies().children('package').length);
     });
   });
 });

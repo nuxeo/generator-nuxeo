@@ -56,7 +56,7 @@ const open = function (content, fsl) {
       const [name] = dep.split(':');
 
       let foundDep;
-      this.dependencies().children('dependency').each(function (i, elt) {
+      this.dependencies().children('package').each(function (i, elt) {
         const [depName] = $(elt).text().split(':');
 
         if (depName === name) {
@@ -74,7 +74,7 @@ const open = function (content, fsl) {
         return false;
       }
 
-      return this.dependencies().append($(`<dependency>${dep}</dependency>`));
+      return this.dependencies().append($(`<package>${dep}</package>`));
     },
 
     _xml: function () {
