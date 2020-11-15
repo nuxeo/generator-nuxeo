@@ -134,7 +134,7 @@ module.exports = {
     const types = {};
     _(modules).forEach((module) => {
       const type = this._moduleResolveType(module);
-      // root is multi-module base, skip it.
+      // root is multi-module base, skip it
       if (type === 'root') {
         return;
       }

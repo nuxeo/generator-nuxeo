@@ -1,7 +1,9 @@
-const _ = require('lodash');
-const chalk = require('chalk');
 const Conflicter = require('../../utils/conflicter.js');
 const process = require('process');
+const chalk = require('chalk');
+const _ = require('lodash');
+const {DEPLOYMENTS} = require('../../utils/deployment-helper');
+const { debug } = require('console');
 
 const delegate = {
   initializing: function() {
@@ -12,20 +14,36 @@ const delegate = {
       }
       return this.options.force || this._isFullyGeneratedFile();
     });
+
+    // Define the hotreload handler based on the configuration
+    if (this._getDeployment() === DEPLOYMENTS.LOCAL) {
+      this.hotreloadHandler = require('./hotreload/LocalHotReload.js');
+    } else if (this._getDeployment() === DEPLOYMENTS.COMPOSE) {
+      this.hotreloadHandler = require('./hotreload/ComposeHotReload.js');
+    } else {
+      this.log.error(`Run \`${this.usage.prototype.resolvebinary(this.options)} configure\` first.`);
+      process.exit(1);
+    }
   },
 
   configuring: function() {
-    if (!this._isDistributionConfigured()) {
-      if (!this._getDistributionPath()) {
-        this.log.error('No Nuxeo Server configured.');
-      } else {
-        this.log.error('Your nuxeo.conf file is not properly configured.');
-      }
+    let config = this.hotreloadHandler.configured.apply(this);
 
-      this.log.error(`Run \`${this.usage.prototype.resolvebinary(this.options)} configure\` first.`);
-
-      process.exit(1);
+    // Wrap response into a Promise if response isn't already one.
+    if (typeof config.then !== 'function') {
+      config = Promise.resolve(config);
     }
+
+    const done = this.async();
+    config.then((res) => {
+      if (!res) {
+        this.log.error(`Run \`${this.usage.prototype.resolvebinary(this.options)} configure\` first.`);
+        process.exit(1);
+      }
+      done();
+    }).catch(() => {
+      done();
+    });
   },
 
   writing: function() {
@@ -49,16 +67,24 @@ const delegate = {
       this.log.ok(`${chalk.green(module)} is ready.`);
       filtered.push(module);
     });
-    let content = this._generateDevBundleContent(filtered);
 
-    this.log.writeln();
-    this.log.info('Writing changes on `dev.bundles` file:');
-    this.fs.write(this._getDevBuildsPath(), content);
+    // Trigger the hotreload
+    const res = this.hotreloadHandler.trigger.apply(this, [filtered]);
+    // Rely on async#done if res is a Promise, to fully resolve it before moving forward
+    if (typeof res.then === 'function') {
+      const done = this.async();
+      res.then(() => {
+        done();
+      }).catch((err) => {
+        debug(err);
+        throw err;
+      });
+    }
   },
 
   end: function() {
     this.log.writeln();
-    this.log.info(`Hot reload triggered on: ${this._getDistributionPath()}`);
+    this.log.info('Hot reload triggered.');
   }
 };
 

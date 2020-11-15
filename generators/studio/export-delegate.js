@@ -1,3 +1,5 @@
+const debug = require('debug')('nuxeo:maven:export');
+
 const delegate = {
   initializing: function () {
     if (!(this._getSymbolicName() && this._getToken())) {
@@ -45,6 +47,7 @@ const delegate = {
         process.exit(error);
       });
     }).catch((error) => {
+      debug(error);
       this.log.error(`Unable to use '${pluginGAV}' Maven Plugin. Ensure you have the correct plugins repository sets following:`);
       this.log.error('https://github.com/nuxeo/nuxeo-studio-maven-plugin#setting-nuxeo-plugins-repository');
       process.exit(error);
