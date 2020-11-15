@@ -2,12 +2,13 @@ let _ = require('lodash');
 let exists = require('path-exists').sync;
 let fs = require('fs');
 let path = require('path');
+const glob = require('glob');
 
 const TXT_START = '## GENERATOR-NUXEO STUFF - DO NOT EDIT';
 const TXT_END = '## GENERATOR-NUXEO STUFF - END';
 
 function readFile(filePath) {
-  // Volontarly Silent not existing file
+  // Silent not existing file
   return exists(filePath) ? fs.readFileSync(filePath, {
     encoding: 'UTF-8'
   }) : '';
@@ -16,6 +17,21 @@ function readFile(filePath) {
 module.exports = {
   _computeClassesFolder: function(module) {
     return path.join(this.destinationRoot(), module, this.options.classesFolder);
+  },
+
+  _computeModulesJarsPath: function(modules) {
+    if (!_.isArray(modules)) {
+      return this._computeModulesJars([modules]);
+    }
+
+    const paths = [];
+    modules.forEach((module) => {
+      const pattern = path.join(module, 'target', `${module}-*.jar`);
+      glob.sync(pattern).forEach((file) => {
+        paths.push(file);
+      });
+    });
+    return paths;
   },
 
   _cleanDevBundlesFileContent: function(content) {
@@ -42,6 +58,12 @@ module.exports = {
 
     return _(modules).map((m) => {
       return `${type}:${this._computeClassesFolder(m)}`;
+    }).join('\n');
+  },
+
+  _buildBundlesFileList: function(type, files, basePath) {
+    return _(files).map((f) => {
+      return `${type}:${path.join(basePath, f)}`;
     }).join('\n');
   },
 

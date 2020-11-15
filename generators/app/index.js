@@ -156,7 +156,7 @@ module.exports = nuxeo.extend({
 
     async.eachSeries(types, (type, parentCb) => {
       const items = this.nuxeo.selectedModules[type];
-      // Add type to a global value to be referenced in the metamodele
+      // Add type to a global value to be referenced in the metamodel
       global._scope = {
         type
       };

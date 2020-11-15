@@ -1,10 +1,11 @@
 /*eslint no-undef:0*/
-const debug = require('debug')('nuxeo:generator:maven');
+const {spawn} = require('../../utils/cmd-spawner');
 const maven = require('../../utils/maven');
 const nxPkg = require('../../utils/nuxeo-package');
 const settings = require('../../utils/maven-settings');
 const path = require('path');
 const fs = require('fs-extra');
+const debug = require('debug')('nuxeo:maven');
 
 const STUDIO_SERVER = 'nuxeo-studio';
 const HF_RELEASES = 'hotfix-releases';
@@ -54,14 +55,14 @@ module.exports = {
       };
     }).forEach((m) => {
       switch (m.pom.packaging()) {
-        case 'zip':
-          this._addNuxeoPackageDependency(m.root);
-          break;
-        case 'jar':
+      case 'zip':
+        this._addNuxeoPackageDependency(m.root);
+        break;
+      case 'jar':
         m.pom.addDependency(cgav);
         m.pom.save(this.fs, m.fp);
-          break;
-        default:
+        break;
+      default:
         // Nothing to do
       }
     });
@@ -147,54 +148,41 @@ module.exports = {
   },
 
   _spawnMaven: function () {
+    const binary = process.platform === 'win32' ? 'mvn.cmd' : 'mvn';
     let args = Array.prototype.slice.call(arguments);
-    if (args.length === 1) {
-      args = args[0].split(' ');
-    }
 
-    const bin = process.platform === 'win32' ? 'mvn.cmd' : 'mvn';
-    debug('Spawn: %o', `${bin} ${args.join(' ')}`);
-
-    const mvn = require('child_process').spawn(bin, args, {
-      cwd: this.destinationRoot(),
-      encoding: 'utf-8',
-      stdio: ['ignore', 'pipe', 'pipe']
-    });
-
-    return new Promise((resolve, reject) => {
-      const ora = require('../../utils/spinner').async;
-      if (!debug.enabled) {
-        ora.text = 'Working... It can take some time, please be patient.';
-        ora.start();
-      }
-
-      mvn.stdout.on('data', (data) => {
-        const line = String(data).trim();
+    // Flag used to turn on output, w/o debug. Enabled when a line starts with [ERROR], then stops after an empty line, or another level logged line.
+    let enableOutput = false;
+    return spawn.apply(this, [{
+      binary,
+      args,
+      stdoutWriter: (line) => {
+        // stdout
         if (line.startsWith('[ERROR]')) {
+          enableOutput = true;
+        } else {
+          if (line.trim().length === 0) {
+            enableOutput = false;
+          }
+          if (line.startsWith('[')) {
+            enableOutput = false;
+          }
+        }
+
+        if (enableOutput) {
           this.log(line);
         } else {
           debug(line);
         }
-      });
-
-      mvn.stderr.on('data', (data) => {
+      },
+      stderrWriter: (line) => {
+        // stderr
         if (!debug.enabled) {
           return;
         }
 
-        debug(`${String(data).trim()}`);
-      });
-
-      mvn.on('close', (code) => {
-        debug(`Process exited with code ${code}`);
-        ora.stop();
-
-        if (code !== 0) {
-          reject(code);
-        } else {
-          resolve();
-        }
-      });
-    });
+        debug(line);
+      }
+    }]);
   }
 };

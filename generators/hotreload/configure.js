@@ -6,6 +6,8 @@ const maven = require('../../utils/maven.js');
 
 const DISTRIBUTION_PATH = 'distribution:path';
 const MODULE_IGNORED = 'module:ignored';
+const DEPLOYMENT_CONF = 'deployment:type';
+const DEPLOYMENT_CONFIG = DEPLOYMENT_CONF + ':config';
 
 // Notes:
 //
@@ -66,6 +68,19 @@ module.exports = {
 
   _getIgnoredModules() {
     return this.config.get(MODULE_IGNORED) || [];
+  },
+
+  _saveDeployment(deployment, config = {}) {
+    this.config.set(DEPLOYMENT_CONF, deployment);
+    this.config.set(DEPLOYMENT_CONFIG, Object.assign({}, config));
+  },
+
+  _getDeployment() {
+    return this.config.get(DEPLOYMENT_CONF);
+  },
+
+  _getDeploymentConfig() {
+    return this.config.get(DEPLOYMENT_CONFIG);
   },
 
   _configureDistribution: function() {
