@@ -9,7 +9,6 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const nuxeo = require('./nuxeo-base.js');
 const s = require('../../utils/nuxeo.string.js');
-const v = require('../../utils/version-helper.js');
 const maven = require('../../utils/maven.js');
 const manifestmf = require('../../utils/manifestmf.js');
 const propHolder = require('../../utils/property-holder.js');
@@ -19,6 +18,7 @@ const pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.jso
 const debug = require('debug')('nuxeo:app');
 
 global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
+global.VERSION_HELPER = require('../../utils/version-helper.js');
 
 module.exports = nuxeo.extend({
   _getGlobalStorage: function () {
@@ -222,7 +222,7 @@ module.exports = nuxeo.extend({
 
     // XXX Should be handled differently
     props.s = s; // String utils
-    props.v = v.fromVersion(this._getNuxeoVersion()); // Version utils
+    props.v = global.VERSION_HELPER.fromVersion(this._getNuxeoVersion()); // Version utils
     props.multi = that._isMultiModule();
     props.global = global;
 
