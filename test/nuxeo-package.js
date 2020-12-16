@@ -1,5 +1,5 @@
 const tmp = require('tmp');
-const assert = require('yeoman-assert');
+const assert = require('assert');
 const nxPkg = require('../utils/nuxeo-package.js');
 const fs = require('fs');
 const memFs = require('mem-fs');

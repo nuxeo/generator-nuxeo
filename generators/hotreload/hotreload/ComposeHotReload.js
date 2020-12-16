@@ -1,5 +1,3 @@
-const _ = require('lodash');
-const chalk = require('chalk');
 const tar = require('tar');
 const Docker = require('dockerode');
 const debug = require('debug')('nuxeo:hotreload:compose');
