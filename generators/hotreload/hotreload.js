@@ -21,7 +21,7 @@ module.exports = {
 
   _computeModulesJarsPath: function(modules) {
     if (!_.isArray(modules)) {
-      return this._computeModulesJars([modules]);
+      return this._computeModulesJarsPath([modules]);
     }
 
     const paths = [];
