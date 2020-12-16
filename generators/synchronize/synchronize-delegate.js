@@ -1,6 +1,5 @@
 const debug = require('debug')('nuxeo:synchronize:delegate');
 const Watcher = require('./synchronize/Watcher').Watcher;
-const {DEPLOYMENTS} = require('../../utils/deployment-helper');
 
 const delegate = {
   initializing: function() {

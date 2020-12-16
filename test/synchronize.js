@@ -10,6 +10,7 @@ const fs = require('fs-extra');
 const _ = require('lodash');
 const debug = require('debug')('nuxeo:test');
 const isArray = require('isarray');
+const LOCAL = require('../utils/deployment-helper').DEPLOYMENTS.LOCAL;
 
 describe('Synchronization Command', function () {
   beforeEach(function () {
@@ -218,7 +219,12 @@ describe('Synchronization Command', function () {
       trigger: LocalSync.Triggers.Mkdirp
     }];
 
-    const watcher = new Watcher();
+    const watcher = new Watcher({
+      deployment: {
+        type: LOCAL
+      }
+    });
+    watcher.initializeHandler();
 
     tests.forEach((test) => {
       it(`with "${test.event}" event as ${test.trigger.name}.`, function () {

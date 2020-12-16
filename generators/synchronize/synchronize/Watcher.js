@@ -66,11 +66,22 @@ class Watcher {
 
   initializeHandler() {
     return new Promise((accept, reject) => {
-      if (this.config.deployment.type === DEPLOYMENTS.LOCAL) {
+      if (this.config.deployment && this.config.deployment.type === DEPLOYMENTS.LOCAL) {
         this.synchronizeHandler = require('./LocalSynchronize.js');
         accept();
+      } else if (this.config.deployment && this.config.deployment.type === DEPLOYMENTS.COMPOSE) {
+        this.synchronizeHandler = require('./ComposeSynchronize.js');
+        // Fetch the container id to avoid doing it for each actions
+        this.synchronizeHandler.getContainerId(this.config.deployment.config.serviceName).then((containerId) => {
+           // Store it in the deployment configuration
+           this.config.deployment.config.containerId = containerId;
+           accept();
+        }).catch((err) => {
+          log.error(err);
+          reject();
+        });
       } else {
-        this.log.error('Deployment not properly configured');
+        log.error('Deployment not properly configured');
         reject();
       }
     });
