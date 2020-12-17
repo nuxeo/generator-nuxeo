@@ -8,32 +8,6 @@ const ActionTrigger = require('./ActionTrigger').ActionTrigger;
 const fs = require('fs-extra');
 const docker = new Docker();
 
-/**
- * Check if the given directory exists in the given container.
- * @param {*} container 
- * @param {*} dir 
- */
-const checkIfDirectoryExists = (container, dir) => {
-  const cmd = ['bash', '-c', `test -d ${dir} &&  echo '{"exists": true}' || echo '{"exists": false}'`];
-  debug(cmd);
-  return container.exec({
-    cmd,
-    user: 'root',
-    attachStdout: true,
-    attachStderr: true,
-    tty: true
-  }).then((exec) => {
-    // Start exec command
-    return exec.start({
-      tty: true
-    });
-  }).then((stream)=> {
-    return new Promise((resolve, reject) => {
-      docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
-    });
-  });
-}
-
 const execCommandOnContainer = (container, cmdLine) => {
   // Run the command on the container
   const cmd = ['bash', '-c', cmdLine];
@@ -68,11 +42,16 @@ class DockerMkdirTrigger extends ActionTrigger {
     this.logSync('Mkdir', 'magenta', this.displayDest);
     debug('Missing Destination Dir, trigger MkdirTrigger');
 
-    // Run a docker command to create the missing folder
+    // Check if the directory already exists
     const container = docker.getContainer(this.config.deployment.config.containerId);
-
-    // Run the mkdir command on the container
-    execCommandOnContainer(container, `install -d -m 0755 -o nuxeo -g nuxeo ${this.destination}`);
+    container.infoArchive({
+      path: this.destination
+    }).catch((err) => {
+      if (err.statusCode === 404) {
+        // Run the mkdir command on the container
+        execCommandOnContainer(container, `install -d -m 0755 -o nuxeo -g nuxeo ${this.destination}`);
+      }
+    })
   }
 }
 
@@ -96,16 +75,15 @@ class DockerCopyTrigger extends ActionTrigger {
     debug(container);
 
     // Check if the directory exists on the container before put the archive
-    execCommandOnContainer(container, `test -d ${this._getDestinationFolder()} &&  echo '{"exists": true}' || echo '{"exists": false}'`).then((res) => {
-      if (res[0].exists === false) {
-        // Create the directory first
+    container.infoArchive({
+      path: this._getDestinationFolder()
+    }).catch((err) => {
+      if (err.statusCode === 404) {
+        // If the destination folder does not exist, create it. The command 'install' is used to also create the full hierarchy of parents
         return execCommandOnContainer(container, `install -d -m 0755 -o nuxeo -g nuxeo ${this._getDestinationFolder()}`);
-      } else {
-        // The directory exists, continue the action trigger
-        Promise.resolve();
       }
     }).then(() => {
-      debug( `Creating TAR file with file: ${this.source}`);
+      debug(`Creating TAR file with file: ${this.source}`);
       return tar.c({
         gzip: true,
         portable: true,
@@ -113,7 +91,7 @@ class DockerCopyTrigger extends ActionTrigger {
         cwd: this.config.src
       }, [this._getRelativeSourceFilePath()])
     }).then(() => {
-      this.logSync('info', 'grey', `Putting archive into ${container.id}...`);
+      debug(`Putting archive into ${container.id}`);
       // put tar archive in destination container's folder
       return container.putArchive(archive, {
         path: this.config.dest
@@ -144,15 +122,20 @@ class DockerUnlinkTrigger extends ActionTrigger {
 
   trigger() {
     this.logSync('Delete', 'yellow', this.displayDest);
+    // Check if the directory already exists
     const container = docker.getContainer(this.config.deployment.config.containerId);
-    const cmd = ['bash', '-c', `rm -fr ${this.destination}`];
-    debug(cmd);
-    container.exec({
-      cmd,
-      user: 'root',
-      attachStdout: true,
-      attachStderr: true,
-      tty: true
+    container.infoArchive({
+      path: this.destination
+    }).then(() => {
+      const cmd = ['bash', '-c', `rm -fr ${this.destination}`];
+      debug(cmd);
+      return container.exec({
+        cmd,
+        user: 'root',
+        attachStdout: true,
+        attachStderr: true,
+        tty: true
+      });
     }).then((exec) => {
       // Start exec command
       return exec.start({
@@ -162,6 +145,10 @@ class DockerUnlinkTrigger extends ActionTrigger {
       return new Promise((resolve, reject) => {
         docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
       });
+    }).catch((err) => {
+      if (err.statusCode === 404) {
+        debug(`The directory ${this.destination} does not exist in the container`);
+      }
     });
   }
 }
