@@ -106,10 +106,15 @@ class Watcher {
     }.bind(this));
   }
 
-  restartMainWatcher() {
-    this.watchers.main.close();
-    delete this.watchers.main;
+  closeMainWatcher() {
+    if (this.watchers.main !== undefined) {
+      this.watchers.main.close();
+      delete this.watchers.main;
+    }
+  }
 
+  restartMainWatcher() {
+    this.closeMainWatcher();
     this.startMainWatcher();
   }
 

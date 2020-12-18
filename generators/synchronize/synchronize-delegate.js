@@ -27,7 +27,14 @@ const delegate = {
 
   configuring: function() {
     const done = this.async();
-    this.watcher.configured().then((res) => {
+    let configured = this.watcher.configured;
+
+    // Wrap response into a Promise if response isn't already one.
+    if (typeof configured.then !== 'function') {
+      configured = Promise.resolve(configured);
+    }
+
+    configured.then((res) => {
       if (!res) {
         this.log.error(`Run \`${this.usage.prototype.resolvebinary(this.options)} configure\` first.`);
         process.exit(1);
@@ -45,8 +52,13 @@ const delegate = {
     this.log.info(`Start watching on deployment ${this._getDeployment()}`);
     
     const done = this.async();
-    new Promise(() => {
+    new Promise( (accept) => {
       this.watcher.run();
+      process.on('SIGINT', () => {
+        // Close the watchers
+        this.watcher.closeMainWatcher();
+        accept();
+      });
     }).then(() => {
       this.log.info('Stop watching');
       done();
@@ -58,7 +70,6 @@ const delegate = {
 
   end: function() {
     this.log.info('Synchronization is ended');
-    process.exit(1);
   }
 }
 
