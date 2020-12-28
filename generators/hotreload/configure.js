@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const path = require('path');
 const exists = require('path-exists').sync;
 const fs = require('fs');
