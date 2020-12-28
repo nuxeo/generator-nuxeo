@@ -2,7 +2,6 @@ const maven = require('./maven.js');
 const _ = require('lodash');
 const path = require('path');
 const exists = require('path-exists').sync;
-const fs = require('fs');
 
 function listModules(rootFolder) {
   const pomPath = path.join(rootFolder, 'pom.xml');
