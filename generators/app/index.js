@@ -19,6 +19,7 @@ const debug = require('debug')('nuxeo:app');
 
 global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
 global.VERSION_HELPER = require('../../utils/version-helper.js');
+global.MODULES_HELPER = require('../../utils/modules-helper.js');
 
 module.exports = nuxeo.extend({
   _getGlobalStorage: function () {
