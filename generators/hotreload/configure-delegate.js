@@ -4,14 +4,6 @@ const chalk = require('chalk');
 
 const {DEPLOYMENTS} = require('../../utils/deployment-helper');
 
-function modulesToChoices(modules) {
-  return _(modules).map((module) => {
-    return {
-      name: module
-    };
-  }).value();
-}
-
 const delegate = {
   initializing: function () {
     this.log.info(chalk.green('You\'ll be prompted for setting a target Nuxeo Server to trigger hot reload.'));
@@ -49,7 +41,7 @@ const delegate = {
       type: 'checkbox',
       name: 'ignoredModules',
       message: 'Ignore selected modules:',
-      choices: modulesToChoices(this._listModules()),
+      choices: this._modulesToChoices(this._listModules()),
       store: true
     }]).then((answers) => {
       this._saveIgnoredModules(answers.ignoredModules);

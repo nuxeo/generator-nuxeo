@@ -2,7 +2,7 @@ const _ = require('lodash');
 const path = require('path');
 const exists = require('path-exists').sync;
 const fs = require('fs');
-const maven = require('../../utils/maven.js');
+const modulesHelper = require('../../utils/modules-helper.js');
 
 const DISTRIBUTION_PATH = 'distribution:path';
 const MODULE_IGNORED = 'module:ignored';
@@ -104,20 +104,19 @@ module.exports = {
    */
   _listModules: function(parentFolder) {
     const _rootFolder = parentFolder || this.destinationRoot();
-    const pomPath = path.join(_rootFolder, 'pom.xml');
-    if (!exists(pomPath)) {
-      this.log.error(`No pom.xml file found in ${parentFolder}.`);
-      process.exit(1);
+    try {
+      return modulesHelper.listModules(_rootFolder);
+    } catch (err) {
+      this.log.error(err);
+      process.exit(0);
     }
+  },
 
-    let pom = maven.open(this.fs.read(pomPath));
-    // If parent pom is not a BOM; there is no child module.
-    if (!pom.isBom()) {
-      return ['.'];
-    }
-    return _(pom.modules()).filter((module) => {
-      return maven.open(path.join(this.destinationRoot(), module, 'pom.xml')).packaging() === 'jar';
-    }).value();
+  /**
+   * Transform a list of modules into a list of choices for the prompting step
+   */
+  _modulesToChoices: function(modules) {
+    return modulesHelper.modulesToChoices(modules);
   },
 
   /**
