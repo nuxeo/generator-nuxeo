@@ -69,7 +69,6 @@ module.exports = {
         this.nuxeo.modules[file] = require(descPath);
       }
     });
-    // this.log(this.nuxeo.modules);
   },
 
   _addModulesDependencies: function (pomParent) {
@@ -134,11 +133,6 @@ module.exports = {
     const types = {};
     _(modules).forEach((module) => {
       const type = this._moduleResolveType(module);
-      // root is multi-module base, skip it
-      if (type === 'root') {
-        return;
-      }
-
       const array = types[type] || [];
       array.push(module);
       types[type] = array;
