@@ -4,15 +4,7 @@
 const _ = require('lodash');
 const yeoman = require('yeoman-generator');
 
-let App = {
-  _afterConstructor: function () {
-    this.option('classesFolder', {
-      desc: 'Define where is the classes folder under the module\'s one',
-      type: String,
-      default: 'target/classes'
-    });
-  }
-};
+let App = {};
 
 App = _.extend(App, require('../../lib/delegated-generator.js').withDefault('synchronize'));
 

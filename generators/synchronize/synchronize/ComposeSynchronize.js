@@ -7,6 +7,7 @@ const Docker = require('dockerode');
 const ActionTrigger = require('./ActionTrigger').ActionTrigger;
 const fs = require('fs-extra');
 const docker = new Docker();
+const log = require('yeoman-environment/lib/util/log')();
 
 const execCommandOnContainer = (container, cmdLine) => {
   // Run the command on the container
@@ -165,7 +166,7 @@ module.exports = {
       if (containers.length > 0) {
         return true;
       } else {
-        this.log.error(`Unable to find container with name: "${deployment.config.serviceName}".`);
+        log.error(`Unable to find container with name: "${deployment.config.serviceName}".`);
         return false;
       }
     }).catch((err) => {
@@ -181,7 +182,7 @@ module.exports = {
     }).then((containers) => {
       debug(containers);
       if (containers.length <= 0) {
-        this.log.error(`Unable to find container with name: "${serviceName}".`);
+        log.error(`Unable to find container with name: "${serviceName}".`);
         throw new Error(`Unable to find container with name: "${serviceName}".`);
       }
       return containers[0].Id;
