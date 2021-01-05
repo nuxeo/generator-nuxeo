@@ -73,7 +73,7 @@ module.exports = {
         // create exec cmd to hot reload
         const content = this._buildBundlesFileList('bundle', jars, '/tmp');
         // TODO chmod is required because of `tar` library not able to change archived files mode; and sticks to local system umask.
-        const cmd = ['bash', '-c', `chmod a+r /tmp/{${modules.join(',')}}/target/*jar && curl -X POST -d '${content}' http://localhost:8080/nuxeo/sdk/reload`];
+        const cmd = ['bash', '-c', `chmod a+r /tmp/${modules.join(',')}/target/*jar && curl -X POST -d '${content}' http://localhost:8080/nuxeo/sdk/reload`];
         debug(cmd);
         debug(cmd.join(' '));
         debug(content);
