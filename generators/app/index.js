@@ -150,7 +150,10 @@ module.exports = nuxeo.extend({
       this.log.info = t;
 
       if (!_.isEmpty(module)) {
-        types.splice(0, 0, 'root');
+        // Splice the root type if it's not there already
+        if (types.findIndex((e) => e === 'root') === -1) {
+          types.splice(0, 0, 'root');
+        }
         this.nuxeo.selectedModules.root = module;
       }
     }
