@@ -48,8 +48,18 @@ if (!res) {
     enabled: true
   }, {
     label: 'Nuxeo Platform LTS 2019',
-    default: true,
+    default: false,
     version: '10.10',
+    enabled: true
+  }, {
+    label: 'Nuxeo Platform LTS 2021',
+    default: true,
+    version: '2021.0',
+    enabled: true
+  }, {
+    label: 'Nuxeo Cloud 11.x',
+    default: true,
+    version: '11.1',
     enabled: true
   }];
 }
@@ -84,9 +94,9 @@ let dtp = _(targetPlatforms).find((tp) => {
 
 if (dtp === undefined) {
   dtp = {
-    label: 'Nuxeo Platform LTS 2016',
+    label: 'Nuxeo Platform LTS 2021',
     default: true,
-    version: '8.10'
+    version: '2021.0'
   };
 }
 

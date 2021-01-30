@@ -73,9 +73,9 @@ class Watcher {
         this.synchronizeHandler = require('./ComposeSynchronize.js');
         // Fetch the container id to avoid doing it for each actions
         this.synchronizeHandler.getContainerId(this.config.deployment.config.serviceName).then((containerId) => {
-           // Store it in the deployment configuration
-           this.config.deployment.config.containerId = containerId;
-           accept();
+          // Store it in the deployment configuration
+          this.config.deployment.config.containerId = containerId;
+          accept();
         }).catch((err) => {
           log.error(err);
           reject();

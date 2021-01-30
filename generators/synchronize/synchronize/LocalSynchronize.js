@@ -56,7 +56,7 @@ module.exports = {
     // Always returns true
     return true;
   },
-  Triggers : {
+  Triggers: {
     Copy: LocalCopyTrigger,
     Unlink: LocalUnlinkTrigger,
     Mkdirp: LocalMkdirTrigger

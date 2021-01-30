@@ -73,7 +73,7 @@ module.exports = {
         // create exec cmd to hot reload
         const content = this._buildBundlesFileList('bundle', jars, '/tmp');
         // TODO chmod is required because of `tar` library not able to change archived files mode; and sticks to local system umask.
-        const cmd = ['bash', '-c', `chmod a+r /tmp/${modules.join(',')}/target/*jar && curl -X POST -d '${content}' http://localhost:8080/nuxeo/sdk/reload`];
+        const cmd = ['bash', '-c', `chmod a+r /tmp/${modules.join(',')}/target/*jar && curl -fs -X POST -d '${content}' http://localhost:8080/nuxeo/sdk/reload`];
         debug(cmd);
         debug(cmd.join(' '));
         debug(content);
@@ -88,11 +88,17 @@ module.exports = {
         // Start exec command
         return exec.start({
           tty: true
+        }).then((stream)=> { // Wait start processed
+          return new Promise((resolve, reject) => {
+            docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
+          });
+        }).then(() => { // Catch exit code
+          return exec.inspect();
         });
-      }).then((stream)=> {
-        return new Promise((resolve, reject) => {
-          docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
-        });
+      }).then((inspect) => {
+        if (inspect.ExitCode !== 0) {
+          this.log.error('Unable to perform hot-reload, please ensure your server has the dev mode enabled.');
+        }
       });
   }
 };

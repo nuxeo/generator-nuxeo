@@ -24,4 +24,4 @@ module.exports = {
   _getSynchronizeConfig() {
     return this.config.get(SYNCHRONIZE_CONFIG);
   },
-}
+};
