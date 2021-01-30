@@ -29,7 +29,7 @@ const execCommandOnContainer = (container, cmdLine) => {
       docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
     });
   });
-}
+};
 
 class DockerMkdirTrigger extends ActionTrigger {
   constructor(destination, config) {
@@ -52,7 +52,7 @@ class DockerMkdirTrigger extends ActionTrigger {
         // Run the mkdir command on the container
         execCommandOnContainer(container, `install -d -m 0755 -o nuxeo -g nuxeo ${this.destination}`);
       }
-    })
+    });
   }
 }
 
@@ -90,13 +90,13 @@ class DockerCopyTrigger extends ActionTrigger {
         portable: true,
         file: archive,
         cwd: this.config.src
-      }, [this._getRelativeSourceFilePath()])
+      }, [this._getRelativeSourceFilePath()]);
     }).then(() => {
       debug(`Putting archive into ${container.id}`);
       // put tar archive in destination container's folder
       return container.putArchive(archive, {
         path: this.config.dest
-      })
+      });
     }).then(() => {
       // Remove the tar file in the tmp folder
       fs.removeSync(archive);
@@ -188,7 +188,7 @@ module.exports = {
       return containers[0].Id;
     });
   },
-  Triggers : {
+  Triggers: {
     Copy: DockerCopyTrigger,
     Unlink: DockerUnlinkTrigger,
     Mkdirp: DockerMkdirTrigger

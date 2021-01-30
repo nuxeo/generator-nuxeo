@@ -13,7 +13,7 @@ const delegate = {
       store: true,
       choices: [{
         name: DEPLOYMENTS.LOCAL
-        }, {
+      }, {
         name: DEPLOYMENTS.COMPOSE
       }]
     }, {
@@ -21,6 +21,13 @@ const delegate = {
       name: 'serviceName', message: 'Name of the Docker compose service for the Nuxeo server:',
       default: `${path.basename(this.destinationRoot())}_nuxeo_1`,
       store: true,
+      when: (answers) => {
+        return answers.deployment === DEPLOYMENTS.COMPOSE;
+      }
+    }, {
+      type: 'input',
+      name: 'sources_input',
+      message: '> Your source folder content will be synchronized within your container\' `nxserver/nuxeo.war/ui/` folder.',
       when: (answers) => {
         return answers.deployment === DEPLOYMENTS.COMPOSE;
       }
@@ -55,6 +62,6 @@ const delegate = {
   end: function () {
     this.log.info('Nuxeo synchronization has been configured.');
   }
-}
+};
 
 module.exports = delegate;

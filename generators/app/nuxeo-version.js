@@ -20,6 +20,10 @@ function isNuxeoPackage(pkg) {
 }
 
 module.exports = {
+  _hasNuxeoVersion: function() {
+    return !isUndefined(this.config.get(KEY));
+  },
+
   _getNuxeoVersion: function() {
     return this.config.get(KEY);
   },

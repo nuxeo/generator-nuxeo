@@ -8,6 +8,11 @@ const delegate = {
     }
 
     const syncConfig = this._getSynchronizeConfig();
+    if (syncConfig === undefined) {
+      this.log.error(`Run \`${this.usage.prototype.resolvebinary(this.options)} configure\` first.`);
+      process.exit(1);
+    }
+
     // Add the deployment config
     syncConfig.deployment = {
       type: this._getDeployment(),
@@ -50,9 +55,9 @@ const delegate = {
     debug('Options: %O', this.options);
 
     this.log.info(`Start watching on deployment ${this._getDeployment()}`);
-    
+
     const done = this.async();
-    new Promise( (accept) => {
+    new Promise((accept) => {
       this.watcher.run();
       process.on('SIGINT', () => {
         // Close the watchers
@@ -71,6 +76,6 @@ const delegate = {
   end: function() {
     this.log.info('Synchronization is ended');
   }
-}
+};
 
 module.exports = delegate;
