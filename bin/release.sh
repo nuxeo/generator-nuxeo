@@ -1,7 +1,6 @@
 #!/bin/bash -
 set -e
 
-
 VERSION=$1
 if [ -z "$VERSION" ]; then
   echo 'Usage: ./release.sh VERSION <BRANCH>'
@@ -14,9 +13,12 @@ if [ -z "$BRANCH" ]; then
 fi
 
 echo "Checking if meta $BRANCH exists: https://github.com/nuxeo/generator-nuxeo-meta/archive/$BRANCH.tar.gz"
-curl -s -f -I -L https://github.com/nuxeo/generator-nuxeo-meta/archive/$BRANCH.tar.gz > /dev/null
+curl -s -f -I -L https://github.com/nuxeo/generator-nuxeo-meta/archive/$BRANCH.tar.gz >/dev/null
 
 git checkout master
+
+# First check everything is OK
+npx gulp prepublish
 
 # Update the version in package.json
 npm version $VERSION --git-tag-version=false
@@ -43,7 +45,7 @@ rm -f package.json.bak
 git add package.json
 
 # build, test and publish
-npm run gulp -- prepublish
+npx gulp prepublish
 npm publish
 
 git commit -m "Release $VERSION - meta: $BRANCH"
