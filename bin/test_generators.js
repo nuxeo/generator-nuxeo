@@ -42,8 +42,9 @@ Adapter.prototype.prompt = function (questions, callback) {
       this.log.error('No response found for: ' + question.name);
       res[question.name] = undefined;
     } else {
-      res[question.name] = this._responses[question.name] || question.default;
+      res[question.name] = this._responses[question.name] || (typeof question.default === 'function' ? question.default.apply(this) : question.default);
     }
+    this.log.info(`Response for ${question.name}: ${res[question.name]}`);
   }.bind(this));
 
   res.action = 'force';
@@ -106,33 +107,6 @@ async.waterfall([function (callback) {
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true listener`, callback);
-}, function (callback) {
-  // Add a Polymer app in web module
-  adapter.responses({
-    artifact: 'my-polymer-app-artifact',
-    name: 'Sample-polymer-app',
-    route: 'myPolymerApp'
-  });
-
-  env.run(`nuxeo:test --meta=${branch} --skipInstall=true --nologo=true polymer`, callback);
-}, function (callback) {
-  // Add a Polymer app
-  adapter.responses({
-    artifact: 'my-angular-app-artifact',
-    name: 'Sample-angular-app',
-    route: 'myAngularApp'
-  });
-
-  env.run(`nuxeo:test --meta=${branch} --type=angu --skipInstall=true --nologo=true angular2`, callback);
-}, function (callback) {
-  // Add a ReactJS app
-  adapter.responses({
-    artifact: 'my-reactjs-app-artifact',
-    name: 'Sample-reactjs-app',
-    route: 'myReactApp'
-  });
-
-  env.run(`nuxeo:test --meta=${branch} --type=reactjs --skipInstall=true --nologo=true reactjs`, callback);
 }, function (callback) {
   // Add it a sync Listener
   adapter.responses({
@@ -250,12 +224,19 @@ async.waterfall([function (callback) {
 }, function(callback) {
   // Add it a Package
   adapter.responses({
-    artifact: 'my-test-package',
+    artifact: 'tmp-package',
     name: 'My test package',
     company: 'Nuxeo',
   });
 
   env.run(`nuxeo:test --meta=${branch} --nologo=true package`, callback);
+}, function(callback) {
+  // Add it a Docker image
+  adapter.responses({
+    artifact: 'my-test-docker',
+  });
+
+  env.run(`nuxeo:test --meta=${branch} --nologo=true docker`, callback);
 }, function (callback) {
   // Add it a Ftest
   adapter.responses({
@@ -265,5 +246,5 @@ async.waterfall([function (callback) {
     description: 'My test functional tests'
   });
 
-  env.run(`nuxeo:test --meta=${branch} --nologo=true ftest`, callback);
+  env.run(`nuxeo:test --meta=${branch} --skipInstall=true --nologo=true ftest`, callback);
 }]);
