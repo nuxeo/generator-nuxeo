@@ -1,5 +1,6 @@
 const path = require('path');
 const {DEPLOYMENTS} = require('../../utils/deployment-helper');
+const Watcher = require('./synchronize/Watcher');
 
 const delegate = {
 
@@ -16,6 +17,12 @@ const delegate = {
       }, {
         name: DEPLOYMENTS.COMPOSE
       }]
+    }, {
+      type: 'input',
+      name: 'pattern',
+      message: 'File pattern to synchronize:',
+      store: true,
+      default: Watcher.Watcher.GLOB
     }, {
       type: 'input',
       name: 'serviceName', message: 'Name of the Docker compose service for the Nuxeo server:',
@@ -53,7 +60,8 @@ const delegate = {
       const dest = answers.deployment === DEPLOYMENTS.LOCAL ? answers.dest : '/opt/nuxeo/server/nxserver/nuxeo.war/ui/';
       this._saveSynchronizeConfig({
         src: answers.src,
-        dest: dest
+        dest: dest,
+        pattern: answers.pattern.trim()
       });
       done();
     });

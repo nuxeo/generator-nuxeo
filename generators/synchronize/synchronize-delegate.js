@@ -54,7 +54,7 @@ const delegate = {
     require('../../lib/analytics').event('nuxeo:synchronize', this.options._.slice(1).join(' '));
     debug('Options: %O', this.options);
 
-    this.log.info(`Start watching on deployment ${this._getDeployment()}`);
+    this.log.info(`Start watching from ${this._getDeployment()}`);
 
     const done = this.async();
     new Promise((accept) => {

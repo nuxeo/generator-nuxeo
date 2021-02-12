@@ -99,7 +99,8 @@ class Watcher {
     this.watchers.main.on('all', function (event, filePath) { //function needed to access arguments.
       debug('%O', arguments);
       if (!this.handledFile(event, filePath)) {
-        debug(`Unhandled event "${event}" or file "${filePath}"`);
+        this.logWatcher('ignore', 'grey', `${filePath}`);
+        debug(`Unhandled event "${event}" or file "${filePath}" (file pattern: ${this.config.pattern})`);
         return;
       }
       this.triggerAction(event, filePath);
@@ -176,7 +177,7 @@ class Watcher {
   run() {
     setTimeout(() => {
       // Delayed to 5ms, to free the thread to print the logo before any other log
-      log.info(`Waiting changes from "${chalk.blue(truncate(this.config.src))}", to "${chalk.blue(truncate(this.config.dest))}"`);
+      log.info(`Waiting changes of "${chalk.green(truncate(this.config.pattern))}" from "${chalk.blue(truncate(this.config.src))}", to "${chalk.blue(truncate(this.config.dest))}"`);
 
       this.startMainWatcher();
       // this.startServerRestartWatcher();

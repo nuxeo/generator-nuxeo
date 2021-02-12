@@ -83,6 +83,22 @@ Then, you will be able to trigger it using:
 yo nuxeo:hotreload
 ```
 
+## Synchronize
+
+Using this generator lets you synchronize two folders, and automatically create folder/copy/delete files from a `source` folder to a `destination` folder. It helps you automatically copying web resources from your source code to the a running server for previewing your changes live.
+
+First step is to configure the synchronize command for relying either on Docker implementation, or a Local one depending on how you deploy your Nuxeo Server. You'll be prompted to configure a pattern of file matching the synchronize in order to prevent you from copying files you don't need (temp file, zip, ...). The default value is: `*.+(js|html|jpg|gif|svg|png|json|jsp)`.
+
+```bash
+yo nuxeo:synchronize configure
+```
+
+For starting files changes and synchronize two folders, execute:
+
+```bash
+yo nuxeo:synchronize
+```
+
 ## Studio Connection
 
 Connect your Java project let you have your Studio Project exposed as a dependency and be able to tests anything declared in it, like your Automation Scripting, listeners, Document Types, ...
