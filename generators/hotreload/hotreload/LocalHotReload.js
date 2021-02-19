@@ -17,6 +17,6 @@ module.exports = {
 
     this.log.writeln();
     this.log.info('Writing changes on `dev.bundles` file:');
-    this.fs.write(this._getDevBuildsPath(), content);
+    return this.fs.write(this._getDevBuildsPath(), content);
   }
 };
