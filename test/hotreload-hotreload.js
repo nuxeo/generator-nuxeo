@@ -1,6 +1,6 @@
 const assert = require('yeoman-assert');
 const hotreload = require('../generators/hotreload/hotreload.js');
-
+/* eslint no-useless-escape: "off" */
 describe('Hot Reload Maven Module should', function() {
   before(function() {
     hotreload.options = {
@@ -17,7 +17,7 @@ describe('Hot Reload Maven Module should', function() {
     const str = hotreload._buildBundlesList(modules);
 
     assert.ok(str.match(/^bundle:/m));
-    assert.ok(str.match(/\/myapp-(?:core|web)\/target\/classes$/m));
+    assert.ok(str.match(/[\/\\\\]myapp-(?:core|web)[\/\\\\]target[\/\\\\]classes$/m));
   });
 
   it('build typed bundles list', function() {
@@ -25,7 +25,7 @@ describe('Hot Reload Maven Module should', function() {
     const str = hotreload._buildBundlesList('web', modules);
 
     assert.ok(str.match(/^web:/m));
-    assert.ok(str.match(/\/myapp-(?:core|web)\/target\/classes$/m));
+    assert.ok(str.match(/[\/\\\\]myapp-(?:core|web)[\/\\\\]target[\/\\\\]classes$/m));
   });
 
   it('render dev.bundles content', function() {

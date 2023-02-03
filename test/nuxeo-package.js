@@ -1,4 +1,5 @@
 const tmp = require('tmp');
+tmp.setGracefulCleanup();
 const assert = require('assert');
 const nxPkg = require('../utils/nuxeo-package.js');
 const fs = require('fs');
