@@ -5,6 +5,7 @@ const expect = chai.expect;
 const Watcher = require('../generators/synchronize/synchronize/Watcher').Watcher;
 const LocalSync = require('../generators/synchronize/synchronize/LocalSynchronize');
 const tmp = require('tmp');
+tmp.setGracefulCleanup();
 const path = require('path');
 const fs = require('fs-extra');
 const _ = require('lodash');
@@ -66,7 +67,7 @@ describe('Synchronization Command', function () {
   describe('contains valid triggers.', function () {
     function createFile(dest, content = {}) {
       expect(fs.existsSync(dest)).to.be.false();
-      fs.writeFileSync(dest, content);
+      fs.writeFileSync(dest, JSON.stringify(content));
 
       const destSize = fs.lstatSync(dest).size;
       expect(fs.lstatSync(dest).size).to.be.greaterThan(0);
@@ -242,15 +243,15 @@ describe('Synchronization Command', function () {
   describe('compute destination path', function () {
     it('can compute from single src', function () {
       const w = new Watcher({dest: '/tmp/dest', src: '/tmp/src'});
-      expect(w.computeDestination('/tmp/src/toto/tata/a')).to.be.eq('/tmp/dest/toto/tata/a');
+      expect(w.computeDestination('/tmp/src/toto/tata/a')).to.be.eq(path.normalize('/tmp/dest/toto/tata/a'));
     });
 
     it('can compute from multiple src', function () {
       const w = new Watcher({dest: '/tmp/dest', src: ['/tmp/src1', '/tmp/src2', '/tmp/src3']});
 
-      expect(w.computeDestination('/tmp/src1/toto/tata/a')).to.be.eq('/tmp/dest/toto/tata/a');
-      expect(w.computeDestination('/tmp/src2/foo/a')).to.be.eq('/tmp/dest/foo/a');
-      expect(w.computeDestination('/tmp/src3/toto/a')).to.be.eq('/tmp/dest/toto/a');
+      expect(w.computeDestination('/tmp/src1/toto/tata/a')).to.be.eq(path.normalize('/tmp/dest/toto/tata/a'));
+      expect(w.computeDestination('/tmp/src2/foo/a')).to.be.eq(path.normalize('/tmp/dest/foo/a'));
+      expect(w.computeDestination('/tmp/src3/toto/a')).to.be.eq(path.normalize('/tmp/dest/toto/a'));
     });
 
     it('can compute on tricky paths', function() {
@@ -259,10 +260,10 @@ describe('Synchronization Command', function () {
        */
       const w = new Watcher({dest: '/tmp/dest', src: ['/tmp/src', '/tmp/src2', '/tmp/src3']});
 
-      expect(w.computeDestination('/tmp/src')).to.be.eq('/tmp/dest');
-      expect(w.computeDestination('/tmp/src/toto/tata/a')).to.be.eq('/tmp/dest/toto/tata/a');
-      expect(w.computeDestination('/tmp/src2/foo/a')).to.be.eq('/tmp/dest/foo/a');
-      expect(w.computeDestination('/tmp/src3/toto/a')).to.be.eq('/tmp/dest/toto/a');
+      expect(w.computeDestination('/tmp/src')).to.be.eq(path.normalize('/tmp/dest'));
+      expect(w.computeDestination('/tmp/src/toto/tata/a')).to.be.eq(path.normalize('/tmp/dest/toto/tata/a'));
+      expect(w.computeDestination('/tmp/src2/foo/a')).to.be.eq(path.normalize('/tmp/dest/foo/a'));
+      expect(w.computeDestination('/tmp/src3/toto/a')).to.be.eq(path.normalize('/tmp/dest/toto/a'));
     });
   });
 });

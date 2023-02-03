@@ -167,6 +167,7 @@ class Watcher {
   }
 
   computeDestination(source) {
+    source = Watcher.normalizePath(source);
     const src = isArray(this.config.src) ? _.find(this.config.src, (f) => {
       return path.join(source, path.sep).startsWith(path.join(f, path.sep));
     }) : this.config.src;

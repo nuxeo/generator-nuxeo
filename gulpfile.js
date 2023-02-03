@@ -62,6 +62,7 @@ const taskTest = function () {
     .pipe(debug())
     .pipe(plumber())
     .pipe(mocha({
+      // grep: 'Synchronization Lib Modules',
       reporter: 'spec'
     }))
     .once('error', () => {

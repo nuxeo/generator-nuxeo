@@ -49,7 +49,7 @@ class PathResolver {
   }
 
   computeDestination() {
-    let targetPath = '/tmp/watcher/dest';
+    let targetPath = path.normalize('/tmp/watcher/dest');
     const yoConf = parentPath('.yo-rc.json');
     debug(`yo-rc file path: "${yoConf}" from cwd: "${process.cwd()}"`);
     if (yoConf) {

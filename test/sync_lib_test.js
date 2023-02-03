@@ -5,16 +5,13 @@ const expect = chai.expect;
 const PathResolver = require('../generators/synchronize/synchronize/path_resolver');
 const containsChild = require('../generators/synchronize/synchronize/path_child_finder').containsChild;
 const tmp = require('tmp');
+tmp.setGracefulCleanup();
 const path = require('path');
 const fs = require('fs-extra');
-
+/* eslint no-useless-escape: "off" */
 describe('Synchronization Lib Modules', function () {
   before(function () {
     this.realCwd = process.cwd();
-  });
-
-  afterEach(function () {
-    process.chdir(this.realCwd);
   });
 
   describe('PathResolved class', function () {
@@ -25,6 +22,7 @@ describe('Synchronization Lib Modules', function () {
     });
 
     afterEach(function () {
+      process.chdir(this.realCwd);
       fs.emptyDirSync(this.cwd);
       this.cwdObj.removeCallback();
     });
@@ -73,8 +71,8 @@ describe('Synchronization Lib Modules', function () {
     describe('dest getter', function () {
       it('returns a default value', function () {
         expect(PathResolver.dest().describe).to.be.eq('Destination Folder');
-        expect(PathResolver.dest().default).to.contains('/watcher/dest');
-        expect(PathResolver.computeDestination()).to.be.eq('/tmp/watcher/dest');
+        expect(PathResolver.dest().default).to.contains(path.normalize('/watcher/dest'));
+        expect(PathResolver.computeDestination()).to.be.eq(path.normalize('/tmp/watcher/dest'));
       });
 
       describe('can find ".yo-rc.json"', function () {
@@ -90,11 +88,11 @@ describe('Synchronization Lib Modules', function () {
         });
 
         it('and read configured distribution path', function () {
-          expect(PathResolver.computeDestination()).to.be.eq('/tmp/watcher/dest');
+          expect(PathResolver.computeDestination()).to.be.eq(path.normalize('/tmp/watcher/dest'));
           this.initYoRc({
             'distribution:path': '/foo/bar/nxserver'
           });
-          expect(PathResolver.computeDestination()).to.match(/^\/foo\/bar\/nxserver\/.+/);
+          expect(PathResolver.computeDestination()).to.match(/^[\/\\\\]foo[\/\\\\]bar[\/\\\\]nxserver[\/\\\\].+/);
         });
 
         it('even from a deeper child', function () {
@@ -102,19 +100,19 @@ describe('Synchronization Lib Modules', function () {
           fs.mkdirpSync(darkness);
           process.chdir(darkness);
 
-          expect(PathResolver.computeDestination()).to.be.eq('/tmp/watcher/dest');
+          expect(PathResolver.computeDestination()).to.be.eq(path.normalize('/tmp/watcher/dest'));
           this.initYoRc({
             'distribution:path': '/foo/bar/distribution'
           });
-          expect(PathResolver.computeDestination()).to.eq('/foo/bar/distribution/nxserver/nuxeo.war');
+          expect(PathResolver.computeDestination()).to.eq(path.normalize('/foo/bar/distribution/nxserver/nuxeo.war'));
         });
 
         it('and return default value if distribution not configured', function () {
-          expect(PathResolver.computeDestination()).to.be.eq('/tmp/watcher/dest');
+          expect(PathResolver.computeDestination()).to.be.eq(path.normalize('/tmp/watcher/dest'));
           this.initYoRc({
             'wrong:key': '/foo/bar/nxserver'
           });
-          expect(PathResolver.computeDestination()).to.be.eq('/tmp/watcher/dest');
+          expect(PathResolver.computeDestination()).to.be.eq(path.normalize('/tmp/watcher/dest'));
         });
       });
     });
