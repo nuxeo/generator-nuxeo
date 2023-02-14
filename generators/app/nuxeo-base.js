@@ -1,4 +1,4 @@
-const yeoman = require('yeoman-generator');
+const Generator = require('yeoman-generator');
 const _ = require('lodash');
 
 let app = {};
@@ -8,4 +8,4 @@ app = _.extend(app, require('./nuxeo-helper.js'));
 app = _.extend(app, require('./nuxeo-init-meta.js'));
 app = _.extend(app, require('./nuxeo-version.js'));
 
-module.exports = yeoman.extend(app);
+module.exports = Object.assign(class extends Generator {}, app);

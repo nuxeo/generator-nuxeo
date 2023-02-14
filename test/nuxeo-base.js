@@ -1,25 +1,40 @@
 const assert = require('yeoman-assert');
 const _ = require('lodash');
 const helpers = require('yeoman-test');
-const path = require('path');
+// const path = require('path');
+const nuxeoGenerator = require('../generators/app');
 
 describe('nuxeo-base', function() {
   this.timeout(5000);
 
   before(function(done) {
     // Hack as Jenkins clone git repo in arbitrary folder names
-    const basePath = path.join(__dirname, '..');
-    const namespace = basePath.lastIndexOf('generator-') >= 0 ? basePath.substr(basePath.lastIndexOf('generator-') + 'generator-'.length) : basePath.substr(1).replace(new RegExp(path.sep, 'g'), ':');
-    this.gene = helpers.createGenerator(namespace + ':app', ['./generators/app']);
+    // const basePath = path.join(__dirname, '..');
+    // const namespace = basePath.lastIndexOf('generator-') >= 0 ? basePath.substr(basePath.lastIndexOf('generator-') + 'generator-'.length) : basePath.substr(1).replace(new RegExp(path.sep, 'g'), ':');
+    helpers.run(nuxeoGenerator, { 
+      resolved: require.resolve('../generators/app/index.js'),
+      namespace: 'nuxeo:app'
+    }).then(function(dir) {
+      this.remote = dir;
+      done();
+    });
+    
+    // this.gene = helpers.createGenerator(namespace + ':app', ['./generators/app']).then(function(err, remote) {
+    //   this.remote = remote;
+    // });
 
-    this.init = this.gene._init();
-    this.init.fetch.call(this.gene, function(err, remote) {
-      this.remote = remote;
-      this.gene.nuxeo = {
-        cachePath: this.remote
-      };
-      this.init.readDescriptor.call(this.gene, this.gene.nuxeo, done);
-    }.bind(this));
+    // this.gene.run(this, function(err, remote) {
+    //   this.remote = remote;
+    // });
+
+    // this.init = this.gene._init();
+    // this.init.fetch.call(this.gene, function(err, remote) {
+    //   this.remote = remote;
+    //   this.gene.nuxeo = {
+    //     cachePath: this.remote
+    //   };
+    //   this.init.readDescriptor.call(this.gene, this.gene.nuxeo, done);
+    // }.bind(this));
   });
 
   it('clone the repository', function() {

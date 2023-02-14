@@ -62,8 +62,9 @@ const taskTest = function () {
     .pipe(debug())
     .pipe(plumber())
     .pipe(mocha({
-      // grep: 'Synchronization Lib Modules',
-      reporter: 'spec'
+      // grep: 'clone the repository',
+      reporter: 'spec',
+      exit: true
     }))
     .once('error', () => {
       process.exit(1);

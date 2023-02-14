@@ -7,7 +7,7 @@ const dargs = require('dargs');
 const _ = require('lodash');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const nuxeo = require('./nuxeo-base.js');
+const NuxeoGenerator = require('./nuxeo-base.js');
 const s = require('../../utils/nuxeo.string.js');
 const maven = require('../../utils/maven.js');
 const manifestmf = require('../../utils/manifestmf.js');
@@ -21,7 +21,7 @@ global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
 global.VERSION_HELPER = require('../../utils/version-helper.js');
 global.MODULES_HELPER = require('../../utils/modules-helper.js');
 
-module.exports = nuxeo.extend({
+module.exports = Object.assign(class extends NuxeoGenerator {}, {
   _getGlobalStorage: function () {
     // Override Yeoman global storage; use only the local one
     return this._getStorage();
