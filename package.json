@@ -64,8 +64,12 @@
     "yeoman-remote": "^1.0.1",
     "yosay": "^2.0.0"
   },
+  "overrides":{
+    "shelljs": "^0.8.5"
+  },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
+    "@babel/core": "^7.20.12",
+    "@babel/eslint-parser": "^7.19.1",
     "chai": "^4.1.0",
     "concurrently": "^4.1.0",
     "dirty-chai": "^2.0.1",
