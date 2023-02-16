@@ -1,0 +1,26 @@
+name: Publish Release
+
+on:
+  tags:
+    - 'v*'
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://packages.nuxeo.com/repository/npm-public/
+      - run: export RELEASE_VERSION=$(echo ${{github.ref_name}} | sed 's/^.//')
+      - run: npm version $RELEASE_VERSION --allow-same-version
+      - run: npm ci
+      - name: Publish on packages.nuxeo.com
+        run: npm publish --regsitry https://packages.nuxeo.com/repository/npm-public/
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_nuxeo_registry_token}}
+      - name: Publish on registry.npmjs.org
+        run: npm publish --regsitry https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_public_registry_token}}
