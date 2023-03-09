@@ -119,8 +119,5 @@ _npx
 .yarn/install-state.gz
 .pnp.*
 
-# Voluntary other
-package-lock.json
-
 # Target directory
 target
