@@ -13,16 +13,23 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+          registry-url: https://registry.npmjs.org
       - name: Install dependencies
         run: npm install
       - name: Set version in package.json
         run: |
           npm version ${GITHUB_REF#refs/tags/v} --no-git-tag-version
+      - name: Setup .npmrc packages.nuxeo.com publish token
+        run: |
+          echo "//packages.nuxeo.com/repository/npm-public/:_auth=${NODE_AUTH_TOKEN}" >> $NPM_CONFIG_USERCONFIG
+      - name: Setup .npmrc registry.npmjs.org publish token
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> $NPM_CONFIG_USERCONFIG
       - name: Publish on packages.nuxeo.com
         run: npm publish --registry https://packages.nuxeo.com/repository/npm-public/
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_nuxeo_registry_token}}
       - name: Publish on registry.npmjs.org
-        run: npm publish --registry https://registry.npmjs.org
+        run: npm publish --registry https://registry.npmjs.org --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_public_registry_token}}
