@@ -21,15 +21,14 @@ jobs:
       - name: Set version in package.json
         run: |
           npm version ${GITHUB_REF#refs/tags/v} --no-git-tag-version
-      - name: Setup .npmrc token for packages.nuxeo.com
+      - name: Setup .npmrc tokens
         run: |
           npm set //packages.nuxeo.com/repository/npm-public/:_auth ${{secrets.npm_nuxeo_registry_token}}
+          npm set //registry.npmjs.org/:_authToken ${{secrets.npm_public_registry_token}}
           cat $NPM_CONFIG_USERCONFIG
       - name: Publish on packages.nuxeo.com
         run: |
           npm publish --registry https://packages.nuxeo.com/repository/npm-public/
       - name: Publish on registry.npmjs.org
         run: |
-          npm publish --@nuxeo:registry=https://registry.npmjs.org/ --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_public_registry_token}}
+          npm publish --registry https://registry.npmjs.org/ --access public
