@@ -67,6 +67,11 @@
   "overrides": {
     "shelljs": "^0.8.5"
   },
+  "pnpm":{
+    "overrides": {
+      "shelljs": "^0.8.5"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/eslint-parser": "^7.19.1",
