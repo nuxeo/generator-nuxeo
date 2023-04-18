@@ -63,7 +63,7 @@ module.exports = {
 
   _buildBundlesFileList: function(type, files, basePath) {
     return _(files).map((f) => {
-      return `${type}:${path.join(basePath, f)}`;
+      return `${type}:${path.posix.join(basePath, f)}`;
     }).join('\n');
   },
 
