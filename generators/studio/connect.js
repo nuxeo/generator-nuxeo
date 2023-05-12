@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const request = require('sync-request');
+const request = require('then-request');
 const debug = require('debug')('nuxeo:connect');
 
 const CONNECT_URL = 'connect:url';
@@ -35,10 +35,14 @@ module.exports = {
   _generateToken: function (username, password) {
     if (this._hasToken()) {
       debug('Token already exists');
-      this._revokeToken();
+      return this._revokeToken().then(revoked => {
+        if (revoked) {
+          return this._generateToken(username, password);
+        }
+      });
     }
 
-    const res = request('GET', this._getConnectUrl() + '/authentication/token', {
+    return request('GET', this._getConnectUrl() + '/authentication/token', {
       qs: {
         applicationName: this._getApplicationName(),
         deviceId: this._getUnikId(),
@@ -47,35 +51,39 @@ module.exports = {
       headers: {
         authorization: 'Basic ' + Buffer.from(username + ':' + password, 'ascii').toString('base64')
       }
-    });
-
-    debug(res);
-    if (res.statusCode === 201) {
-      const tok = _.trim(res.getBody('UTF-8'));
-      this.config.set(CONNECT_TOKEN, tok);
-      return tok;
-    } else {
+    }).then(res => {
       debug(res);
-      return undefined;
-    }
+      if (res.statusCode === 201) {
+        const tok = _.trim(res.getBody('UTF-8'));
+        this.config.set(CONNECT_TOKEN, tok);
+        return tok;
+      } else {
+        debug(res);
+        return undefined;
+      }
+    }).catch(() => undefined);
   },
   _revokeToken: function () {
-    const res = this._request('GET', this._getConnectUrl() + '/authentication/token', {
+    if(!this._hasToken()){
+      debug('No Token to revoke');
+      return new Promise(resolve => resolve(false));
+    } 
+    return this._request('GET', this._getConnectUrl() + '/authentication/token', {
       qs: {
         applicationName: this._getApplicationName(),
         deviceId: this._getUnikId(),
         revoke: true
       }
+    }).then(res => {
+      if (res.statusCode === 202) {
+        this.config.set(CONNECT_TOKEN, undefined);
+        this._setSymbolicName(undefined);
+        return true;
+      }
+  
+      debug(res);
+      return false;
     });
-
-    if (res.statusCode === 202) {
-      this.config.set(CONNECT_TOKEN, undefined);
-      this._setSymbolicName(undefined);
-      return true;
-    }
-
-    debug(res);
-    return false;
   },
   _request: function (method, url, opts) {
     const _opts = opts || {};

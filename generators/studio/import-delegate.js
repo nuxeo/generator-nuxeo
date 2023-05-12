@@ -60,27 +60,30 @@ const delegate = {
   },
 
   writing: function () {
-    const res = spinner(() => {
-      return this._getWorkspaceRegistries(undefined, this.options.exclude);
-    });
-    const name = this.answers['studio:constant'];
-    const pkg = this.answers['studio:package'];
-    const template = this.templatePath('StudioConstants.java.ejs');
-    const symbolicName = this._getSymbolicName();
-
-    // Compute Destination
-    const args = [this.targetFolder, 'src', 'main', 'java'];
-    Array.prototype.push.apply(args, pkg.split('.'));
-    args.push(`${s.classify(name)}.java`);
-    const dest = path.join.apply(path, args);
-
-    this.fs.copyTpl(template, dest, {
-      res,
-      _,
-      s,
-      name,
-      pkg,
-      symbolicName
+    const done = this.async();
+    return spinner(() => {
+      return this._getWorkspaceRegistries(undefined, this.options.exclude).then(res => {
+        const name = this.answers['studio:constant'];
+        const pkg = this.answers['studio:package'];
+        const template = this.templatePath('StudioConstants.java.ejs');
+        const symbolicName = this._getSymbolicName();
+    
+        // Compute Destination
+        const args = [this.targetFolder, 'src', 'main', 'java'];
+        Array.prototype.push.apply(args, pkg.split('.'));
+        args.push(`${s.classify(name)}.java`);
+        const dest = path.join.apply(path, args);
+    
+        this.fs.copyTpl(template, dest, {
+          res,
+          _,
+          s,
+          name,
+          pkg,
+          symbolicName
+        });
+        done();
+      });
     });
   },
 

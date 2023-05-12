@@ -37,7 +37,9 @@ module.exports = {
     const pom = maven.open(this.fs.read(targetPom));
     pom.addProperty(version, MVN_PROP);
     // Override version to rely on property instead
-    pom.addDependency([groupId, artifactId, `\${${MVN_PROP}}`, type, scope].join(':'));
+    let ngav = [groupId, artifactId, `\${${MVN_PROP}}`, type, scope].join(':');
+    pom.addDependency(ngav);
+    this.log.info(`Adding pom dependency: ${ngav}`);
     pom.save(this.fs, targetPom);
 
     // Add the dependecy to each jar modules; and without the version as
@@ -100,7 +102,7 @@ module.exports = {
     const targetPom = path.join(this.destinationRoot(), 'pom.xml');
     const pom = maven.open(this.fs.read(targetPom));
     pom.removeDependency(gav);
-    this.log.info(`Removing: ${gav}`);
+    this.log.info(`Removing pom dependency: ${gav}`);
     pom.save(this.fs, targetPom);
 
     // remove dependency for each modules - only if it's a bom
