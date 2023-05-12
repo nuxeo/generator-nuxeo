@@ -26,14 +26,16 @@ const delegate = {
 
   writing: function () {
     if (this.answers.unlink) {
-      spinner(() => {
-        this._revokeToken();
+      const done = this.async();
+      return spinner(() => {
+        return this._revokeToken().then(() => {
+          if (this._containsPom()) {
+            this._removeDependency();
+            this._setMavenGav(undefined);
+          }
+          done();
+        });
       });
-
-      if (this._containsPom()) {
-        this._removeDependency();
-        this._setMavenGav(undefined);
-      }
     }
   },
 

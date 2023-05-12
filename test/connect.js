@@ -42,46 +42,68 @@ describe('Against a live Connect', function () {
       assert.equal(connect._getConnectUrl(), TEST_ENV);
     });
 
-    it('can require a token', function () {
+    it('cannot generate a token without a given token', function () {
       // undefined if no token found
-      assert.equal(connect._generateToken(USERNAME, ''), undefined);
+      return connect._generateToken(USERNAME, '').then( token => assert(token === undefined));
+    });
 
-      // ok if token is returned
-      assert.ok(connect._generateToken(USERNAME, TOKEN));
-      assert.ok(connect._hasToken());
+    it('can require a token', function () {
+      assert.ok(!connect._hasToken());
+      // ok if token is returned and stored in config
+      return connect._generateToken(USERNAME, TOKEN).then( token => {
+        assert.ok(token);
+        assert.ok(connect._hasToken());
+       });
+    });
+
+    it('can check project unavailability', function () {
+      connect._isProjectAccessible('XxX-nuxeo-DsdsdS-XxxxD-uxeo').then( access => assert.ok(!access));
     });
 
     it('can check project availability', function () {
-      assert.ok(!connect._isProjectAccessible('XxX-nuxeo-DsdsdS-XxxxD-uxeo'));
-      assert.ok(connect._isProjectAccessible(PROJECT));
+      connect._isProjectAccessible(PROJECT).then( access => assert.ok(access));
     });
 
-    it('can fetch an authorized project', function () {
-      assert.ok(connect._getProject(PROJECT));
+    it('can fetch an authorized project and store it in cache', function () {
+      connect._getProject(PROJECT).then( proj => {
+        assert.ok(proj);
+        return connect._getProject(PROJECT).then( projFromCache => {
+          assert.deepEqual(proj, projFromCache);
+        });
+      });
     });
 
     it('can get project\'s Maven GAV', function () {
-      const maven = connect._getProjectMavenCoordonates(PROJECT);
-      assert.equal('nuxeo-studio:tests-studio4:0.0.0-SNAPSHOT', maven);
+      connect._getProjectMavenCoordonates(PROJECT).then( maven => assert.equal('nuxeo-studio:'+PROJECT+':0.0.0-SNAPSHOT', maven));
     });
 
     it('generates same Studio registries twice', function () {
       // Sort is covered in constant_template#'gets ordered Registries' test
       // But this test is important as well in case a new registry is exposed, as each one has to be manually ordered
       // in studio#_sortRegistries
-      const res1 = connect._getWorkspaceRegistries(PROJECT);
-      const res2 = connect._getWorkspaceRegistries(PROJECT);
-
-      assert.deepEqual(res1, res2);
+      connect._getWorkspaceRegistries(PROJECT).then(res1 => {
+        connect._getWorkspaceRegistries(PROJECT).then( res2 => {
+          assert.deepEqual(res1, res2);
+        });
+      });
     });
 
     it('can revoke a token', function () {
+      assert.ok(connect._hasToken());
       // Revoke Token
-      assert.ok(connect._revokeToken());
-      assert.ok(!connect._hasToken());
+      return connect._revokeToken().then( revoked => {
+        assert.ok(revoked);
+        assert.ok(!connect._hasToken());
+       });
+    });
 
-      // Return false if any token exists
-      assert.ok(!connect._revokeToken());
+    it('cannot revoke unexisting token', function () {
+      assert.ok(!connect._hasToken());
+      // Revoke Token
+      return connect._revokeToken().then( revoked => {
+        assert.ok(!revoked);
+        assert.ok(!connect._hasToken());
+       });
     });
   });
 
@@ -97,20 +119,21 @@ describe('Against a live Connect', function () {
     });
 
     it(`can release the studio project ${PROJECT}`, function () {
-      assert.ok(connect._generateToken(USERNAME, TOKEN));
-      assert.ok(connect._hasToken());
-
-      const params = {
-        json: {
-          revision: 'master',
-          versionName: 'MAJOR',
-        },
-      };
-      connect._setSymbolicName(PROJECT);
-      const res = connect._releaseStudioProject(params);
-      assert.equal(res.statusCode, 200);
-      const response = JSON.parse(res.getBody('utf8'));
-      assert.ok(response.version.endsWith('.0.0'));
+      return connect._generateToken(USERNAME, TOKEN).then(() => {
+        assert.ok(connect._hasToken());
+        const params = {
+          json: {
+            revision: 'master',
+            versionName: 'MAJOR',
+          },
+        };
+        connect._setSymbolicName(PROJECT);
+        return connect._releaseStudioProject(params).then(res => {
+          assert.equal(res.statusCode, 200);
+          const response = JSON.parse(res.getBody('utf8'));
+          assert.ok(response.version.endsWith('.0.0'));
+        });
+      });
     });
   });
 });

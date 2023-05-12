@@ -12,7 +12,7 @@ const delegate = {
   },
 
   welcome() {
-    this.log.info('You are going to release a Studio project attached to this project.');
+    this.log.info('You are going to release the Studio project attached to this project.');
   },
 
   prompting() {
@@ -47,27 +47,30 @@ const delegate = {
         versionName: `${this.answers.version}`,
       },
     };
-    const res = this._releaseStudioProject(params);
-    if (res.statusCode === 409) {
-      this.log.error(chalk.red('FAILURE'));
-      this.log.error('The version already exists: you should update the MAJOR version this time.');
-      this.error = true;
-      return;
-    }
-    if (!res.statusCode === 200) {
-      throw new Error(res);
-    }
-    const response = JSON.parse(res.getBody('utf8'));
-    const version = response.version;
-
-    // Get full GAV from Studio API
-    const gav = spinner(() => {
-      return this._getProjectMavenCoordonates();
+    const done = this.async();
+    return this._releaseStudioProject(params).then(res => {
+      if (res.statusCode === 409) {
+        this.log.error(chalk.red('FAILURE'));
+        this.log.error('The version already exists: you should update the MAJOR version this time.');
+        this.error = true;
+        return;
+      }
+      if (!res.statusCode === 200) {
+        throw new Error(res);
+      }
+      const response = JSON.parse(res.getBody('utf8'));
+      const version = response.version;
+  
+      return spinner(() => {
+        // Get full GAV from Studio API
+        return this._getProjectMavenCoordonates().then(gav => {
+          // Update Studio version in pom parent
+          this._updateVersion(gav, version);
+          this.version = version;
+          done();
+        });
+      });
     });
-
-    // Update Studio version in pom parent
-    this._updateVersion(gav, version);
-    this.version = version;
   },
 
   end() {

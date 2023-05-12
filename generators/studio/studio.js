@@ -13,14 +13,14 @@ module.exports = {
     }
 
     if (!projectCache[symbolicName]) {
-      const res = this._request('GET', this._getConnectUrl() + '/site/studio/v2/project/' + symbolicName + '/workspace/ws.registries');
-
-      if (res.statusCode === 200) {
-        projectCache[symbolicName] = JSON.parse(res.getBody('utf8'));
-      }
+      return this._request('GET', this._getConnectUrl() + '/site/studio/v2/project/' + symbolicName + '/workspace/ws.registries').then(res => {
+        if (res.statusCode === 200) {
+          projectCache[symbolicName] = JSON.parse(res.getBody('utf8'));
+          return projectCache[symbolicName];
+        }
+      });
     }
-
-    return projectCache[symbolicName];
+    return new Promise((resolve) => resolve(projectCache[symbolicName]));
   },
 
   _getProjectMavenCoordonates: function (symName) {
@@ -29,14 +29,14 @@ module.exports = {
       throw new Error('Symbolic name is empty');
     }
 
-    const res = this._request('GET', this._getConnectUrl() + '/site/studio/v2/project/' + symbolicName + '/workspace/ws.maven');
-
-    if (res.statusCode !== 200) {
-      throw new Error('Unable to read Maven Coordonates for ' + symbolicName);
-    }
-
-    const mc = JSON.parse(res.getBody('UTF-8'));
-    return `${mc.groupId}:${mc.artifactId}:${mc.version}`;
+    return this._request('GET', this._getConnectUrl() + '/site/studio/v2/project/' + symbolicName + '/workspace/ws.maven').then(res => {
+      if (res.statusCode !== 200) {
+        throw new Error('Unable to read Maven Coordonates for ' + symbolicName);
+      }
+  
+      const mc = JSON.parse(res.getBody('UTF-8'));
+      return `${mc.groupId}:${mc.artifactId}:${mc.version}`;
+    });
   },
 
   _getWorkspaceRegistries: function (symName, exclude = 'tp', baseUrl) {
@@ -46,12 +46,13 @@ module.exports = {
       throw new Error('Symbolic name is empty');
     }
 
-    const res = this._request('GET', `${_baseUrl}/site/studio/v2/project/${symbolicName}/workspace/ws.registries?exclude=${qs.escape(exclude)}`);
-    if (res.statusCode !== 200) {
-      throw new Error('Unable to read Maven Coordonates for ' + symbolicName);
-    }
-
-    return this._sortRegistries(JSON.parse(res.getBody('UTF-8')));
+    return this._request('GET', `${_baseUrl}/site/studio/v2/project/${symbolicName}/workspace/ws.registries?exclude=${qs.escape(exclude)}`).then(res => {
+      if (res.statusCode !== 200) {
+        throw new Error('Unable to read Maven Coordonates for ' + symbolicName);
+      }
+  
+      return this._sortRegistries(JSON.parse(res.getBody('UTF-8')));
+    });
   },
 
   /**
@@ -117,7 +118,7 @@ module.exports = {
 
   _isProjectAccessible: function (symbolicName) {
     const url = `${this._getConnectUrl()}/site/studio/v2/project/${symbolicName}/administrativeInformation`;
-    return this._request('GET', url).statusCode === 200;
+    return this._request('GET', url).then(res => res.statusCode === 200);
   },
 
   _getSymbolicName: function () {

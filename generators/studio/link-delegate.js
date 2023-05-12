@@ -34,8 +34,10 @@ const delegate = {
           return 'Token is empty';
         }
         return spinner(() => {
-          return !!that._generateToken(answers.username, input);
-        }) || 'Unable to authenticate to NOS Server. Please make sure you use a token created at https://connect.nuxeo.com/nuxeo/site/connect/tokens';
+          return that._generateToken(answers.username, input).then((token) => {
+            return !!token || 'Unable to authenticate to NOS Server. Please make sure you use a token created at https://connect.nuxeo.com/nuxeo/site/connect/tokens';
+          });
+        });
       }
     }, {
       type: 'input',
@@ -48,8 +50,10 @@ const delegate = {
         }
 
         return spinner(() => {
-          return that._isProjectAccessible(input);
-        }) || 'Unknow project';
+          return that._isProjectAccessible(input).then((access) => {
+            return access || 'Unknow project';
+          });
+        });
       }
     }, {
       type: 'confirm',
@@ -76,20 +80,25 @@ const delegate = {
     if (!this._containsPom()) {
       return;
     }
-
+    const done = this.async();
     if(!this.options.skipPomUpdate) {
-      // Get full GAV from Studio API
-      const gav = spinner(() => {
-        return this._getProjectMavenCoordonates();
+      return spinner(() => {
+        // Get full GAV from Studio API
+        return this._getProjectMavenCoordonates().then(gav => {
+          // Remove previous Studio project
+          this._removeDependency();
+    
+          // Add test dependency to the root module and submodules
+          this._addDependency(gav + '::test');
+    
+          //TODO Ensure package.xml file contains Studio reference
+        });
+      }).then(() => {
+        if (this._canAddCredentials()) {
+          this._addConnectCredentials(this._answers.username, this._answers.password);
+        }
+        done();
       });
-
-      // Remove previous Studio project
-      this._removeDependency();
-
-      // Add test dependency to the root module and submodules
-      this._addDependency(gav + '::test');
-
-      // Ensure package.xml file contains Studio reference
     }
 
     if (this._canAddCredentials()) {
