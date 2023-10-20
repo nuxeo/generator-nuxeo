@@ -7,7 +7,6 @@ const dargs = require('dargs');
 const _ = require('lodash');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const nuxeo = require('./nuxeo-base.js');
 const s = require('../../utils/nuxeo.string.js');
 const maven = require('../../utils/maven.js');
 const manifestmf = require('../../utils/manifestmf.js');
@@ -21,13 +20,13 @@ global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
 global.VERSION_HELPER = require('../../utils/version-helper.js');
 global.MODULES_HELPER = require('../../utils/modules-helper.js');
 
-module.exports = nuxeo.extend({
-  _getGlobalStorage: function () {
-    // Override Yeoman global storage; use only the local one
+module.exports = class extends yeoman {
+  _getGlobalStorage() {
+  
     return this._getStorage();
-  },
+  }
 
-  prompt: function (questions, callback) {
+  prompt(questions, callback) {
     if (!questions || !_.isArray(questions)) {
       return this;
     }
@@ -56,13 +55,12 @@ module.exports = nuxeo.extend({
     }.bind(this));
 
     return this;
-  },
+  }
 
-  constructor: function () {
+  constructor(args, opts) {
+    super(args, opts);
+
     this.usage = require('../../utils/usage');
-    yeoman.apply(this, arguments);
-
-    this.options.namespace = 'nuxeo [<generator>..]';
     this.option('meta', {
       type: String,
       alias: 'm',
@@ -96,7 +94,7 @@ module.exports = nuxeo.extend({
       type: Boolean,
       alias: 'f',
       defaults: false,
-      desc: 'Force conflict when generate an existing file'
+      desc: 'Force conflict when generating an existing file'
     });
     this.option('dirname', {
       type: String,
@@ -104,11 +102,11 @@ module.exports = nuxeo.extend({
       defaults: path.basename(this.destinationRoot()),
       desc: 'Set parent folder prefix name'
     });
-  },
+  }
 
-  initializing: function () {
+  initializing() {
     const done = this.async();
-    const init = this._init(this.options);
+    const init = this.runWithOptions(this.options);
 
     this.conflicter = new Conflicter(this.env.adapter, (filename) => {
       return this.options.force || filename.match(/pom\.xml$/) || filename.match(/MANIFEST\.MF$/);
@@ -118,7 +116,7 @@ module.exports = nuxeo.extend({
       this._showHello();
     }
 
-    // Expose options in the global scope for accessing them in generator's decriptors.
+    // Expose options in the global scope for accessing them in generator's descriptors.
     global._options = this.options;
     global._config = this.config;
     debug('%O', this.options);
@@ -132,9 +130,9 @@ module.exports = nuxeo.extend({
       }
       done();
     });
-  },
+  }
 
-  prompting: function () {
+  prompting() {
     const done = this.async();
     const that = this;
     const types = this._moduleSortedKeys();
@@ -160,7 +158,7 @@ module.exports = nuxeo.extend({
 
     async.eachSeries(types, (type, parentCb) => {
       const items = this.nuxeo.selectedModules[type];
-      // Add type to a global value to be referenced in the metamodel
+      // Add type to a global value to be referenced in generator's descriptors.
       global._scope = {
         type
       };
@@ -191,7 +189,7 @@ module.exports = nuxeo.extend({
           that.log.info('  ' + chalk.blue('Parameters: ') + trimParams.join(', '));
         }
 
-        // Prompting for tue
+        // Prompting for true
         that.prompt(params, function (props) {
           propHolder.store(params, props);
           that._findNuxeoVersion(props); // Resolve and Save Nuxeo Version
@@ -205,18 +203,18 @@ module.exports = nuxeo.extend({
       done();
     });
 
-  },
+  }
 
-  writing: function () {
+  writing() {
     this._eachGenerator({
       title: 'Writing',
       func: (type, name, generator, cb) => {
         this._doWrite(type, name, generator, cb);
       },
     });
-  },
+  }
 
-  _doWrite: function (generatorType, item, generator, callback) {
+  _doWrite(generatorType, item, generator, callback) {
     const that = this;
     const props = that.currentProps = that.props[generatorType + item] || {};
 
@@ -241,7 +239,7 @@ module.exports = nuxeo.extend({
       that.log.create('Configuration: ' + key);
     });
 
-    // XXX Might be handle a different way
+    // XXX Might be handled a different way
     const manifestPath = path.join(that._getBaseFolderName(generatorType), 'src', 'main', 'resources', 'META-INF', 'MANIFEST.MF');
     let mf = manifestmf.open(manifestPath, that.fs);
     if (mf) {
@@ -361,9 +359,9 @@ module.exports = nuxeo.extend({
     if (typeof callback !== 'undefined') {
       callback();
     }
-  },
+  }
 
-  end: function () {
+  end() {
     this.log.create(chalk.green('Your project is ready!'));
     this.log.info(`You can start editing code or you can continue with calling another generator (${this.usage.prototype.resolvebinary(this.options)})`);
     this._eachGenerator({
@@ -376,9 +374,9 @@ module.exports = nuxeo.extend({
         generator.end.apply(this, [cb]);
       },
     });
-  },
+  }
 
-  install: function () {
+  install() {
     const skip = this.options.skipInstall;
     this._eachGenerator({
       title: 'Installing',
@@ -418,4 +416,4 @@ module.exports = nuxeo.extend({
       }
     });
   }
-});
+};
