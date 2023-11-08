@@ -12,8 +12,8 @@ const adapter = {
     force: function() {},
     identical: function() {}
   },
-  prompt: function(i, cb) {
-    cb({
+  prompt: function() {
+    return Promise.resolve({
       action: 'conflict'
     });
   }
