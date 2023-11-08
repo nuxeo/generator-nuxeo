@@ -107,6 +107,7 @@ dist
 .tern-port
 
 # Stores VSCode versions used for testing VSCode extensions
+*.code-workspace
 .vscode-test
 
 # yarn v2
@@ -121,3 +122,6 @@ _npx
 
 # Target directory
 target
+
+# intellij
+.idea

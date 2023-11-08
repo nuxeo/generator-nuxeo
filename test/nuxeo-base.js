@@ -22,8 +22,10 @@ describe('nuxeo-base', function() {
     }.bind(this));
   });
 
-  it('clone the repository', function() {
+
+  it('clone the repository', function(done) {
     assert.ok(this.remote);
+    done();
   });
 
   it('read the descriptor', function() {
@@ -65,5 +67,35 @@ describe('nuxeo-base', function() {
 
     this.gene.args = ['single-module', 'multi-module'];
     assert.ok(this.gene._createMultiModuleIsNeeded(['core']));
+  });
+
+  it('copy a templated folder', function(done) {
+    this.gene.fs.copyTpl(
+      'test/paths/src/{{s.unpackagize(package)}}/test/.something',
+      'test/paths/output/.something',
+      {
+        word: 'World',
+        s: {
+          sayHello(word) {
+            return 'hello ' + word;
+          }
+        }
+      },
+      undefined,
+      {
+        globOptions: {
+          // Documentation https://github.com/micromatch/micromatch#options
+          // These options are needed to make it work correctly.
+          // avoid braces transformation to group matching. ( ex: {{...}} =/> (?:{...}) )
+          nobrace: true,
+          // avoid parentheses transformation to group matching. ( ex: (...) =/> (?:...) )
+          noext: true
+        }
+      }
+    );
+    const file = this.gene.fs.store.get(this.gene.destinationPath('test/paths/output/.something'));
+    const contents = file.contents.toString().replace('\r', '').replace('\n', '');
+    assert.equal(contents, 'hello World');
+    done();
   });
 });
