@@ -1,4 +1,3 @@
-const yeoman = require('yeoman-generator');
 const promptSuggestion = require('yeoman-generator/lib/util/prompt-suggestion');
 const chalk = require('chalk');
 const async = require('async');
@@ -14,14 +13,13 @@ const manifestmf = require('../../utils/manifestmf.js');
 const propHolder = require('../../utils/property-holder.js');
 const Conflicter = require('../../utils/conflicter.js');
 const isBinaryFile = require('isbinaryfile').isBinaryFileSync;
-const pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 const debug = require('debug')('nuxeo:app');
 
 global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
 global.VERSION_HELPER = require('../../utils/version-helper.js');
 global.MODULES_HELPER = require('../../utils/modules-helper.js');
 
-module.exports = nuxeo.extend({
+let obj = {
   _getGlobalStorage: function () {
     // Override Yeoman global storage; use only the local one
     return this._getStorage();
@@ -58,53 +56,6 @@ module.exports = nuxeo.extend({
     return this;
   },
 
-  constructor: function () {
-    this.usage = require('../../utils/usage');
-    yeoman.apply(this, arguments);
-
-    this.options.namespace = 'nuxeo [<generator>..]';
-    this.option('meta', {
-      type: String,
-      alias: 'm',
-      defaults: pkg.nuxeo.branch,
-      desc: 'Branch of `nuxeo/generator-nuxeo-meta`'
-    });
-    this.option('localPath', {
-      type: String,
-      alias: 'l',
-      desc: 'Path to a local clone of `nuxeo/generator-nuxeo-meta`'
-    });
-    this.option('nologo', {
-      type: Boolean,
-      alias: 'n',
-      defaults: false,
-      desc: 'Disable welcome logo'
-    });
-    this.option('type', {
-      type: String,
-      alias: 't',
-      defaults: 'core',
-      desc: 'Set module target\'s type'
-    });
-    this.option('skipInstall', {
-      type: Boolean,
-      alias: 's',
-      defaults: false,
-      desc: 'Skip external commands installation'
-    });
-    this.option('force', {
-      type: Boolean,
-      alias: 'f',
-      defaults: false,
-      desc: 'Force conflict when generate an existing file'
-    });
-    this.option('dirname', {
-      type: String,
-      alias: 'd',
-      defaults: path.basename(this.destinationRoot()),
-      desc: 'Set parent folder prefix name'
-    });
-  },
 
   initializing: function () {
     const done = this.async();
@@ -263,7 +214,16 @@ module.exports = nuxeo.extend({
         } else if (isBinaryFile(template) || _(ignorePatterns).find(r => template.match(r))) {
           that.fs.copy(template, dest);
         } else {
-          that.fs.copyTpl(template, dest, props);
+          that.fs.copyTpl(template, dest, props, undefined, {
+            globOptions: {
+              // Documentation https://github.com/micromatch/micromatch#options
+              // These options are needed to make it work correctly.
+              // avoid braces transformation to group matching. ( ex: {{...}} => (?:{...}) )
+              nobrace: true,
+              // avoid parentheses transformation to group matching. ( ex: (...) => (?:...) )
+              noext: true
+            }
+          });
         }
       });
     }
@@ -418,4 +378,7 @@ module.exports = nuxeo.extend({
       }
     });
   }
-});
+};
+
+nuxeo.prototype = _.extend(nuxeo.prototype, obj);
+module.exports = nuxeo;

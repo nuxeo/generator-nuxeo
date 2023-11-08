@@ -54,24 +54,17 @@
     "path": "^0.12.7",
     "path-exists": "^3.0.0",
     "promise": "^8.0.1",
-    "then-request": "^6.0.0",
     "tar": "^6.0.5",
+    "then-request": "^6.0.0",
     "underscore.string": "^3.2.2",
     "universal-analytics": "^0.4.15",
     "uuid": "^3.1.0",
     "xml": "^1.0.1",
-    "yeoman-generator": "^1.1.1",
+    "yeoman-generator": "^4.13.0",
     "yeoman-remote": "^1.0.1",
     "yosay": "^2.0.0"
   },
-  "overrides": {
-    "shelljs": "^0.8.5"
-  },
-  "pnpm":{
-    "overrides": {
-      "shelljs": "^0.8.5"
-    }
-  },
+ 
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/eslint-parser": "^7.19.1",
