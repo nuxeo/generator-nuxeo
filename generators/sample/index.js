@@ -2,16 +2,23 @@
 'use strict';
 
 const async = require('async');
-const yeoman = require('yeoman-generator');
+const Generator = require('yeoman-generator');
 const fs = require('fs');
 const _ = require('lodash');
 const path = require('path');
 const pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 
-let App = {
-  constructor: function() {
+let App = {};
+_.extend(App, require('./github-provider.js'));
+_.extend(App, require('../app/nuxeo-init-meta.js'));
+_.extend(App, require('../app/nuxeo-helper.js'));
+
+_.extend(Generator.prototype, App);
+
+module.exports = class extends Generator {
+  constructor(args, options) {
+    super(args, options);
     this.usage = require('../../utils/usage');
-    yeoman.apply(this, arguments);
 
     this.option('localPath', {
       type: String,
@@ -30,9 +37,9 @@ let App = {
       defaults: pkg.nuxeo.branch,
       desc: 'Branch of `nuxeo/generator-nuxeo-meta`'
     });
-  },
+  }
 
-  initializing: function() {
+  initializing() {
     if (fs.existsSync('pom.xml')) {
       this.log.error('Can\'t clone a sample on an existing project folder.');
       throw new Error('Existing pom.xml file.');
@@ -55,9 +62,9 @@ let App = {
     seq(function() {
       done();
     });
-  },
+  }
 
-  prompting: function() {
+  prompting() {
     // Prompting for Sample to clone, and passing answers to prompt wich branch to clone
     let repository;
     return this.prompt([{
@@ -88,9 +95,9 @@ let App = {
         repository
       });
     });
-  },
+  }
 
-  writing: function() {
+  writing() {
     const done = this.async();
     this._git.clone(this.answers, (err, cachePath) => {
       if (err) {
@@ -103,18 +110,13 @@ let App = {
       );
       done();
     });
-  },
+  }
 
-  _computeDestinationPath: function() {
+  _computeDestinationPath() {
     return `${this.answers.repository.repo}-${this.answers.branch}`;
-  },
+  }
 
-  end: function() {
+  end() {
     this.log.info(`You can start running the sample in ${this._computeDestinationPath()}`);
   }
 };
-
-App = _.extend(App, require('./github-provider.js'));
-App = _.extend(App, require('../app/nuxeo-init-meta.js'));
-App = _.extend(App, require('../app/nuxeo-helper.js'));
-module.exports = yeoman.extend(App);

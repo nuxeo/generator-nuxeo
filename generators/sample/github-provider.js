@@ -1,9 +1,9 @@
 /*eslint camelcase:0*/
-const GitHubApi = require('@octokit/rest');
+const { Octokit } = require('@octokit/rest');
 const clone = require('yeoman-remote');
 const _ = require('lodash');
 
-const gh = new GitHubApi();
+const gh = new Octokit();
 
 module.exports._git = {
   fetchReleases: function(repository) {
@@ -11,9 +11,9 @@ module.exports._git = {
       owner: repository.user,
       repo: repository.repo,
       per_page: 100
-    }).then((tags) => {
+    }).then((response) => {
       // Add master to be able to fetch latest dev version
-      return _.concat(tags, 'master');
+      return _.concat(response.data, 'master');
     });
   },
 

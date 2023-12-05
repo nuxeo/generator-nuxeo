@@ -2,16 +2,20 @@
 'use strict';
 
 const _ = require('lodash');
-const yeoman = require('yeoman-generator');
+const DelegateGenerator = require('../../lib/delegated-generator.js');
 
-let App = {};
+let App = {
+  _beforeConstructor() {
+    this._registerDelegate('configure', require('./configure-delegate'));
+    this._registerDelegate('synchronize', require('./synchronize-delegate'));
 
-App = _.extend(App, require('../../lib/delegated-generator.js').withDefault('synchronize'));
+    this.defaultDelegate = 'synchronize';
+  }
+};
 
-App._registerDelegate('configure', require('./configure-delegate'));
-App._registerDelegate('synchronize', require('./synchronize-delegate'));
+_.extend(App, require('./configure.js'));
+_.extend(App, require('../app/nuxeo-helper'));
 
-App = _.extend(App, require('./configure.js'));
-App = _.extend(App, require('../app/nuxeo-helper'));
+_.extend(DelegateGenerator.prototype, App);
 
-module.exports = yeoman.extend(App);
+module.exports = DelegateGenerator;

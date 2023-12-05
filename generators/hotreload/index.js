@@ -2,10 +2,17 @@
 'use strict';
 
 const _ = require('lodash');
-const yeoman = require('yeoman-generator');
+const DelegateGenerator = require('../../lib/delegated-generator.js');
 
 let App = {
-  _afterConstructor: function () {
+  _beforeConstructor() {
+    this._registerDelegate('configure', require('./configure-delegate'));
+    this._registerDelegate('hotreload', require('./hotreload-delegate'));
+
+    this.defaultDelegate = 'hotreload';
+  },
+
+  _afterConstructor() {
     this.option('classesFolder', {
       desc: 'Define where is the classes folder under the module\'s one',
       type: String,
@@ -14,12 +21,9 @@ let App = {
   }
 };
 
-App = _.extend(App, require('../../lib/delegated-generator.js').withDefault('hotreload'));
+_.extend(App, require('./configure.js'));
+_.extend(App, require('./hotreload.js'));
 
-App._registerDelegate('configure', require('./configure-delegate'));
-App._registerDelegate('hotreload', require('./hotreload-delegate'));
+_.extend(DelegateGenerator.prototype, App);
 
-App = _.extend(App, require('./configure.js'));
-App = _.extend(App, require('./hotreload.js'));
-
-module.exports = yeoman.extend(App);
+module.exports = DelegateGenerator;

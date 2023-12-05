@@ -2,16 +2,20 @@
 'use strict';
 
 const _ = require('lodash');
-const yeoman = require('yeoman-generator');
+const DelegateGenerator = require('../../lib/delegated-generator.js');
 
-let App = {};
+let App = {
+  _beforeConstructor() {
+    this._registerDelegate('status', require('./status-delegate'));
+    this._registerDelegate('release', require('./release-delegate'));
 
-App = _.extend(App, require('../../lib/delegated-generator.js').withDefault('status'));
+    this.defaultDelegate = 'status';
+  }
+};
 
-App._registerDelegate('status', require('./status-delegate'));
-App._registerDelegate('release', require('./release-delegate'));
+_.extend(App, require('../studio/maven.js'));
+_.extend(App, require('./maven.js'));
 
-App = Object.assign(App, require('../studio/maven.js'));
-App = Object.assign(App, require('./maven.js'));
+_.extend(DelegateGenerator.prototype, App);
 
-module.exports = yeoman.extend(App);
+module.exports = DelegateGenerator;

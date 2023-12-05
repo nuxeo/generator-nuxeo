@@ -1,7 +1,7 @@
 const assert = require('yeoman-assert');
 const recursiveSync = require('../utils/recursive-readdirSync.js');
 const path = require('path');
-const tplPath = require('../generators/app/nuxeo-base.js').prototype._tplPath;
+const tplPath = require('../generators/app/index.js').prototype._tplPath;
 const s = require('../utils/nuxeo.string.js');
 const _ = require('lodash');
 

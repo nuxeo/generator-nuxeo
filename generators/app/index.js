@@ -1,3 +1,4 @@
+const Generator = require('yeoman-generator');
 const promptSuggestion = require('yeoman-generator/lib/util/prompt-suggestion');
 const chalk = require('chalk');
 const async = require('async');
@@ -7,6 +8,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const nuxeo = require('./nuxeo-base.js');
+const pkg = require(path.join(path.dirname(__filename), '..', '..', 'package.json'));
 const s = require('../../utils/nuxeo.string.js');
 const maven = require('../../utils/maven.js');
 const manifestmf = require('../../utils/manifestmf.js');
@@ -19,13 +21,63 @@ global.NUXEO_VERSIONS = require('../../utils/nuxeo-version-available');
 global.VERSION_HELPER = require('../../utils/version-helper.js');
 global.MODULES_HELPER = require('../../utils/modules-helper.js');
 
-let obj = {
-  _getGlobalStorage: function () {
+_.extend(Generator.prototype, nuxeo);
+
+module.exports = class extends Generator {
+  constructor(args, options) {
+    super(args, options);
+    this.usage = require('../../utils/usage');
+
+    this.options.namespace = 'nuxeo [<generator>..]';
+    this.option('meta', {
+      type: String,
+      alias: 'm',
+      defaults: pkg.nuxeo.branch,
+      desc: 'Branch of `nuxeo/generator-nuxeo-meta`'
+    });
+    this.option('localPath', {
+      type: String,
+      alias: 'l',
+      desc: 'Path to a local clone of `nuxeo/generator-nuxeo-meta`'
+    });
+    this.option('nologo', {
+      type: Boolean,
+      alias: 'n',
+      defaults: false,
+      desc: 'Disable welcome logo'
+    });
+    this.option('type', {
+      type: String,
+      alias: 't',
+      defaults: 'core',
+      desc: 'Set module target\'s type'
+    });
+    this.option('skipInstall', {
+      type: Boolean,
+      alias: 's',
+      defaults: false,
+      desc: 'Skip external commands installation'
+    });
+    this.option('force', {
+      type: Boolean,
+      alias: 'f',
+      defaults: false,
+      desc: 'Force conflict when generate an existing file'
+    });
+    this.option('dirname', {
+      type: String,
+      alias: 'd',
+      defaults: path.basename(this.destinationRoot()),
+      desc: 'Set parent folder prefix name'
+    });
+  }
+
+  _getGlobalStorage() {
     // Override Yeoman global storage; use only the local one
     return this._getStorage();
-  },
+  }
 
-  prompt: function (questions, callback) {
+  prompt(questions, callback) {
     if (!questions || !_.isArray(questions)) {
       return this;
     }
@@ -54,10 +106,10 @@ let obj = {
     }.bind(this));
 
     return this;
-  },
+  }
 
 
-  initializing: function () {
+  initializing() {
     const done = this.async();
     const init = this._init(this.options);
 
@@ -83,9 +135,9 @@ let obj = {
       }
       done();
     });
-  },
+  }
 
-  prompting: function () {
+  prompting() {
     const done = this.async();
     const that = this;
     const types = this._moduleSortedKeys();
@@ -156,18 +208,18 @@ let obj = {
       done();
     });
 
-  },
+  }
 
-  writing: function () {
+  writing() {
     this._eachGenerator({
       title: 'Writing',
       func: (type, name, generator, cb) => {
         this._doWrite(type, name, generator, cb);
       },
     });
-  },
+  }
 
-  _doWrite: function (generatorType, item, generator, callback) {
+  _doWrite(generatorType, item, generator, callback) {
     const that = this;
     const props = that.currentProps = that.props[generatorType + item] || {};
 
@@ -321,9 +373,9 @@ let obj = {
     if (typeof callback !== 'undefined') {
       callback();
     }
-  },
+  }
 
-  end: function () {
+  end() {
     this.log.create(chalk.green('Your project is ready!'));
     this.log.info(`You can start editing code or you can continue with calling another generator (${this.usage.prototype.resolvebinary(this.options)})`);
     this._eachGenerator({
@@ -336,9 +388,9 @@ let obj = {
         generator.end.apply(this, [cb]);
       },
     });
-  },
+  }
 
-  install: function () {
+  install() {
     const skip = this.options.skipInstall;
     this._eachGenerator({
       title: 'Installing',
@@ -379,6 +431,3 @@ let obj = {
     });
   }
 };
-
-nuxeo.prototype = _.extend(nuxeo.prototype, obj);
-module.exports = nuxeo;
