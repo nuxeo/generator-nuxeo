@@ -36,9 +36,6 @@ jobs:
           npm set //packages.nuxeo.com/repository/npm-private/:_auth=${{secrets.npm_nuxeo_registry_token}}
           npm set //packages.nuxeo.com/repository/npm-nos-private/:_auth=${{secrets.npm_nuxeo_registry_token}}
           cat $NPM_CONFIG_USERCONFIG
-#
-#      - name: Setup upterm session
-#        uses: lhotari/action-upterm@v1
 
       # Install all modules dependencies
       - name: install dependencies
