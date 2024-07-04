@@ -1,0 +1,47 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+  pull_request:
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: repo checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }} # Checkout pull request HEAD commit instead of merge commit
+          fetch-depth: 0 # Needed to calculate VERSION env variable
+
+      # Install node and generate .nprmc
+      - name: node setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://packages.nuxeo.com/repository/npm-internal/
+          cache: npm
+
+      # Add authentication to .npmrc
+      - name: setup .npmrc tokens
+        run: |
+          echo "" > $NPM_CONFIG_USERCONFIG
+          npm set //packages.nuxeo.com/repository/npm-internal/:_auth=${{secrets.npm_nuxeo_registry_token}}
+          npm set //packages.nuxeo.com/repository/npm-private/:_auth=${{secrets.npm_nuxeo_registry_token}}
+          npm set //packages.nuxeo.com/repository/npm-nos-private/:_auth=${{secrets.npm_nuxeo_registry_token}}
+          cat $NPM_CONFIG_USERCONFIG
+
+      # Install all modules dependencies
+      - name: install dependencies
+        run: |
+          npm install
+
+      - name: npm test
+        run: |
+          npm run test
