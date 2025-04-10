@@ -305,14 +305,19 @@ module.exports = class extends Generator {
     });
 
     // handling dependencies
-    if (!_.isEmpty(generator.dependencies)) {
+    let dependencies = generator.dependencies;
+    if (typeof generator.dependencies === "function") {
+      dependencies = generator.dependencies(props);
+    }
+
+    if (!_.isEmpty(dependencies)) {
       const pomPath = path.join(that._getBaseFolderName(generatorType), 'pom.xml');
       const pom = maven.open(that.fs.read(pomPath));
 
-      if (generator.dependencies === 'inherited') {
+      if (dependencies === 'inherited') {
         that._addModulesDependencies(pom);
       } else {
-        _.forEach(generator.dependencies, function (dependency) {
+        _.forEach(dependencies, function (dependency) {
           that.log.info('Maven dependency: ' + dependency);
           pom.addDependency(dependency);
         });
